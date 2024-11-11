@@ -67,6 +67,10 @@ class SymmetricCone:
     True
     """
     @staticmethod
+    def irreducible_classes():
+        return (L,HR,HC,HH,HO)
+
+    @staticmethod
     def _deserialize_one(s):
         r"""
         Deserialize one integer into an irreducible cone.
@@ -81,7 +85,7 @@ class SymmetricCone:
         """
         i = s % 10
         n = (s - i) // 10
-        for c in (L,HR,HC,HH,HO):
+        for c in SymmetricCone.irreducible_classes():
             if c.id == i:
                 return c(n)
         raise ValueError(f"unable to deserialize {s}")
@@ -878,8 +882,7 @@ def random_irreducible_cone() -> SymmetricCone:
     """
     from random import choice, randint
 
-    irreducible_classes = [L, HR, HC, HH, HO]
-    c = choice(irreducible_classes)
+    c = choice(SymmetricCone.irreducible_classes())
     n = randint(1,10)
     if c == HO:
         # otherwise not symmetric
