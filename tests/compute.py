@@ -51,7 +51,8 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
     of total dimension ``n``.
 
     This operates recursively and caches the results at each step (to
-    make future steps faster).
+    make future steps faster). It can also use a SQL database (instead
+    of the default python dict) as a cache.
 
     Parameters
     ----------
@@ -85,7 +86,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
     >>> sorted(admissible_lorentz_ranks(3))
     [3, 4]
 
-    The cached values should agree with the non-cached ones. We can
+    The SQL values should agree with the ones we compute. We can
     check this in a reasonable amount of time up to ``n = 75``. We
     sort the results before comparing them because, despite our use of
     tuples, the order that they wind up in is not meaningful::
@@ -94,18 +95,20 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
     >>> results = []
     >>> for i in range(6):
     ...     n = randint(1,76)
-    ...     actual = sorted(admissible_lorentz_ranks(n, cache=True))
-    ...     expected = sorted(admissible_lorentz_ranks(n, cache=False))
+    ...     actual = sorted(admissible_lorentz_ranks(n, sql=True))
+    ...     expected = sorted(admissible_lorentz_ranks(n, sql=False))
     ...     results.append(actual == expected)
     >>> all(results)
     True
 
     """
-    # The implementation of this function _always_ used a cache dict,
-    # the only question is, whether or not it will be pre-populated.
-    # The variable "d" is the dict that we'll pass to it initially.
+    # The implementation of this function _always_ uses a cache,
+    # the only question is, whether or not the cache will be
+    # a python dict that gets passed around, or an implicit
+    # SQL database.
     d = None
     if not sql:
+        # Base cases, all symmetric cones are isomorphic for n <= 2.
         d = {
             0: (0,),
             1: (1,),
@@ -117,7 +120,56 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
 
 
 def _irreducible_cones_of_dim(n : int) -> tuple:
-    s = [ L(n) ]
+    r"""
+    Return a tuple of irreducible cones in dimension ``n``.
+
+    Outside of dimensions zero and two, there is always a Lorentz cone
+    in dimension ``n``, but there may not be any others. This is "up
+    to isomorphism," so, for example, you won't get ``HR(2)`` in
+    dimension three.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension in which you'd like the irreducible cones.
+
+    Returns
+    -------
+
+    A tuple consisting of all irreducible cones in dimension ``n``.
+
+    Examples
+    --------
+
+    There are no irreducible cones of dimension zero or two::
+
+        >>> _irreducible_cones_of_dim(0)
+        ()
+        >>> _irreducible_cones_of_dim(1)
+        (L(1),)
+        >>> _irreducible_cones_of_dim(2)
+        ()
+
+    Isomorphic results are not returned::
+
+        >>> L(3).dim == HR(2).dim == 3
+        True
+        >>> _irreducible_cones_of_dim(3)
+        (L(3),)
+
+    Larger factors appear where we think they will::
+
+        >>> HR(3) in _irreducible_cones_of_dim(6)
+        True
+        >>> HO(3) in _irreducible_cones_of_dim(27)
+        True
+
+    """
+    s = []
+    if n not in [0,2]:
+        s.append(L(n))
+
     if n >= 27:    # HO(3).dim
         c = HO.in_dim(n)
         if c:
@@ -138,9 +190,59 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
     return tuple(s)
 
 
-def _merge_factors(a, b) -> tuple:
+def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
     r"""
     Merged two serialized cones into a third.
+
+    We can do this efficiently because the sort order for cone
+    factors is already based on their serializations. As a result,
+    we don't need to deserialize and reserialize; we can just
+    combine and sort the serialized representations directly.
+
+    Parameters
+    ----------
+
+    a : int|tuple[int]
+      The first cone, serialized (as either an int or a tuple of
+      ints).
+    b : int|tuple[int]
+      The second cone, serialized (as either an int or a tuple of
+      ints).
+
+    Returns
+    -------
+
+    A tuple of ints representing a direct sum. If the two inputs ``a``
+    and ``b`` were deserialized and then combined into a
+    :class:`DirectSum`, the serialization of that direct sum is what
+    we return.
+
+    Examples
+    --------
+
+    A simple example with two irreducible factors::
+
+        >>> from cones import SymmetricCone
+        >>> a = L(4).serialize()
+        >>> b = HR(3).serialize()
+        >>> c = _merge_factors(a, b); c
+        (32, 41)
+        >>> SymmetricCone.deserialize(c)
+        HR(3) + L(4)
+
+    A random example showing that this does what we think it does,
+    i.e. circumvents deserialization/reserialization accurately::
+
+        >>> from cones import DirectSum, SymmetricCone, random_cone
+        >>> K = random_cone()
+        >>> a = K.serialize()
+        >>> J = random_cone()
+        >>> b = J.serialize()
+        >>> expected = DirectSum([K,J])
+        >>> actual = SymmetricCone.deserialize(_merge_factors(a,b))
+        >>> actual == expected
+        True
+
     """
     # computing/comparing the type to int is actually
     # a bit faster on average than isinstance
@@ -152,7 +254,7 @@ def _merge_factors(a, b) -> tuple:
     # We have to re-sort the factors, because that's what the direct
     # sum constructor would do to ensure that no duplicates sneak
     # in. The serializations (s1,s2) and (s2,s1) represent the same
-    # cone! We'll add both to a set() in a moment to deduplicate them.
+    # cone! The caller is responsible for deduplicating them.
     return tuple(sorted(a+b))
 
 
@@ -161,7 +263,6 @@ def _dim_ranks_cones(n : int, d : dict|None) -> dict:
     Recursive implementation underlying :func:`dim_ranks_cones`.
 
     If ``d`` is ``None``, we use the SQL database instead.
-
     """
     if d is None:
         if n <= sql.max_cone_dim():
@@ -251,13 +352,12 @@ def dim_ranks_cones(n : int, sql : bool = True) -> dict:
     True
 
     """
-    # The implementation of this function _always_ uses a cache dict,
-    # the only question is, whether or not it will be pre-populated.
-    # The variable "d" is the dict that we'll pass to it initially.
-    # Here we populate it with the necessary base cases. All symmetric
-    # cones are isomorphic for n <= 2.
+    # The implementation of this function _always_ uses a cache, the
+    # only question is, whether or not the cache will be a python dict
+    # that gets passed around, or an implicit SQL database.
     d = None
     if not sql:
+        # Base cases, all symmetric cones are isomorphic for n <= 2.
         d = {
             0: { 0 : () },
             1: { 1 : (11,) },
