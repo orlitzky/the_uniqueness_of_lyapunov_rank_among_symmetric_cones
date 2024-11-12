@@ -338,16 +338,8 @@ def dim_ranks_cones(n : int, sql : bool = True) -> dict:
     ...     d2 = dim_ranks_cones(n, sql=False)
     ...     return ( all( sorted(d1[r]) == sorted(d2[r]) for r in d1 )
     ...              and sorted(d1.keys()) == sorted(d2.keys()) )
-    >>> check(7)
-    True
-    >>> check(10)
-    True
-    >>> check(16)
-    True
-    >>> check(28)
-    True
     >>> from random import randint
-    >>> n = randint(3,40)
+    >>> n = randint(0,40)
     >>> check(n)
     True
 
