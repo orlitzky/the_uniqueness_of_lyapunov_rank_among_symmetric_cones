@@ -2,26 +2,9 @@ r"""
 Functions to access the SQL database of cones and Lorentz ranks
 (Lyapunov ranks arising from direct sums of Lorentz cones).
 
-There are only two tables in the database:
-
-    CREATE TABLE cones (
-      dim INTEGER NOT NULL,
-      rank INTEGER NOT NULL,
-      data BLOB NOT NULL
-    );
-    CREATE INDEX dim_rank_idx ON cones (dim,rank);
-
-and
-
-    CREATE TABLE lorentz_ranks (
-      dim INTEGER NOT NULL,
-      rank INTEGER NOT NULL
-    );
-    CREATE INDEX dim_idx ON lorentz_ranks (dim);
-
-In the "cones" table, the "data" column contains a packed, serialized
-representation of the cone. In other words, the result of calling
-``msgpack.packb(K.serialize())``.
+There are only two tables in the database, "cones" and
+"lorentz_ranks". Their structure can be inferred from
+:func:`new_database`.
 
 Sanity check for a random dimension and rank::
 
@@ -31,7 +14,7 @@ Sanity check for a random dimension and rank::
     >>> from cones import SymmetricCone
     >>> d = randint(0,max_cone_dim())
     >>> r = randint(d, (d**2 - d + 2//2))
-    >>> conn = sqlite3.connect("cones.db")
+    >>> conn = sqlite3.connect(LIVE_DATABASE)
     >>> stmt = "SELECT data FROM cones WHERE dim=? AND rank=?"
     >>> result = False
     >>> with conn:
@@ -47,27 +30,90 @@ Sanity check for a random dimension and rank::
 
 Ensure that the trivial cone is in the database::
 
-    >>> conn = sqlite3.connect("cones.db")
+    >>> conn = sqlite3.connect(LIVE_DATABASE)
     >>> stmt = "SELECT MIN(dim) FROM cones"
     >>> with conn:
     ...     conn.execute(stmt, ()).fetchone()[0] == 0
     True
     >>> conn.close()
-
 """
 import sqlite3
 import msgpack
 from cones import SymmetricCone
 
 # The default "live" database.
-DEFAULT_DATABASE = "cones.db"
+LIVE_DATABASE = "cones.db"
 
 # The database used for testing.
-TEST_DATABASE = ":memory:"
+TEST_DATABASE = "tests.db"
 
-def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
+def new_database(db : str = TEST_DATABASE):
+    r"""
+    Create a new database (destroying any existing databases of
+    the given name) containing our two tables.
+
+    This is destructive, so we use the test database as the default.
+
+    Parameters
+    ----------
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
+
+    Create a fresh test database::
+
+        >>> new_database()
+        >>> conn = sqlite3.connect(TEST_DATABASE)
+        >>> stmt = "SELECT name FROM sqlite_master WHERE type='table';"
+        >>> with conn:
+        ...     print(conn.execute(stmt).fetchall())
+        [('cones',), ('lorentz_ranks',)]
+        >>> conn.close()
+
+    """
+    from os import remove
+    try:
+        remove(db)
+    except FileNotFoundError:
+        pass
+
+    conn = sqlite3.connect(db)
+
+    with conn:
+        conn.execute("""CREATE TABLE cones (
+          dim INTEGER NOT NULL,
+          rank INTEGER NOT NULL,
+          data BLOB NOT NULL
+        );""")
+        conn.execute("CREATE INDEX dim_rank_idx ON cones (dim,rank);")
+
+        conn.execute("""CREATE TABLE lorentz_ranks (
+          dim INTEGER NOT NULL,
+          rank INTEGER NOT NULL
+        );""")
+        conn.execute("CREATE INDEX dim_idx ON lorentz_ranks (dim);")
+
+    conn.close()
+
+
+def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
     r"""
     Return all symmetric cones having dimension ``n``.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension of the cones you want.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
 
     Setup::
 
@@ -122,9 +168,8 @@ def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
         True
         >>> HO(3) in all_cones_of_dim(27)
         True
-
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT data FROM cones WHERE dim=?"
     result = ()
     with conn:
@@ -138,11 +183,24 @@ def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
     return result
 
 
-def similacra(K : SymmetricCone) -> tuple[SymmetricCone]:
+def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
     r"""
     Return all similacra of the given cone.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    K : SymmetricCone
+      The cone whose similacra you want.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT data FROM cones WHERE dim=? AND rank=? AND data<>?"
     args = ( K.dim, K.rank, msgpack.packb(K.serialize()) )
     result = ()
@@ -158,9 +216,18 @@ def similacra(K : SymmetricCone) -> tuple[SymmetricCone]:
 
 
 
-def max_cone_dim() -> int:
+def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     r"""
     Return the maximum dimension of any cone in the database.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
 
     Examples
     --------
@@ -171,8 +238,14 @@ def max_cone_dim() -> int:
         >>> max_cone_dim()
         83
 
+    In a new database, there won't be a maximum::
+
+       >>> new_database(db=TEST_DATABASE)
+       >>> print(max_cone_dim(db=TEST_DATABASE))
+       None
+
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM cones"
     result = 0
     with conn:
@@ -182,17 +255,23 @@ def max_cone_dim() -> int:
 
 
 
-def admissible_lorentz_ranks(n : int) -> tuple[int]:
+def admissible_lorentz_ranks(n : int, db : str = LIVE_DATABASE) -> tuple[int]:
     r"""
     Return the admissible Lyapunov ranks for sums of Lorentz cones
     of total dimension ``n``.
+
+    Since this does not modify the database, we use the live database
+    by default.
 
     Parameters
     ----------
 
     n : int
-      The dimension for which you'd like to know, what Lyapunov ranks
+      The dimension for which you'd like to know: what Lyapunov ranks
       are possible if we consider only Lorentz cone factors?
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
 
     Returns
     -------
@@ -216,7 +295,7 @@ def admissible_lorentz_ranks(n : int) -> tuple[int]:
         [3, 4]
 
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT rank FROM lorentz_ranks WHERE dim=?"
     result = ()
     with conn:
@@ -226,7 +305,7 @@ def admissible_lorentz_ranks(n : int) -> tuple[int]:
     return result
 
 
-def admissible_ranks(n: int) -> tuple[int]:
+def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int]:
     r"""
     Compute all admissible Lyapunov ranks for cones of total
     dimension ``n``.
@@ -235,18 +314,27 @@ def admissible_ranks(n: int) -> tuple[int]:
     optional 3x3 complex PSD factor thrown in. All symmetric cones
     share a signature with a cone of this form.
 
+    Since this does not modify the database, we use the live database
+    by default.
+
     Parameters
     ----------
 
     n : int
-      The dimension for which you'd like to know, what Lyapunov ranks
+      The dimension for which you'd like to know: what Lyapunov ranks
       are possible?
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
 
     Returns
     -------
 
     tuple[int]
       The set of Lyapunov ranks that can be achieved in dimension ``n``
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use.
 
     Examples
     --------
@@ -255,10 +343,14 @@ def admissible_ranks(n: int) -> tuple[int]:
     :func:`admissible_lorentz_ranks`, at least until there is room for
     that 3x3 complex PSD factor to fit::
 
-        >>> all( admissible_ranks(k) == admissible_lorentz_ranks(k)
+        >>> all( admissible_ranks(k)
+        ...      ==
+        ...      admissible_lorentz_ranks(k)
         ...      for k in range(9) )
         True
-        >>> admissible_ranks(9) == admissible_lorentz_ranks(9)
+        >>> ( admissible_ranks(9)
+        ...   ==
+        ...   admissible_lorentz_ranks(9) )
         False
 
     All cones share a signature with a cone of this form::
@@ -272,19 +364,29 @@ def admissible_ranks(n: int) -> tuple[int]:
 
     """
     if n < 9:
-        return admissible_lorentz_ranks(n)
+        return admissible_lorentz_ranks(n, db)
 
-    a = admissible_lorentz_ranks(n)
-    b = tuple( 17 + r for r in admissible_lorentz_ranks(n - 9) )
+    a = admissible_lorentz_ranks(n, db)
+    b = tuple( 17 + r for r in admissible_lorentz_ranks(n - 9, db) )
     return tuple(set(a+b)) # dedupe
 
 
-def max_lorentz_rank_dim() -> int:
+def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     r"""
     Return the maximum dimension for which we know the admissible
     Lorentz ranks.
 
-    Examples:
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
 
     This is the right answer, because I computed the database and I
     say so::
@@ -292,8 +394,14 @@ def max_lorentz_rank_dim() -> int:
         >>> max_lorentz_rank_dim()
         250
 
+    In a new database, there won't be a maximum::
+
+       >>> new_database(db=TEST_DATABASE)
+       >>> print(max_lorentz_rank_dim(db=TEST_DATABASE))
+       None
+
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM lorentz_ranks"
     result = 0
     with conn:
@@ -302,15 +410,97 @@ def max_lorentz_rank_dim() -> int:
     return result
 
 
-def insert_lorentz_ranks(n : int, ranks : list[int]):
-    conn = sqlite3.connect("cones.db")
+def insert_lorentz_ranks(n : int, ranks : list[int], db : str = TEST_DATABASE):
+    r"""
+    Insert one dimension's worth of admissible Lorentz ranks into
+    the database.
+
+    This is destructive, so we use the test database as the default.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension to which your list of Lyapunov ranks corresponds.
+
+    ranks : list[int]
+      A list of Lyapunov ranks that are achievable using only Lorentz
+      cones in dimension ``n``.
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use.
+
+    Returns
+    -------
+
+    Nothing.
+
+    Examples
+    --------
+
+    A simple example::
+
+        >>> new_database(db=TEST_DATABASE)
+        >>> insert_lorentz_ranks(8, [6,7,5,3,0,9])
+        >>> stmt = "SELECT dim,rank FROM lorentz_ranks"
+        >>> conn = sqlite3.connect(TEST_DATABASE)
+        >>> with conn:
+        ...     print(conn.execute(stmt).fetchall())
+        [(8, 6), (8, 7), (8, 5), (8, 3), (8, 0), (8, 9)]
+        >>> conn.close()
+
+    """
+    conn = sqlite3.connect(db)
     stmt = "INSERT INTO lorentz_ranks (dim,rank) VALUES (?,?)"
     with conn:
         conn.executemany(stmt, ((n, r) for r in ranks) )
     conn.close()
 
-def insert_cones(n : int, d : dict):
-    conn = sqlite3.connect("cones.db")
+
+def insert_cones(n : int, d : dict, db : str = TEST_DATABASE):
+    r"""
+    Insert cones into the database from a rank => cones dictionary.
+
+    This is used in the implementation of :func:`compute.dim_ranks_cones`
+    to save newly-computed cones.
+
+    This is destructive, so we use the test database as the default.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension of your cones.
+
+    d : dict
+      A dictionary whose keys are Lyapunov ranks and whose values
+      are tuples consisting of all serialized cones of dimension
+      ``n`` having those Lyapunov ranks.
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use.
+
+    Returns
+    -------
+
+    Nothing.
+
+    Examples
+    --------
+
+    Insert the two cones of dimension three, and then check that we
+    can pull them back out with :func:`ranks_cones`::
+
+        >>> from cones import L, RN
+        >>> new_database(db=TEST_DATABASE)
+        >>> n = 3
+        >>> d = { 3: [RN(3).serialize()], 4: [L(3).serialize()] }
+        >>> insert_cones(n, d, db=TEST_DATABASE)
+        >>> ranks_cones(3, db=TEST_DATABASE)
+        {3: ((11, 11, 11),), 4: (31,)}
+
+    """
+    conn = sqlite3.connect(db)
     stmt = "INSERT INTO cones (dim,rank,data) VALUES (?,?,?)"
     with conn:
         conn.executemany(stmt, ((n, r, msgpack.packb(s))
@@ -319,8 +509,32 @@ def insert_cones(n : int, d : dict):
     conn.close()
 
 
-def ranks_cones(n):
+def ranks_cones(n : int, db : str = LIVE_DATABASE):
     r"""
+    Return all cones of dimension ``n`` as a rank => cones map.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension of the cones you want.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Returns
+    -------
+
+    A dictionary whose keys are Lyapunov ranks and whose values
+    are tuples consisting of all serialized cones of dimension
+    ``n`` having those Lyapunov ranks.
+
+    Examples
+    --------
+
     Base cases that should agree with :func:`dim_ranks_cones` when NOT
     using the SQL database::
 
@@ -332,7 +546,7 @@ def ranks_cones(n):
         {2: ((11, 11),)}
 
     """
-    conn = sqlite3.connect("cones.db")
+    conn = sqlite3.connect(db)
     stmt = "SELECT rank,data FROM cones WHERE dim=?"
     result_pairs = []
     with conn:
