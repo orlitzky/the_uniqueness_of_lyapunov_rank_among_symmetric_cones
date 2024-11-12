@@ -36,7 +36,8 @@ Sanity check for a random dimension and rank::
     >>> results = []
     >>> row = cur.execute(stmt, (d,r)).fetchone()
     >>> while row:
-    ...     K = SymmetricCone.deserialize(msgpack.unpackb(row[0]))
+    ...     K = SymmetricCone.deserialize(msgpack.unpackb(row[0],
+    ...                                                   use_list=False))
     ...     results.append(K.dim == d and K.rank == r)
     ...     row = cur.fetchone()
     >>> all(results)
@@ -115,7 +116,7 @@ def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
     cur.execute(stmt, (n,))
     result = tuple(
         SymmetricCone.deserialize(
-          msgpack.unpackb(t[0], strict_map_key=False, use_list=False)
+          msgpack.unpackb(t[0], use_list=False)
         )
         for t in cur.fetchall()
     )
@@ -133,7 +134,7 @@ def similacra(K : SymmetricCone) -> tuple[SymmetricCone]:
     cur.execute(stmt, (K.dim, K.rank, msgpack.packb(K.serialize())) )
     result = tuple(
         SymmetricCone.deserialize(
-          msgpack.unpackb(t[0], strict_map_key=False, use_list=False)
+          msgpack.unpackb(t[0], use_list=False)
         )
         for t in cur.fetchall()
     )
@@ -311,7 +312,7 @@ def ranks_cones(n):
     # Convert the paired results to a dict
     d_n = {}
     for r,s in result_pairs:
-        d_n.setdefault(r, []).append(msgpack.unpackb(s))
+        d_n.setdefault(r, []).append(msgpack.unpackb(s, use_list=False))
 
     for r in d_n:
         d_n[r] = tuple(d_n[r])
