@@ -12,7 +12,7 @@ Sanity check for a random dimension and rank::
     >>> from msgpack import unpackb
     >>> from random import randint
     >>> from cones import SymmetricCone
-    >>> d = randint(0,max_cone_dim())
+    >>> d = randint(0, max_cone_dim())
     >>> r = randint(d, (d**2 - d + 2//2))
     >>> conn = sqlite3.connect(LIVE_DATABASE)
     >>> stmt = "SELECT data FROM cones WHERE dim=? AND rank=?"
