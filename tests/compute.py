@@ -1,0 +1,267 @@
+import sqlite3
+
+from cones import L,HR,HC,HH,HO
+import signatures
+import sql
+
+def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
+    r"""
+    Do the work for :func:`admissible_lorentz_ranks`.
+
+    This is necessary for that public function to have a nice user
+    interface because the recursive bit will always pass a cache dict
+    down to the next level, but we don't want users to have to pass in
+    an "empty" dict ``{ 0: (0,) }`` to indicate that they don't
+    want to use the precomputed cache.
+
+    If ``d`` is ``None`` instead of a dict, the SQL database
+    will be consulted/updated instead.
+    """
+    if d is None:
+        if n <= sql.max_lorentz_rank_dim():
+            return sql.admissible_lorentz_ranks(n)
+    else:
+        if n in d:
+            return d[n]
+
+    s = set()
+    for i in range(1,(n//2)+1):
+        # We can stop at (n//2)+1 because afterwards, i passes n-i.
+        # and the situation is symmetric.
+        #
+        # Compute s1 first (i.e. outside of the comprehension) because
+        # we want to be sure that the lower values get computed before
+        # we try to compute the higher ones.
+        s1 = _admissible_lorentz_ranks(i, d)
+        s2 = _admissible_lorentz_ranks(n-i, d)
+        s.update( b1 + b2 for b1 in s1 for b2 in s2 )
+
+    result = tuple(s) + (signatures.f(n),)
+
+    if d is None:
+        sql.insert_lorentz_ranks(n, result)
+    else:
+        d[n] = result
+        return d[n]
+
+
+def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
+    r"""
+    Compute admissible Lyapunov ranks for sums of Lorentz cones
+    of total dimension ``n``.
+
+    This operates recursively and caches the results at each step (to
+    make future steps faster).
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension for which you'd like to know, what Lyapunov ranks
+      are possible if we consider only Lorentz cone factors?
+
+    sql : bool, default=True
+      Whether or not to use the SQL database, or start fresh.
+
+    Returns
+    -------
+
+    tuple
+      The "set" of Lyapunov ranks that can be achieved in dimension
+      ``n`` using only Lorentz cone factors. A tuple is used instead
+      of a set because they're easier to serialize.
+
+    Examples
+    --------
+
+    Low-dimensional examples::
+
+    >>> admissible_lorentz_ranks(0)
+    (0,)
+    >>> admissible_lorentz_ranks(1)
+    (1,)
+    >>> admissible_lorentz_ranks(2)
+    (2,)
+    >>> sorted(admissible_lorentz_ranks(3))
+    [3, 4]
+
+    The cached values should agree with the non-cached ones. We can
+    check this in a reasonable amount of time up to ``n = 75``. We
+    sort the results before comparing them because, despite our use of
+    tuples, the order that they wind up in is not meaningful::
+
+    >>> from random import randint
+    >>> results = []
+    >>> for i in range(6):
+    ...     n = randint(1,76)
+    ...     actual = sorted(admissible_lorentz_ranks(n, cache=True))
+    ...     expected = sorted(admissible_lorentz_ranks(n, cache=False))
+    ...     results.append(actual == expected)
+    >>> all(results)
+    True
+
+    """
+    # The implementation of this function _always_ used a cache dict,
+    # the only question is, whether or not it will be pre-populated.
+    # The variable "d" is the dict that we'll pass to it initially.
+    d = None
+    if not sql:
+        d = {
+            0: (0,),
+            1: (1,),
+            2: (2,)
+        }
+
+    # Now just run the real, recursive implementation.
+    return _admissible_lorentz_ranks(n,d)
+
+
+def _irreducible_cones_of_dim(n : int) -> tuple:
+    s = [ L(n) ]
+    if n >= 27:    # HO(3).dim
+        c = HO.in_dim(n)
+        if c:
+            s.append(c)
+    elif n >= 15:  # HH(3).dim
+        c = HH.in_dim(n)
+        if c:
+            s.append(c)
+    elif n >= 9:   # HC(3).dim
+        c = HC.in_dim(n)
+        if c:
+            s.append(c)
+    elif n >= 6:   # HR(3).dim
+        c = HR.in_dim(n)
+        if c:
+            s.append(c)
+
+    return tuple(s)
+
+
+def _merge_factors(a, b) -> tuple:
+    r"""
+    Merged two serialized cones into a third.
+    """
+    # computing/comparing the type to int is actually
+    # a bit faster on average than isinstance
+    if type(a) == int:
+        a = (a,)
+    if type(b) == int:
+        b = (b,)
+
+    # We have to re-sort the factors, because that's what the direct
+    # sum constructor would do to ensure that no duplicates sneak
+    # in. The serializations (s1,s2) and (s2,s1) represent the same
+    # cone! We'll add both to a set() in a moment to deduplicate them.
+    return tuple(sorted(a+b))
+
+
+def _dim_ranks_cones(n : int, d : dict|None) -> dict:
+    r"""
+    Recursive implementation underlying :func:`dim_ranks_cones`.
+
+    If ``d`` is ``None``, we use the SQL database instead.
+
+    """
+    if d is None:
+        if n <= sql.max_cone_dim():
+            return sql.ranks_cones(n)
+    else:
+        if n in d:
+            return d[n]
+
+    # The dict for this n. It will either be inserted as d[n],
+    # or put into the SQL database instead.
+    d_n = {}
+
+    # We partition "n" ourselves here. Basically, we split n into (i,
+    # n-i), and then recurse into each of them. Every partition of "n"
+    # arises from a partition of "i" plus a partition of "n-i". We can
+    # stop at n//2 here because the situation is symmetric: once i
+    # passes n-i, the resulting set is going to be the same; (5,2)
+    # gives the same result as (2,5).
+    for i in range(1,(n//2)+1):
+        s1 = _dim_ranks_cones(i, d)
+        s2 = _dim_ranks_cones(n-i, d)
+
+        # the ranks possible in dim=n are the sums of ranks possible
+        # in dim=i and dim=(n-i)
+        for r1 in s1:
+            for r2 in s2:
+                s = set( _merge_factors(b1,b2)
+                         for b1 in s1[r1]
+                         for b2 in s2[r2] )
+                r = r1 + r2
+                if r in d_n:
+                    # there's more than one way to add up to r!
+                    d_n[r].update(s)
+                else:
+                    d_n[r] = s
+
+    for c in _irreducible_cones_of_dim(n):
+        if c.rank in d_n:
+            d_n[c.rank].add(c.serialize())
+        else:
+            d_n[c.rank] = {c.serialize()}
+
+    for r in d_n:
+        # for serialization we want tuples, not sets
+        d_n[r] = tuple(d_n[r])
+
+    if sql:
+        sql.insert_cones(n, d_n)
+    else:
+        d[n] = d_n
+    return d_n
+
+
+def dim_ranks_cones(n : int, sql : bool = True) -> dict:
+    r"""
+    Compute a rank => cones map for all cones of dimension ``n``.
+
+    Examples::
+
+    >>> dim_ranks_cones(3, sql=False)
+    {3: ((11, 11, 11),), 4: (31,)}
+
+    >>> dim_ranks_cones(4, sql=False)
+    {4: ((11, 11, 11, 11),), 5: ((11, 31),), 7: (41,)}
+
+    >>> dim_ranks_cones(5, sql=False)
+    {5: ((11, 11, 11, 11, 11),), 6: ((11, 11, 31),), 8: ((11, 41),), 11: (51,)}
+
+    The precomputed values should agree with the ones we compute::
+
+    >>> def check(n):
+    ...     d1 = dim_ranks_cones(n, sql=True)
+    ...     d2 = dim_ranks_cones(n, sql=False)
+    ...     return ( all( sorted(d1[r]) == sorted(d2[r]) for r in d1 )
+    ...              and sorted(d1.keys()) == sorted(d2.keys()) )
+    >>> check(7)
+    True
+    >>> check(10)
+    True
+    >>> check(16)
+    True
+    >>> check(28)
+    True
+    >>> from random import randint
+    >>> n = randint(3,40)
+    >>> check(n)
+    True
+
+    """
+    # The implementation of this function _always_ uses a cache dict,
+    # the only question is, whether or not it will be pre-populated.
+    # The variable "d" is the dict that we'll pass to it initially.
+    # Here we populate it with the necessary base cases. All symmetric
+    # cones are isomorphic for n <= 2.
+    d = None
+    if not sql:
+        d = {
+            0: { 0 : () },
+            1: { 1 : (11,) },
+            2: { 2: ((11,11),) }
+        }
+    # Now just run the real, recursive implementation.
+    return _dim_ranks_cones(n,d)
