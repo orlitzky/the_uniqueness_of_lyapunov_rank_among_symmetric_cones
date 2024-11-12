@@ -75,14 +75,23 @@ class SymmetricCone:
         r"""
         Deserialize one integer into an irreducible cone.
 
-        >>> SymmetricCone._deserialize_one(32)
-        HR(3)
-        >>> SymmetricCone._deserialize_one(29)
-        Traceback (most recent call last):
-        ...
-        ValueError: unable to deserialize 29
+            >>> SymmetricCone._deserialize_one(32)
+            HR(3)
+            >>> SymmetricCone._deserialize_one(29)
+            Traceback (most recent call last):
+            ...
+            ValueError: unable to deserialize 29
+
+        We can deserialize the trivial cone::
+
+            >>> SymmetricCone._deserialize_one(1)
+            L(0)
 
         """
+
+        # Heads up: serializing L(0) produces 01 = 1.
+        # The math for i and n below should produce
+        # i=1 and n=0 for "1".
         i = s % 10
         n = (s - i) // 10
         for c in SymmetricCone.irreducible_classes():
@@ -96,18 +105,33 @@ class SymmetricCone:
         Deserialize either an integer or a tuple of integers into
         a symmetric cone.
 
-        >>> SymmetricCone.deserialize(11)
-        L(1)
-        >>> SymmetricCone.deserialize((31, 33, 34))
-        L(3) + HC(3) + HH(3)
-        >>> SymmetricCone.deserialize((11, 100))
-        Traceback (most recent call last):
-        ...
-        ValueError: unable to deserialize 100
+        Examples
+        --------
 
-        >>> K = random_cone()
-        >>> SymmetricCone.deserialize(K.serialize()) == K
-        True
+        Typical examples::
+
+            >>> SymmetricCone.deserialize(11)
+            L(1)
+            >>> SymmetricCone.deserialize((31, 33, 34))
+            L(3) + HC(3) + HH(3)
+
+        Invalid input (not from a serialized cone)::
+
+            >>> SymmetricCone.deserialize((11, 100))
+            Traceback (most recent call last):
+            ...
+            ValueError: unable to deserialize 100
+
+        The trivial cone works as expected::
+
+            >>> SymmetricCone.deserialize(L(0).serialize()) == L(0)
+            True
+
+        A random cone works as expected::
+
+            >>> K = random_cone()
+            >>> SymmetricCone.deserialize(K.serialize()) == K
+            True
 
         """
         if isinstance(s, tuple):
@@ -246,9 +270,19 @@ class SymmetricCone:
         Serialize this cone to an integer (irreducible cones) or
         tuple of integers (direct sums).
 
-        No two nonequal cones should serialize to the same value,
-        obviously. The default is appropriate only for irreducible
-        cones.
+        No two nonequal cones should serialize to the same value. The
+        default is appropriate only for irreducible cones.
+
+        Examples
+        --------
+
+        The one unusual case is the trivial cone, where ``01`` becomes
+        ``1``, but this should not cause any problems so long as we are
+        expecting it::
+
+            >>> L(0).serialize()
+            1
+
         """
         if self._serial is None:
             self._serial = 10*self.n + self.id

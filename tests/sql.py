@@ -43,6 +43,16 @@ Sanity check for a random dimension and rank::
     >>> all(results)
     True
     >>> conn.close()
+
+Ensure that the trivial cone is in the database::
+
+    >>> conn = sqlite3.connect("cones.db")
+    >>> cur = conn.cursor()
+    >>> stmt = "SELECT MIN(dim) FROM cones"
+    >>> cur.execute(stmt, ()).fetchone()[0] == 0
+    True
+    >>> conn.close()
+
 """
 import sqlite3
 import msgpack
@@ -59,56 +69,54 @@ def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
 
     Base cases::
 
-    >>> all_cones_of_dim(0)
-    ()
-    >>> sorted(all_cones_of_dim(1))
-    [L(1)]
-    >>> sorted(all_cones_of_dim(2))
-    [L(1) + L(1)]
+        >>> all_cones_of_dim(0)
+        (L(0),)
+        >>> all_cones_of_dim(1)
+        (L(1),)
+        >>> all_cones_of_dim(2)
+        (L(1) + L(1),)
 
     Real examples::
 
-    >>> sorted(all_cones_of_dim(3))
-    [L(1) + L(1) + L(1), L(3)]
+        >>> sorted(all_cones_of_dim(3))
+        [L(1) + L(1) + L(1), L(3)]
 
-    >>> sorted(all_cones_of_dim(4))
-    [L(1) + L(1) + L(1) + L(1), L(1) + L(3), L(4)]
+        >>> sorted(all_cones_of_dim(4))
+        [L(1) + L(1) + L(1) + L(1), L(1) + L(3), L(4)]
 
-    >>> sorted(all_cones_of_dim(5))
-    [L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(3), L(1) + L(4), L(5)]
+        >>> sorted(all_cones_of_dim(5))
+        [L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(3), L(1) + L(4), L(5)]
 
     Finally at dim 6, the 3x3 real PSD cone makes an entrance::
 
-    >>> sorted(all_cones_of_dim(6))
-    [L(1) + L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(1) + L(3), L(1) + L(1) + L(4), L(1) + L(5), L(3) + L(3), HR(3), L(6)]
+        >>> sorted(all_cones_of_dim(6))
+        [L(1) + L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(1) + L(3), L(1) + L(1) + L(4), L(1) + L(5), L(3) + L(3), HR(3), L(6)]
 
     Sets of cones in different dimensions should never intersect::
 
-    >>> from random import randint
-    >>> d1 = randint(0,20)
-    >>> d2 = randint(0,20)
-    >>> c1 = all_cones_of_dim(d1)
-    >>> c2 = all_cones_of_dim(d2)
-    >>> expected = ()
-    >>> if d2 == d1:
-    ...     expected = c1
-    >>> actual = tuple( c for c in c1 if c in c2 )
-    >>> actual == expected
-    True
+        >>> from random import randint
+        >>> d1 = randint(0,20)
+        >>> d2 = randint(0,20)
+        >>> c1 = all_cones_of_dim(d1)
+        >>> c2 = all_cones_of_dim(d2)
+        >>> expected = ()
+        >>> if d2 == d1:
+        ...     expected = c1
+        >>> actual = tuple( c for c in c1 if c in c2 )
+        >>> actual == expected
+        True
 
     Check for the existence of some expected cones::
 
-    >>> HR(3) in all_cones_of_dim(6)
-    True
+        >>> HR(3) in all_cones_of_dim(6)
+        True
+        >>> HC(3) in all_cones_of_dim(9)
+        True
+        >>> HH(3) in all_cones_of_dim(15)
+        True
+        >>> HO(3) in all_cones_of_dim(27)
+        True
 
-    >>> HC(3) in all_cones_of_dim(9)
-    True
-
-    >>> HH(3) in all_cones_of_dim(15)
-    True
-
-    >>> HO(3) in all_cones_of_dim(27)
-    True
     """
     conn = sqlite3.connect("cones.db")
     cur = conn.cursor()
@@ -147,7 +155,8 @@ def max_cone_dim():
     r"""
     Return the maximum dimension of any cone in the database.
 
-    Examples:
+    Examples
+    --------
 
     This is the right answer, because I computed the database and I
     say so::
@@ -303,6 +312,18 @@ def insert_cones(n : int, d : dict):
 
 
 def ranks_cones(n):
+    r"""
+    Base cases that should agree with :func:`dim_ranks_cones` when NOT
+    using the SQL database::
+
+        >>> ranks_cones(0)
+        {0: (1,)}
+        >>> ranks_cones(1)
+        {1: (11,)}
+        >>> ranks_cones(2)
+        {2: ((11, 11),)}
+
+    """
     conn = sqlite3.connect("cones.db")
     cur = conn.cursor()
     stmt = "SELECT rank,data FROM cones WHERE dim=?"

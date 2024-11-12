@@ -359,7 +359,7 @@ def dim_ranks_cones(n : int, sql : bool = True) -> dict:
     if not sql:
         # Base cases, all symmetric cones are isomorphic for n <= 2.
         d = {
-            0: { 0 : () },
+            0: { 0 : (1,) },
             1: { 1 : (11,) },
             2: { 2: ((11,11),) }
         }
