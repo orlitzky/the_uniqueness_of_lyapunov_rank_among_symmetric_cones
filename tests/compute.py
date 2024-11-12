@@ -208,7 +208,7 @@ def _dim_ranks_cones(n : int, d : dict|None) -> dict:
         # for serialization we want tuples, not sets
         d_n[r] = tuple(d_n[r])
 
-    if sql:
+    if d is None:
         sql.insert_cones(n, d_n)
     else:
         d[n] = d_n
