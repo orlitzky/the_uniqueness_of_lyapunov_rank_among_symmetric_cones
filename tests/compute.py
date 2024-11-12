@@ -36,7 +36,13 @@ def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
         s2 = _admissible_lorentz_ranks(n-i, d)
         s.update( b1 + b2 for b1 in s1 for b2 in s2 )
 
-    result = tuple(s) + (signatures.f(n),)
+    this_fn = ()
+    if n != 2:
+        # n=2 is the one case where f(n) = 1 + 1 + ... + 1 (n times)
+        # and the cone is reducible, so f(n) would wind up in the list
+        # twice, once for L(n) and once for L(1) + L(1).
+        this_fn = (signatures.f(n),)
+    result = tuple(s) + this_fn
 
     if d is None:
         sql.insert_lorentz_ranks(n, result)
@@ -77,43 +83,45 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
 
     Low-dimensional examples::
 
-    >>> admissible_lorentz_ranks(0)
-    (0,)
-    >>> admissible_lorentz_ranks(1)
-    (1,)
-    >>> admissible_lorentz_ranks(2)
-    (2,)
-    >>> sorted(admissible_lorentz_ranks(3))
-    [3, 4]
+        >>> admissible_lorentz_ranks(0)
+        (0,)
+        >>> admissible_lorentz_ranks(1)
+        (1,)
+        >>> admissible_lorentz_ranks(2)
+        (2,)
+        >>> sorted(admissible_lorentz_ranks(3))
+        [3, 4]
 
     The SQL values should agree with the ones we compute. We can
     check this in a reasonable amount of time up to ``n = 75``. We
     sort the results before comparing them because, despite our use of
     tuples, the order that they wind up in is not meaningful::
 
-    >>> from random import randint
-    >>> results = []
-    >>> for i in range(6):
-    ...     n = randint(1,76)
-    ...     actual = sorted(admissible_lorentz_ranks(n, sql=True))
-    ...     expected = sorted(admissible_lorentz_ranks(n, sql=False))
-    ...     results.append(actual == expected)
-    >>> all(results)
-    True
+        >>> def check(n):
+        ...     actual = sorted(admissible_lorentz_ranks(n, sql=True))
+        ...     expected = sorted(admissible_lorentz_ranks(n, sql=False))
+        ...     return (actual == expected)
+        >>> check(0)
+        True
+        >>> check(1)
+        True
+        >>> check(2)
+        True
+        >>> check(3)
+        True
+        >>> from random import randint
+        >>> n = randint(1,76)
+        >>> check(n)
+        True
 
     """
     # The implementation of this function _always_ uses a cache,
     # the only question is, whether or not the cache will be
     # a python dict that gets passed around, or an implicit
     # SQL database.
-    d = None
-    if not sql:
-        # Base cases, all symmetric cones are isomorphic for n <= 2.
-        d = {
-            0: (0,),
-            1: (1,),
-            2: (2,)
-        }
+    d = {}
+    if sql:
+        d = None
 
     # Now just run the real, recursive implementation.
     return _admissible_lorentz_ranks(n,d)
@@ -123,9 +131,9 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
     r"""
     Return a tuple of irreducible cones in dimension ``n``.
 
-    Outside of dimensions zero and two, there is always a Lorentz cone
-    in dimension ``n``, but there may not be any others. This is "up
-    to isomorphism," so, for example, you won't get ``HR(2)`` in
+    Outside of dimension two, there is always a Lorentz cone in
+    dimension ``n``, but there may not be any others. This is "up to
+    isomorphism," so, for example, you won't get ``HR(2)`` in
     dimension three.
 
     Parameters
@@ -142,10 +150,10 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
     Examples
     --------
 
-    There are no irreducible cones of dimension zero or two::
+    There are no irreducible cones of dimension two::
 
         >>> _irreducible_cones_of_dim(0)
-        ()
+        (L(0),)
         >>> _irreducible_cones_of_dim(1)
         (L(1),)
         >>> _irreducible_cones_of_dim(2)
@@ -164,10 +172,9 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
         True
         >>> HO(3) in _irreducible_cones_of_dim(27)
         True
-
     """
     s = []
-    if n not in [0,2]:
+    if n != 2:
         s.append(L(n))
 
     if n >= 27:    # HO(3).dim
@@ -347,13 +354,8 @@ def dim_ranks_cones(n : int, sql : bool = True) -> dict:
     # The implementation of this function _always_ uses a cache, the
     # only question is, whether or not the cache will be a python dict
     # that gets passed around, or an implicit SQL database.
-    d = None
-    if not sql:
-        # Base cases, all symmetric cones are isomorphic for n <= 2.
-        d = {
-            0: { 0 : (1,) },
-            1: { 1 : (11,) },
-            2: { 2: ((11,11),) }
-        }
+    d = {}
+    if sql:
+        d = None
     # Now just run the real, recursive implementation.
     return _dim_ranks_cones(n,d)
