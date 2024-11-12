@@ -126,10 +126,16 @@ def _direct_lorentz_ranks(n : int) -> tuple:
     >>> _direct_lorentz_ranks(2)
     (2,)
 
-    Some comparisons with the recursive algorithm::
+    Some comparisons with the recursive algorithm / database::
 
-    >>> all( _direct_lorentz_ranks(k) == admissible_lorentz_ranks(k)
-    ...      for k in [7,12,15,19,23,30] )
+    >>> import compute
+    >>> import sql
+    >>> all( _direct_lorentz_ranks(k)
+    ...      ==
+    ...      sql.admissible_lorentz_ranks(k)
+    ...      ==
+    ...      compute.admissible_lorentz_ranks(k)
+    ...      for k in [7,12,15,19,23] )
     True
 
     """

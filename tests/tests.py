@@ -164,12 +164,12 @@ Check Giovanni's Theorem 3 directly::
     ...         return True
     ...     ub = (m**2 - 3*m + 4) // 2
     ...     return ub >= n >= m >= 4
-    >>> from cones import max_cache_dim()
-    >>> # need m+n <= max_cache_dim()
-    >>> m_max = max_cache_dim() // 2
+    >>> from sql import max_cone_dim()
+    >>> # need m+n <= max_cone_dim()
+    >>> m_max = max_cone_dim() // 2
     >>> all( check(m,n)
     ...      for m in range(4, m_max)
-    ...      for n in range(m, max_cache_dim() - m) )
+    ...      for n in range(m, max_cone_dim() - m) )
     True
 
 Check Theorem/Conjecture 4 using our precomputed dictionary of
@@ -180,10 +180,11 @@ Unfortunately the lower bound we have is almost always going to be
 higher than the largest dimension we have cached, so this usually
 won't check anything::
 
->>> from cones import all_cones_of_dim, max_cache_dim, random_cone
+>>> from cones random_cone
+>>> from sql import max_cone_dim
 >>> K = random_cone()
 >>> n_min = max(lowerbound1(K),lowerbound2(K),lowerbound3(K))
->>> n_max = max_cache_dim() - K.dim
+>>> n_max = max_cone_dim() - K.dim
 >>> results = []
 >>> for n in range(n_min, n_max+1):
 >>>     lhs = DirectSum([L(n),K])
@@ -210,10 +211,10 @@ def lowerbound1(K):
     the precomputed list of signatures for the signature of what
     remains; basically, we exhaustively search for ``J`` in the Lemma.
 
-    >>> from signatures import admissible_lorentz_ranks as alr, max_cache_dim
+    >>> from sql import admissible_lorentz_ranks as alr, max_lorentz_rank_dim
     >>> K = random_cone()
     >>> n_min = lowerbound1(K)
-    >>> n_max = max_cache_dim() - K.dim
+    >>> n_max = max_lorentz_rank_dim() - K.dim
     >>> k_max = min(K.dim, 20)
     >>> results = []
     >>> for n in range(n_min, n_max+1):
