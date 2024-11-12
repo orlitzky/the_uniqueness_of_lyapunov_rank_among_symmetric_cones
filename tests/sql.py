@@ -489,14 +489,14 @@ def insert_cones(n : int, d : dict, db : str = TEST_DATABASE):
     --------
 
     Insert the two cones of dimension three, and then check that we
-    can pull them back out with :func:`ranks_cones`::
+    can pull them back out with :func:`dim_ranks_cones`::
 
         >>> from cones import L, RN
         >>> new_database(db=TEST_DATABASE)
         >>> n = 3
         >>> d = { 3: [RN(3).serialize()], 4: [L(3).serialize()] }
         >>> insert_cones(n, d, db=TEST_DATABASE)
-        >>> ranks_cones(3, db=TEST_DATABASE)
+        >>> dim_ranks_cones(3, db=TEST_DATABASE)
         {3: ((11, 11, 11),), 4: (31,)}
 
     """
@@ -509,7 +509,7 @@ def insert_cones(n : int, d : dict, db : str = TEST_DATABASE):
     conn.close()
 
 
-def ranks_cones(n : int, db : str = LIVE_DATABASE):
+def dim_ranks_cones(n : int, db : str = LIVE_DATABASE):
     r"""
     Return all cones of dimension ``n`` as a rank => cones map.
 
@@ -535,14 +535,14 @@ def ranks_cones(n : int, db : str = LIVE_DATABASE):
     Examples
     --------
 
-    Base cases that should agree with :func:`dim_ranks_cones` when NOT
+    Base cases that should agree with :func:`compute.dim_ranks_cones` when NOT
     using the SQL database::
 
-        >>> ranks_cones(0)
+        >>> dim_ranks_cones(0)
         {0: (1,)}
-        >>> ranks_cones(1)
+        >>> dim_ranks_cones(1)
         {1: (11,)}
-        >>> ranks_cones(2)
+        >>> dim_ranks_cones(2)
         {2: ((11, 11),)}
 
     """
