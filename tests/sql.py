@@ -280,3 +280,40 @@ def max_lorentz_rank_dim():
     result = cur.execute(stmt).fetchone()
     conn.close()
     return result[0]
+
+
+def insert_lorentz_ranks(n : int, ranks : list[int]):
+    conn = sqlite3.connect("cones.db")
+    cur = conn.cursor()
+    stmt = "INSERT INTO lorentz_ranks (dim,rank) VALUES (?,?)"
+    cur.executemany(stmt, ((n, r) for r in ranks) )
+    conn.commit()
+    conn.close()
+
+def insert_cones(n : int, d : dict):
+    conn = sqlite3.connect("cones.db")
+    cur = conn.cursor()
+    stmt = "INSERT INTO cones (dim,rank,data) VALUES (?,?,?)"
+    cur.executemany(stmt, ((n, r, msgpack.packb(s))
+                           for r in d
+                           for s in d[r]) )
+    conn.commit()
+    conn.close()
+
+
+def ranks_cones(n):
+    conn = sqlite3.connect("cones.db")
+    cur = conn.cursor()
+    stmt = "SELECT rank,data FROM cones WHERE dim=?"
+    result_pairs = cur.execute(stmt, (n,) ).fetchall()
+    conn.close()
+
+    # Convert the paired results to a dict
+    d_n = {}
+    for r,s in result_pairs:
+        d_n.setdefault(r, []).append(msgpack.unpackb(s))
+
+    for r in d_n:
+        d_n[r] = tuple(d_n[r])
+
+    return d_n
