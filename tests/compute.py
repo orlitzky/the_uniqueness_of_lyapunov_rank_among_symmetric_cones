@@ -1,10 +1,21 @@
+r"""
+Recursive functions to compute the admissible Lorentz ranks of a
+given dimension, or to compute all symmetric cones (up to isomorphism)
+in a given dimension.
+
+These functions take both a ``db`` argument, and a ``sql`` toggle. If
+you really want to affect the live database, you have to set ``sql``
+to ``True``, and ``db`` to ``sql.LIVE_DATABASE``. These are not
+default because we don't want to modify the live database by surprise
+while testing (even though this shouldn't happen, ha ha).
+"""
 import sqlite3
 
 from cones import L,HR,HC,HH,HO
 import signatures
 import sql
 
-def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
+def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
     r"""
     Do the work for :func:`admissible_lorentz_ranks`.
 
@@ -18,8 +29,8 @@ def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
     will be consulted/updated instead.
     """
     if d is None:
-        if n <= sql.max_lorentz_rank_dim():
-            return sql.admissible_lorentz_ranks(n)
+        if n <= sql.max_lorentz_rank_dim(db=db):
+            return sql.admissible_lorentz_ranks(n, db=db)
     else:
         if n in d:
             return d[n]
@@ -32,8 +43,8 @@ def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
         # Compute s1 first (i.e. outside of the comprehension) because
         # we want to be sure that the lower values get computed before
         # we try to compute the higher ones.
-        s1 = _admissible_lorentz_ranks(i, d)
-        s2 = _admissible_lorentz_ranks(n-i, d)
+        s1 = _admissible_lorentz_ranks(i, d, db)
+        s2 = _admissible_lorentz_ranks(n-i, d, db)
         s.update( b1 + b2 for b1 in s1 for b2 in s2 )
 
     this_fn = ()
@@ -45,13 +56,13 @@ def _admissible_lorentz_ranks(n : int, d : dict|None) -> tuple[int]:
     result = tuple(s) + this_fn
 
     if d is None:
-        sql.insert_lorentz_ranks(n, result)
+        sql.insert_lorentz_ranks(n, result, db=db)
     else:
         d[n] = result
         return d[n]
 
 
-def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
+def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> tuple[int]:
     r"""
     Compute admissible Lyapunov ranks for sums of Lorentz cones
     of total dimension ``n``.
@@ -67,8 +78,11 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
       The dimension for which you'd like to know, what Lyapunov ranks
       are possible if we consider only Lorentz cone factors?
 
-    sql : bool, default=True
+    sql : bool, default=False
       Whether or not to use the SQL database, or start fresh.
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use (if ``sql`` is ``True``).
 
     Returns
     -------
@@ -98,8 +112,8 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
     tuples, the order that they wind up in is not meaningful::
 
         >>> def check(n):
-        ...     actual = sorted(admissible_lorentz_ranks(n, sql=True))
-        ...     expected = sorted(admissible_lorentz_ranks(n, sql=False))
+        ...     actual = sorted(sql.admissible_lorentz_ranks(n))
+        ...     expected = sorted(admissible_lorentz_ranks(n))
         ...     return (actual == expected)
         >>> check(0)
         True
@@ -124,7 +138,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = True) -> tuple[int]:
         d = None
 
     # Now just run the real, recursive implementation.
-    return _admissible_lorentz_ranks(n,d)
+    return _admissible_lorentz_ranks(n, d, db)
 
 
 def _irreducible_cones_of_dim(n : int) -> tuple:
@@ -265,15 +279,15 @@ def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
     return tuple(sorted(a+b))
 
 
-def _dim_ranks_cones(n : int, d : dict|None) -> dict:
+def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     r"""
     Recursive implementation underlying :func:`dim_ranks_cones`.
 
     If ``d`` is ``None``, we use the SQL database instead.
     """
     if d is None:
-        if n <= sql.max_cone_dim():
-            return sql.ranks_cones(n)
+        if n <= sql.max_cone_dim(db=db):
+            return sql.ranks_cones(n, db=db)
     else:
         if n in d:
             return d[n]
@@ -289,8 +303,8 @@ def _dim_ranks_cones(n : int, d : dict|None) -> dict:
     # passes n-i, the resulting set is going to be the same; (5,2)
     # gives the same result as (2,5).
     for i in range(1,(n//2)+1):
-        s1 = _dim_ranks_cones(i, d)
-        s2 = _dim_ranks_cones(n-i, d)
+        s1 = _dim_ranks_cones(i, d, db)
+        s2 = _dim_ranks_cones(n-i, d, db)
 
         # the ranks possible in dim=n are the sums of ranks possible
         # in dim=i and dim=(n-i)
@@ -317,32 +331,46 @@ def _dim_ranks_cones(n : int, d : dict|None) -> dict:
         d_n[r] = tuple(d_n[r])
 
     if d is None:
-        sql.insert_cones(n, d_n)
+        sql.insert_cones(n, d_n, db=db)
     else:
         d[n] = d_n
     return d_n
 
 
-def dim_ranks_cones(n : int, sql : bool = True) -> dict:
+def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> dict:
     r"""
     Compute a rank => cones map for all cones of dimension ``n``.
 
-    Examples::
+    Parameters
+    ----------
+    n : int
+      The dimension for which you want the rank => cones dict.
 
-    >>> dim_ranks_cones(3, sql=False)
-    {3: ((11, 11, 11),), 4: (31,)}
+    sql : bool, default=False
+      Whether or not to use the SQL database, or start fresh.
 
-    >>> dim_ranks_cones(4, sql=False)
-    {4: ((11, 11, 11, 11),), 5: ((11, 31),), 7: (41,)}
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use (if ``sql`` is ``True``).
 
-    >>> dim_ranks_cones(5, sql=False)
-    {5: ((11, 11, 11, 11, 11),), 6: ((11, 11, 31),), 8: ((11, 41),), 11: (51,)}
+    Examples
+    --------
+
+    Easy low-dimensional cases::
+
+        >>> dim_ranks_cones(3)
+        {3: ((11, 11, 11),), 4: (31,)}
+
+        >>> dim_ranks_cones(4)
+        {4: ((11, 11, 11, 11),), 5: ((11, 31),), 7: (41,)}
+
+        >>> dim_ranks_cones(5)
+        {5: ((11, 11, 11, 11, 11),), 6: ((11, 11, 31),), 8: ((11, 41),), 11: (51,)}
 
     The precomputed values should agree with the ones we compute::
 
     >>> def check(n):
-    ...     d1 = dim_ranks_cones(n, sql=True)
-    ...     d2 = dim_ranks_cones(n, sql=False)
+    ...     d1 = sql.dim_ranks_cones(n)
+    ...     d2 = dim_ranks_cones(n)
     ...     return ( all( set(d1[r]) == set(d2[r]) for r in d1 )
     ...              and sorted(d1.keys()) == sorted(d2.keys()) )
     >>> from random import randint
@@ -358,4 +386,4 @@ def dim_ranks_cones(n : int, sql : bool = True) -> dict:
     if sql:
         d = None
     # Now just run the real, recursive implementation.
-    return _dim_ranks_cones(n,d)
+    return _dim_ranks_cones(n, d, db)
