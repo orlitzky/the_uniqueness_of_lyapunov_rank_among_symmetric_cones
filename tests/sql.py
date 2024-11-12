@@ -25,31 +25,32 @@ representation of the cone. In other words, the result of calling
 
 Sanity check for a random dimension and rank::
 
-    >>> import msgpack, sqlite3
+    >>> import sqlite3
+    >>> from msgpack import unpackb
     >>> from random import randint
     >>> from cones import SymmetricCone
-    >>> conn = sqlite3.connect("cones.db")
-    >>> cur = conn.cursor()
     >>> d = randint(0,max_cone_dim())
     >>> r = randint(d, (d**2 - d + 2//2))
+    >>> conn = sqlite3.connect("cones.db")
     >>> stmt = "SELECT data FROM cones WHERE dim=? AND rank=?"
-    >>> results = []
-    >>> row = cur.execute(stmt, (d,r)).fetchone()
-    >>> while row:
-    ...     K = SymmetricCone.deserialize(msgpack.unpackb(row[0],
-    ...                                                   use_list=False))
-    ...     results.append(K.dim == d and K.rank == r)
-    ...     row = cur.fetchone()
-    >>> all(results)
+    >>> result = False
+    >>> with conn:
+    ...     result = all(
+    ...       K.dim == d and K.rank == r
+    ...       for row in conn.execute(stmt, (d,r)).fetchall()
+    ...       if (K := SymmetricCone.deserialize(unpackb(row[0],
+    ...                                          use_list=False)))
+    ...     )
+    >>> result
     True
     >>> conn.close()
 
 Ensure that the trivial cone is in the database::
 
     >>> conn = sqlite3.connect("cones.db")
-    >>> cur = conn.cursor()
     >>> stmt = "SELECT MIN(dim) FROM cones"
-    >>> cur.execute(stmt, ()).fetchone()[0] == 0
+    >>> with conn:
+    ...     conn.execute(stmt, ()).fetchone()[0] == 0
     True
     >>> conn.close()
 
@@ -58,6 +59,11 @@ import sqlite3
 import msgpack
 from cones import SymmetricCone
 
+# The default "live" database.
+DEFAULT_DATABASE = "cones.db"
+
+# The database used for testing.
+TEST_DATABASE = ":memory:"
 
 def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
     r"""
@@ -119,15 +125,15 @@ def all_cones_of_dim(n : int) -> tuple[SymmetricCone]:
 
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT data FROM cones WHERE dim=?"
-    cur.execute(stmt, (n,))
-    result = tuple(
-        SymmetricCone.deserialize(
-          msgpack.unpackb(t[0], use_list=False)
+    result = ()
+    with conn:
+        result = tuple(
+            SymmetricCone.deserialize(
+              msgpack.unpackb(t[0], use_list=False)
+            )
+            for t in conn.execute(stmt, (n,)).fetchall()
         )
-        for t in cur.fetchall()
-    )
     conn.close()
     return result
 
@@ -137,21 +143,22 @@ def similacra(K : SymmetricCone) -> tuple[SymmetricCone]:
     Return all similacra of the given cone.
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT data FROM cones WHERE dim=? AND rank=? AND data<>?"
-    cur.execute(stmt, (K.dim, K.rank, msgpack.packb(K.serialize())) )
-    result = tuple(
-        SymmetricCone.deserialize(
-          msgpack.unpackb(t[0], use_list=False)
+    args = ( K.dim, K.rank, msgpack.packb(K.serialize()) )
+    result = ()
+    with conn:
+        result = tuple(
+            SymmetricCone.deserialize(
+              msgpack.unpackb(t[0], use_list=False)
+            )
+            for t in conn.execute(stmt, args).fetchall()
         )
-        for t in cur.fetchall()
-    )
     conn.close()
     return result
 
 
 
-def max_cone_dim():
+def max_cone_dim() -> int:
     r"""
     Return the maximum dimension of any cone in the database.
 
@@ -166,11 +173,12 @@ def max_cone_dim():
 
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT MAX(dim) FROM cones"
-    result = cur.execute(stmt).fetchone()
+    result = 0
+    with conn:
+        result = conn.execute(stmt).fetchone()[0]
     conn.close()
-    return result[0]
+    return result
 
 
 
@@ -209,10 +217,11 @@ def admissible_lorentz_ranks(n : int) -> tuple[int]:
 
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT rank FROM lorentz_ranks WHERE dim=?"
-    cur.execute(stmt, (n,) )
-    result = tuple( r[0] for r in cur.fetchall() )
+    result = ()
+    with conn:
+        result = tuple( r[0]
+                        for r in conn.execute(stmt, (n,)).fetchall() )
     conn.close()
     return result
 
@@ -270,7 +279,7 @@ def admissible_ranks(n: int) -> tuple[int]:
     return tuple(set(a+b)) # dedupe
 
 
-def max_lorentz_rank_dim():
+def max_lorentz_rank_dim() -> int:
     r"""
     Return the maximum dimension for which we know the admissible
     Lorentz ranks.
@@ -285,29 +294,28 @@ def max_lorentz_rank_dim():
 
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT MAX(dim) FROM lorentz_ranks"
-    result = cur.execute(stmt).fetchone()
+    result = 0
+    with conn:
+        result = conn.execute(stmt).fetchone()[0]
     conn.close()
-    return result[0]
+    return result
 
 
 def insert_lorentz_ranks(n : int, ranks : list[int]):
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "INSERT INTO lorentz_ranks (dim,rank) VALUES (?,?)"
-    cur.executemany(stmt, ((n, r) for r in ranks) )
-    conn.commit()
+    with conn:
+        conn.executemany(stmt, ((n, r) for r in ranks) )
     conn.close()
 
 def insert_cones(n : int, d : dict):
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "INSERT INTO cones (dim,rank,data) VALUES (?,?,?)"
-    cur.executemany(stmt, ((n, r, msgpack.packb(s))
-                           for r in d
-                           for s in d[r]) )
-    conn.commit()
+    with conn:
+        conn.executemany(stmt, ((n, r, msgpack.packb(s))
+                                for r in d
+                                for s in d[r]) )
     conn.close()
 
 
@@ -325,9 +333,10 @@ def ranks_cones(n):
 
     """
     conn = sqlite3.connect("cones.db")
-    cur = conn.cursor()
     stmt = "SELECT rank,data FROM cones WHERE dim=?"
-    result_pairs = cur.execute(stmt, (n,) ).fetchall()
+    result_pairs = []
+    with conn:
+        result_pairs = conn.execute(stmt, (n,) ).fetchall()
     conn.close()
 
     # Convert the paired results to a dict
