@@ -387,3 +387,14 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -
         d = None
     # Now just run the real, recursive implementation.
     return _dim_ranks_cones(n, d, db)
+
+
+
+if __name__ == "__main__":
+    # if executed, we start computing more cones
+    n = sql.max_cone_dim() + 1
+    while True:
+        print(f"computing dimension {n}... ", end="", flush=True)
+        _ = dim_ranks_cones(n, True, sql.LIVE_DATABASE)
+        print("done")
+        n += 1
