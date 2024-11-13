@@ -287,7 +287,7 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     """
     if d is None:
         if n <= sql.max_cone_dim(db=db):
-            return sql.ranks_cones(n, db=db)
+            return sql.dim_ranks_cones(n, db=db)
     else:
         if n in d:
             return d[n]
