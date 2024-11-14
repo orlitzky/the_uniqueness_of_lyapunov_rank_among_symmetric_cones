@@ -176,6 +176,21 @@ Check Giovanni's Theorem 3 directly::
     ...      for n in range(m, max_cone_dim() - m) )
     True
 
+Check Giovanni's Theorem 4, as far as we can::
+
+    >>> from cones import DirectSum, L
+    >>> from sql import max_cone_dim
+    >>> n_max = max_cone_dim() // 2
+    >>> n_min = 1
+    >>> n_without_similacra = []
+    >>> for n in range(n_min, n_max+1):
+    ...     K = DirectSum([L(n)]*2)
+    ...     if not K.similacra():
+    ...         n_without_similacra.append(n)
+    >>> n_without_similacra
+    [1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
+
+
 Check Theorem/Conjecture 4 using our precomputed dictionary of
 cones. We start with a cone ``K``, and then add ``L(n)`` factors to
 it. If the resulting sum has similacra, then each similacrum should
