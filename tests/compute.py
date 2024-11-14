@@ -8,6 +8,17 @@ you really want to affect the live database, you have to set ``sql``
 to ``True``, and ``db`` to ``sql.LIVE_DATABASE``. These are not
 default because we don't want to modify the live database by surprise
 while testing (even though this shouldn't happen, ha ha).
+
+If you run this module, on the other hand, it will begin to update the
+live database::
+
+    $ python compute.py
+    computing dimension 99...
+
+This however takes "forever" and will probably run your system out of
+RAM. The bottleneck for both speed and space is putting all of the new
+cones for a given dimension into a list and sorting them to eliminate
+duplicates (specifically, serializations of isomorphic cones).
 """
 import sqlite3
 
@@ -17,19 +28,65 @@ import sql
 
 def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
     r"""
-    Do the work for :func:`admissible_lorentz_ranks`.
+    Recursive implementation underlying :func:`admissible_lorentz_ranks`.
 
     This is necessary for that public function to have a nice user
     interface because the recursive bit will always pass a cache dict
     down to the next level, but we don't want users to have to pass in
-    an "empty" dict ``{ 0: (0,) }`` to indicate that they don't
-    want to use the precomputed cache.
+    an empty dict to get started.
 
-    If ``d`` is ``None`` instead of a dict, the SQL database
+    If ``d`` is ``None`` instead of a dict, the SQL database ``db``
     will be consulted/updated instead.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension for which you'd like to know, what Lyapunov ranks
+      are possible if we consider only Lorentz cone factors?
+
+    d : dict|None
+      Either a dict to cache the results in, or ``None`` if you want
+      to use the SQL database ``db`` as a cache instead.
+
+    db : str
+      The name of the SQLite database to use as a cache (if ``d`` is
+      ``None``).
+
+    Returns
+    -------
+
+    tuple[int]
+      A tuple of Lyapunov ranks that can be achieved in dimension
+      ``n`` using only Lorentz cone factors, in no particular order.
+
+    Examples
+    --------
+
+    The examples for :func:`admissible_lorents_ranks` all demonstrate
+    this indirectly, but we can check a few trivial cases by hand::
+
+        >>> _admissible_lorentz_ranks(0, {}, "unused")
+        (0,)
+        >>> _admissible_lorentz_ranks(1, {}, "no database")
+        (1,)
+
+    This one will use a new, temporary database::
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> sorted(_admissible_lorentz_ranks(3, None, sql.TEST_DATABASE))
+        [3, 4]
+
+    And the second time, it will be cached::
+
+        >>> sorted(_admissible_lorentz_ranks(3, None, sql.TEST_DATABASE))
+        [3, 4]
+
     """
     if d is None:
-        if n <= sql.max_lorentz_rank_dim(db=db):
+        n_max = sql.max_lorentz_rank_dim(db=db)
+        if n_max and n <= n_max:
+            # n_max can be None if db is empty
             return sql.admissible_lorentz_ranks(n, db=db)
     else:
         if n in d:
@@ -59,7 +116,7 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
         sql.insert_lorentz_ranks(n, result, db=db)
     else:
         d[n] = result
-        return d[n]
+    return result
 
 
 def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> tuple[int]:
@@ -87,10 +144,11 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     Returns
     -------
 
-    tuple
+    tuple[int]
       The "set" of Lyapunov ranks that can be achieved in dimension
       ``n`` using only Lorentz cone factors. A tuple is used instead
-      of a set because they're easier to serialize.
+      of a set because msgpack knows what to do with a tuple, unlike
+      a set.
 
     Examples
     --------
@@ -186,6 +244,7 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
         True
         >>> HO(3) in _irreducible_cones_of_dim(27)
         True
+
     """
     s = []
     if n != 2:
@@ -283,10 +342,18 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     r"""
     Recursive implementation underlying :func:`dim_ranks_cones`.
 
-    If ``d`` is ``None``, we use the SQL database instead.
+    This is necessary for that public function to have a nice user
+    interface because the recursive bit will always pass a cache dict
+    down to the next level, but we don't want users to have to pass in
+    an empty dict to get started.
+
+    If ``d`` is ``None`` instead of a dict, the SQL database ``db``
+    will be consulted/updated instead.
     """
     if d is None:
-        if n <= sql.max_cone_dim(db=db):
+        n_max = sql.max_cone_dim(db=db)
+        if n_max and n <= n_max:
+            # n_max can be None if db is empty
             return sql.dim_ranks_cones(n, db=db)
     else:
         if n in d:
