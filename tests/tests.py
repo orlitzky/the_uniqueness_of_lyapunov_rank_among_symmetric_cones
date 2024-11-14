@@ -276,6 +276,30 @@ and this will be a no-op in that case::
     >>> check(K)
     True
 
+Test the claim that if we drop the ``n >= 10`` condition, then the
+only counterexample we get is HR(3) ~ L(4) + L(2). When ``K.dim``
+reaches ``7``, the first two lower bounds imply that ``K.dim <=
+n``. As a result, if we're only considering ``n <= 9``, there are a
+finite number of ``K.dim`` and ``n`` to check::
+
+    >>> from sql import all_cones_of_dim
+    >>> winners = []
+    >>> for m in range(1,9):
+    ...     for K in all_cones_of_dim(m):
+    ...         n_min = max(lowerbound1(K), lowerbound2(K))
+    ...         n_max = 9
+    ...         for n in range(n_min,n_max+1):
+    ...             C = DirectSum([L(n), K])
+    ...             for s in C.similacra():
+    ...                 if isinstance(s,DirectSum):
+    ...                     if L(n) not in s.factors():
+    ...                         winners.append((K,n,s))
+    ...                 else:
+    ...                     if L(n) != s:
+    ...                         winners.append((K,n,s))
+    >>> winners
+    [(L(1) + L(1), 4, HR(3))]
+
 """
 
 from signatures import *
