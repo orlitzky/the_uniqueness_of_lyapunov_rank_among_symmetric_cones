@@ -117,7 +117,7 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
 
     Setup::
 
-    >>> from cones import *
+        >>> from cones import *
 
     Base cases::
 
@@ -168,6 +168,7 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
         True
         >>> HO(3) in all_cones_of_dim(27)
         True
+
     """
     conn = sqlite3.connect(db)
     stmt = "SELECT data FROM cones WHERE dim=?"

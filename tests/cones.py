@@ -13,58 +13,59 @@ class SymmetricCone:
     Equality means isomorphism in our case, and each cone should be
     represented by a unique object::
 
-    >>> K = random_cone()
-    >>> J = random_cone()
-    >>> (K == J) == (J == K)
-    True
-    >>> (K is J) == (K == J)
-    True
-    >>> K == DirectSum([K]) and J == DirectSum([J])
-    True
+        >>> K = random_cone()
+        >>> J = random_cone()
+        >>> (K == J) == (J == K)
+        True
+        >>> (K is J) == (K == J)
+        True
+        >>> K == DirectSum([K]) and J == DirectSum([J])
+        True
 
     More isomorphic examples::
 
-    >>> RN(2) == L(2)
-    True
-    >>> RN(2) == DirectSum([L(1)]*2)
-    True
-    >>> RN(1) == DirectSum([L(1)])
-    True
-    >>> RN(1) == L(1)
-    True
-    >>> RN(1) == HR(1)
-    True
-    >>> RN(1) == HC(1)
-    True
-    >>> RN(1) == HH(1)
-    True
-    >>> RN(1) == HO(1)
-    True
-    >>> L(3) == HR(2)
-    True
-    >>> L(4) == HC(2)
-    True
-    >>> L(6) == HH(2)
-    True
-    >>> L(10) == HO(2)
-    True
-    >>> RN(4) == DirectSum([L(2)]*2)
-    True
+        >>> RN(2) == L(2)
+        True
+        >>> RN(2) == DirectSum([L(1)]*2)
+        True
+        >>> RN(1) == DirectSum([L(1)])
+        True
+        >>> RN(1) == L(1)
+        True
+        >>> RN(1) == HR(1)
+        True
+        >>> RN(1) == HC(1)
+        True
+        >>> RN(1) == HH(1)
+        True
+        >>> RN(1) == HO(1)
+        True
+        >>> L(3) == HR(2)
+        True
+        >>> L(4) == HC(2)
+        True
+        >>> L(6) == HH(2)
+        True
+        >>> L(10) == HO(2)
+        True
+        >>> RN(4) == DirectSum([L(2)]*2)
+        True
 
     And again. This time the isomorphism requires reordering the
     factors::
 
-    >>> K1 = RN(3)
-    >>> K2 = HR(2)
-    >>> K3 = L(0)
-    >>> K4 = HH(3)
-    >>> K5 = L(1)
-    >>> J1 = L(2)
-    >>> J2 = HH(3)
-    >>> J3 = L(2)
-    >>> J4 = L(3)
-    >>> DirectSum([K1,K2,K3,K4,K5]) == DirectSum([J1,J2,J3,J4])
-    True
+        >>> K1 = RN(3)
+        >>> K2 = HR(2)
+        >>> K3 = L(0)
+        >>> K4 = HH(3)
+        >>> K5 = L(1)
+        >>> J1 = L(2)
+        >>> J2 = HH(3)
+        >>> J3 = L(2)
+        >>> J4 = L(3)
+        >>> DirectSum([K1,K2,K3,K4,K5]) == DirectSum([J1,J2,J3,J4])
+        True
+
     """
     @staticmethod
     def irreducible_classes():
@@ -199,53 +200,57 @@ class SymmetricCone:
         everything to tuples of integers, and then use the
         lexicographic "less than" for tuples.
 
-        Examples::
+        Examples
+        --------
 
-        >>> L(3) < L(3)
-        False
-        >>> L(3) < L(4)
-        True
-        >>> L(4) < L(3)
-        False
+        A simple example where "less than" is consistent::
+
+            >>> L(3) < L(3)
+            False
+            >>> L(3) < L(4)
+            True
+            >>> L(4) < L(3)
+            False
 
         Larger cones of the same type should be greater than smaller
         cones. One nice aspect of the integer sort is that it handles
         this correctly whereas an alphabetical sort of the dimension
         would not::
 
-        >>> L(1) < L(10)
-        True
-        >>> L(1) < L(2)
-        True
-        >>> L(10) < L(2)
-        False
+            >>> L(1) < L(10)
+            True
+            >>> L(1) < L(2)
+            True
+            >>> L(10) < L(2)
+            False
 
         Another pleasing side effect of our :meth:`serialize` method
         is that it sorts the real, complex, quaternion, and octonion
         PSD cones of the same size all in that order::
 
-        >>> from random import randint
-        >>> n = randint(2,10)
-        >>> HR(n) < HC(n) < HH(n)
-        True
-        >>> n > 3 or  HH(n) < HO(n)
-        True
+            >>> from random import randint
+            >>> n = randint(2,10)
+            >>> HR(n) < HC(n) < HH(n)
+            True
+            >>> n > 3 or  HH(n) < HO(n)
+            True
 
         This implementation of "less than" leads to a total order::
 
-        >>> K = random_irreducible_cone()
-        >>> J = random_irreducible_cone()
-        >>> (K < J) or (J < K) or (K == J)
-        True
-        >>> not ((K < J) and (J < K))
-        True
-        >>> (K != J) or not (K < J or J < K)
-        True
-        >>> H = random_irreducible_cone()
-        >>> (not (J < K and H < J)) or (H < K)
-        True
-        >>> (not (K < J and J < H)) or (K < H)
-        True
+            >>> K = random_irreducible_cone()
+            >>> J = random_irreducible_cone()
+            >>> (K < J) or (J < K) or (K == J)
+            True
+            >>> not ((K < J) and (J < K))
+            True
+            >>> (K != J) or not (K < J or J < K)
+            True
+            >>> H = random_irreducible_cone()
+            >>> (not (J < K and H < J)) or (H < K)
+            True
+            >>> (not (K < J and J < H)) or (K < H)
+            True
+
         """
         s = self.serialize()
         o = other.serialize()
@@ -294,52 +299,52 @@ class SymmetricCone:
 
         Examples from the paper::
 
-        >>> HR(3).similacra()
-        (L(1) + L(1) + L(4),)
+            >>> HR(3).similacra()
+            (L(1) + L(1) + L(4),)
 
         Lemma 1::
 
-        >>> K2 = DirectSum([L(7),L(3), RN(8)])
-        >>> K2 in DirectSum([HC(3)]*2).similacra()
-        True
-        >>> K3 = DirectSum([L(8),L(4), RN(15)])
-        >>> K3 in DirectSum([HC(3)]*3).similacra()
-        True
+            >>> K2 = DirectSum([L(7),L(3), RN(8)])
+            >>> K2 in DirectSum([HC(3)]*2).similacra()
+            True
+            >>> K3 = DirectSum([L(8),L(4), RN(15)])
+            >>> K3 in DirectSum([HC(3)]*3).similacra()
+            True
 
         Proposition 5::
 
-        >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
-        >>> K in HC(4).similacra()
-        True
+            >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
+            >>> K in HC(4).similacra()
+            True
 
         Proposition 6::
 
-        >>> K = DirectSum([L(8), RN(7)])
-        >>> K in HH(3).similacra()
-        True
+            >>> K = DirectSum([L(8), RN(7)])
+            >>> K in HH(3).similacra()
+            True
 
-        >>> K = DirectSum([L(10), RN(18)])
-        >>> K in HH(4).similacra()
-        True
+            >>> K = DirectSum([L(10), RN(18)])
+            >>> K in HH(4).similacra()
+            True
 
-        >>> K = DirectSum([L(12), RN(33)])
-        >>> K in HH(5).similacra()
-        True
+            >>> K = DirectSum([L(12), RN(33)])
+            >>> K in HH(5).similacra()
+            True
 
         Proposition 7::
 
-        >>> K = DirectSum([L(11), L(5), L(3), RN(8)])
-        >>> K in HO(3).similacra()
-        True
+            >>> K = DirectSum([L(11), L(5), L(3), RN(8)])
+            >>> K in HO(3).similacra()
+            True
 
         A cone is never its own similacrum::
 
-        >>> import sql
-        >>> K = random_cone()
-        >>> while K.dim > sql.max_cone_dim():
-        ...     K = random_cone()
-        >>> K in K.similacra()
-        False
+            >>> import sql
+            >>> K = random_cone()
+            >>> while K.dim > sql.max_cone_dim():
+            ...     K = random_cone()
+            >>> K in K.similacra()
+            False
 
         """
         from sql import similacra
@@ -351,10 +356,10 @@ def RN(n : int) -> SymmetricCone:
     A convenient wrapper around an ``n``-fold direct sum of
     one-dimensional Lorentz cones::
 
-    >>> RN(3)
-    L(1) + L(1) + L(1)
-    >>> RN(0)
-    L(0)
+        >>> RN(3)
+        L(1) + L(1) + L(1)
+        >>> RN(0)
+        L(0)
 
     """
     return DirectSum((L(1),)*n)
@@ -366,8 +371,8 @@ class L(SymmetricCone):
 
     Examples::
 
-    >>> L(3)
-    L(3)
+        >>> L(3)
+        L(3)
 
     """
     id = 1
@@ -388,20 +393,20 @@ class L(SymmetricCone):
         r"""
         Examples::
 
-        >>> L(3).dim
-        3
-        >>> L(3).rank
-        4
+            >>> L(3).dim
+            3
+            >>> L(3).rank
+            4
 
-        >>> L(3) == L(3)
-        True
-        >>> L(3) is L(3)
-        True
+            >>> L(3) == L(3)
+            True
+            >>> L(3) is L(3)
+            True
 
         And the edge case that the usual formula fails to account for::
 
-        >>> L(0).rank
-        0
+            >>> L(0).rank
+            0
 
         """
         # there's a special case for n=2 inserted after the DirectSum
@@ -422,43 +427,43 @@ class HR(SymmetricCone):
 
     This cone has symmetric similacra for all n >= 3::
 
-    >>> from sql import admissible_lorentz_ranks
-    >>> all(
-    ...   HR(n).rank
-    ...   in admissible_lorentz_ranks(HR(n).dim)
-    ...   for n in range(22)
-    ... )
-    True
+        >>> from sql import admissible_lorentz_ranks
+        >>> all(
+        ...   HR(n).rank
+        ...   in admissible_lorentz_ranks(HR(n).dim)
+        ...   for n in range(22)
+        ... )
+        True
 
     We know the formula for each similacrum from Proposition 2::
 
-    >>> def check(n):
-    ...     K1 = L(n+1)
-    ...     K2 = RN((n**2 - n - 2) // 2)
-    ...     K = DirectSum([K1,K2])
-    ...     return (HR(n).signature() == K.signature())
-    >>>
-    >>> all( check(n) for n in range(2,100) )
-    True
+        >>> def check(n):
+        ...     K1 = L(n+1)
+        ...     K2 = RN((n**2 - n - 2) // 2)
+        ...     K = DirectSum([K1,K2])
+        ...     return (HR(n).signature() == K.signature())
+        >>>
+        >>> all( check(n) for n in range(2,100) )
+        True
 
     Test the inverse dimension formula::
 
-    >>> HR.in_dim(0)
-    L(0)
-    >>> HR.in_dim(1)
-    L(1)
-    >>> HR.in_dim(2)
-    >>> HR.in_dim(3)
-    L(3)
-    >>> HR.in_dim(4)
-    >>> HR.in_dim(5)
-    >>> HR.in_dim(6)
-    HR(3)
-    >>> HR.in_dim(7)
-    >>> HR.in_dim(8)
-    >>> HR.in_dim(9)
-    >>> HR.in_dim(10)
-    HR(4)
+        >>> HR.in_dim(0)
+        L(0)
+        >>> HR.in_dim(1)
+        L(1)
+        >>> HR.in_dim(2)
+        >>> HR.in_dim(3)
+        L(3)
+        >>> HR.in_dim(4)
+        >>> HR.in_dim(5)
+        >>> HR.in_dim(6)
+        HR(3)
+        >>> HR.in_dim(7)
+        >>> HR.in_dim(8)
+        >>> HR.in_dim(9)
+        >>> HR.in_dim(10)
+        HR(4)
 
     """
     id = 2
@@ -490,97 +495,98 @@ class HR(SymmetricCone):
 class HC(SymmetricCone):
     r"""
     This cone has no symmetric similacra for n=3, but it does for
-    all others.
+    all others::
 
-    >>> from sql import admissible_lorentz_ranks
-    >>> K = HC(3)
-    >>> K.rank in admissible_lorentz_ranks(K.dim)
-    False
-    >>> all(
-    ...   HC(n).rank
-    ...   in admissible_lorentz_ranks(HC(n).dim)
-    ...   for n in range(4,16)
-    ... )
-    True
+        >>> from sql import admissible_lorentz_ranks
+        >>> K = HC(3)
+        >>> K.rank in admissible_lorentz_ranks(K.dim)
+        False
+        >>> all(
+        ...   HC(n).rank
+        ...   in admissible_lorentz_ranks(HC(n).dim)
+        ...   for n in range(4,16)
+        ... )
+        True
 
     We know the formula for each similacrum from Proposition 4, first
     we check ``n == 4``::
 
-    >>> K1 = L(5)
-    >>> K2 = L(5)
-    >>> K3 = L(4)
-    >>> K4 = RN(2)
-    >>> K = DirectSum([K1,K2,K3,K4])
-    >>> K.signature() == HC(4).signature()
-    True
+        >>> K1 = L(5)
+        >>> K2 = L(5)
+        >>> K3 = L(4)
+        >>> K4 = RN(2)
+        >>> K = DirectSum([K1,K2,K3,K4])
+        >>> K.signature() == HC(4).signature()
+        True
 
     Now we check ``n >= 5``::
-    >>> def check(n):
-    ...     K1 = L(n+1)
-    ...     K2 = L(n+1)
-    ...     K3 = RN(n**2 - 5*n + 1)
-    ...     K = DirectSum([K1,K2,K3] + (n-1)*[L(3)])
-    ...     return (HC(n).signature() == K.signature())
-    >>>
-    >>> all( check(n) for n in range(5,100) )
-    True
+
+        >>> def check(n):
+        ...     K1 = L(n+1)
+        ...     K2 = L(n+1)
+        ...     K3 = RN(n**2 - 5*n + 1)
+        ...     K = DirectSum([K1,K2,K3] + (n-1)*[L(3)])
+        ...     return (HC(n).signature() == K.signature())
+        >>>
+        >>> all( check(n) for n in range(5,100) )
+        True
 
     The direct sum of ``m >= 2`` copies of the 3-by-3 cone has
     similacra (Lemma 1)::
 
-    >>> K2 = DirectSum([
-    ...   L(7),
-    ...   L(3),
-    ...   RN(8)
-    ... ])
-    >>> K3 = DirectSum([
-    ...   L(8),
-    ...   L(4),
-    ...   RN(15)
-    ... ])
-    >>> K2.signature()
-    (18, 34)
-    >>> H = HC(3)
-    >>> DirectSum([H,H]).signature()
-    (18, 34)
-    >>> K3.signature()
-    (27, 51)
-    >>> DirectSum([H,H,H]).signature()
-    (27, 51)
+        >>> K2 = DirectSum([
+        ...   L(7),
+        ...   L(3),
+        ...   RN(8)
+        ... ])
+        >>> K3 = DirectSum([
+        ...   L(8),
+        ...   L(4),
+        ...   RN(15)
+        ... ])
+        >>> K2.signature()
+        (18, 34)
+        >>> H = HC(3)
+        >>> DirectSum([H,H]).signature()
+        (18, 34)
+        >>> K3.signature()
+        (27, 51)
+        >>> DirectSum([H,H,H]).signature()
+        (27, 51)
 
     Do a random check so make sure this works for many copies::
 
-    >>> from random import randint
-    >>> from sql import admissible_lorentz_ranks
-    >>> m = randint(2, 12)
-    >>> K = DirectSum(m*[H])
-    >>> K.rank in admissible_lorentz_ranks(K.dim)
-    True
+        >>> from random import randint
+        >>> from sql import admissible_lorentz_ranks
+        >>> m = randint(2, 12)
+        >>> K = DirectSum(m*[H])
+        >>> K.rank in admissible_lorentz_ranks(K.dim)
+        True
 
     Test the inverse dimension formula::
 
-    >>> HC.in_dim(0)
-    L(0)
-    >>> HC.in_dim(1)
-    L(1)
-    >>> HC.in_dim(2)
-    >>> HC.in_dim(3)
-    >>> HC.in_dim(4)
-    L(4)
-    >>> HC.in_dim(5)
-    >>> HC.in_dim(6)
-    >>> HC.in_dim(7)
-    >>> HC.in_dim(8)
-    >>> HC.in_dim(9)
-    HC(3)
-    >>> HC.in_dim(10)
-    >>> HC.in_dim(11)
-    >>> HC.in_dim(12)
-    >>> HC.in_dim(13)
-    >>> HC.in_dim(14)
-    >>> HC.in_dim(15)
-    >>> HC.in_dim(16)
-    HC(4)
+        >>> HC.in_dim(0)
+        L(0)
+        >>> HC.in_dim(1)
+        L(1)
+        >>> HC.in_dim(2)
+        >>> HC.in_dim(3)
+        >>> HC.in_dim(4)
+        L(4)
+        >>> HC.in_dim(5)
+        >>> HC.in_dim(6)
+        >>> HC.in_dim(7)
+        >>> HC.in_dim(8)
+        >>> HC.in_dim(9)
+        HC(3)
+        >>> HC.in_dim(10)
+        >>> HC.in_dim(11)
+        >>> HC.in_dim(12)
+        >>> HC.in_dim(13)
+        >>> HC.in_dim(14)
+        >>> HC.in_dim(15)
+        >>> HC.in_dim(16)
+        HC(4)
 
     """
     id = 3
@@ -613,63 +619,63 @@ class HH(SymmetricCone):
     r"""
     This cone has symmetric similacra for all n >= 3::
 
-    >>> from sql import admissible_lorentz_ranks
-    >>> all(
-    ...   HH(n).rank
-    ...   in admissible_lorentz_ranks(HH(n).dim)
-    ...   for n in range(12)
-    ... )
-    True
+        >>> from sql import admissible_lorentz_ranks
+        >>> all(
+        ...   HH(n).rank
+        ...   in admissible_lorentz_ranks(HH(n).dim)
+        ...   for n in range(12)
+        ... )
+        True
 
     We know the formula for each similacrum from Proposition 5. First
     we check ``n == 3``, ``n == 4``, and ``n == 5`` individually::
 
-    >>> K = DirectSum([L(8), RN(7)])
-    >>> K.signature() == HH(3).signature()
-    True
-    >>> K = DirectSum([L(10), RN(18)])
-    >>> K.signature() == HH(4).signature()
-    True
+        >>> K = DirectSum([L(8), RN(7)])
+        >>> K.signature() == HH(3).signature()
+        True
+        >>> K = DirectSum([L(10), RN(18)])
+        >>> K.signature() == HH(4).signature()
+        True
 
-    >>> K = DirectSum([L(12), RN(33)])
-    >>> K.signature() == HH(5).signature()
-    True
+        >>> K = DirectSum([L(12), RN(33)])
+        >>> K.signature() == HH(5).signature()
+        True
 
     Now we check the remaining ``n >= 6`` using the generic formula::
 
-    >>> def check(n):
-    ...     K1 = HC(n+1)
-    ...     K2 = L(n+1)
-    ...     K3 = L(n+1)
-    ...     K4 = RN(n**2 - 5*n - 3)
-    ...     K = DirectSum([K1,K2,K3,K4])
-    ...     return (HH(n).signature() == K.signature())
-    >>>
-    >>> all( check(n) for n in range(6,100) )
-    True
+        >>> def check(n):
+        ...     K1 = HC(n+1)
+        ...     K2 = L(n+1)
+        ...     K3 = L(n+1)
+        ...     K4 = RN(n**2 - 5*n - 3)
+        ...     K = DirectSum([K1,K2,K3,K4])
+        ...     return (HH(n).signature() == K.signature())
+        >>>
+        >>> all( check(n) for n in range(6,100) )
+        True
 
     Test the inverse dimension formula::
 
-    >>> HH.in_dim(0)
-    L(0)
-    >>> HH.in_dim(1)
-    L(1)
-    >>> HH.in_dim(2)
-    >>> HH.in_dim(3)
-    >>> HH.in_dim(4)
-    >>> HH.in_dim(5)
-    >>> HH.in_dim(6)
-    L(6)
-    >>> HH.in_dim(7)
-    >>> HH.in_dim(8)
-    >>> HH.in_dim(9)
-    >>> HH.in_dim(10)
-    >>> HH.in_dim(11)
-    >>> HH.in_dim(12)
-    >>> HH.in_dim(13)
-    >>> HH.in_dim(14)
-    >>> HH.in_dim(15)
-    HH(3)
+        >>> HH.in_dim(0)
+        L(0)
+        >>> HH.in_dim(1)
+        L(1)
+        >>> HH.in_dim(2)
+        >>> HH.in_dim(3)
+        >>> HH.in_dim(4)
+        >>> HH.in_dim(5)
+        >>> HH.in_dim(6)
+        L(6)
+        >>> HH.in_dim(7)
+        >>> HH.in_dim(8)
+        >>> HH.in_dim(9)
+        >>> HH.in_dim(10)
+        >>> HH.in_dim(11)
+        >>> HH.in_dim(12)
+        >>> HH.in_dim(13)
+        >>> HH.in_dim(14)
+        >>> HH.in_dim(15)
+        HH(3)
 
     """
     id = 4
@@ -708,40 +714,40 @@ class HO(SymmetricCone):
     There's only one of these (up to isomorphism) and it has a
     similacrum::
 
-    >>> K1 = L(11)
-    >>> K2 = L(5)
-    >>> K3 = L(3)
-    >>> K4 = RN(8)
-    >>> K = DirectSum([K1,K2,K3,K4])
-    >>> K.signature() == HO(3).signature()
-    True
+        >>> K1 = L(11)
+        >>> K2 = L(5)
+        >>> K3 = L(3)
+        >>> K4 = RN(8)
+        >>> K = DirectSum([K1,K2,K3,K4])
+        >>> K.signature() == HO(3).signature()
+        True
 
     These cones are only symmetric for ``n <= 3``::
 
-    >>> HO(7)
-    Traceback (most recent call last):
-    ...
-    ValueError: invalid size n=7
+        >>> HO(7)
+        Traceback (most recent call last):
+        ...
+        ValueError: invalid size n=7
 
     Test the inverse dimension formula::
 
-    >>> HO.in_dim(0)
-    L(0)
-    >>> HO.in_dim(1)
-    L(1)
-    >>> HO.in_dim(2)
-    >>> HO.in_dim(4)
-    >>> HO.in_dim(3)
-    >>> HO.in_dim(5)
-    >>> HO.in_dim(6)
-    >>> HO.in_dim(7)
-    >>> HO.in_dim(8)
-    >>> HO.in_dim(9)
-    >>> HO.in_dim(10)
-    L(10)
-    >>> HO.in_dim(26)
-    >>> HO.in_dim(27)
-    HO(3)
+        >>> HO.in_dim(0)
+        L(0)
+        >>> HO.in_dim(1)
+        L(1)
+        >>> HO.in_dim(2)
+        >>> HO.in_dim(4)
+        >>> HO.in_dim(3)
+        >>> HO.in_dim(5)
+        >>> HO.in_dim(6)
+        >>> HO.in_dim(7)
+        >>> HO.in_dim(8)
+        >>> HO.in_dim(9)
+        >>> HO.in_dim(10)
+        L(10)
+        >>> HO.in_dim(26)
+        >>> HO.in_dim(27)
+        HO(3)
 
     """
     id = 5
@@ -756,8 +762,8 @@ class HO(SymmetricCone):
         The would-be Octonion cone in dimension 52 is not symmetric
         (it corresponds to n=4)::
 
-        >>> HO.in_dim(52) is None
-        True
+            >>> HO.in_dim(52) is None
+            True
 
         """
         # why bother with the quadratic formula when we know all of them?
@@ -805,11 +811,11 @@ class DirectSum(SymmetricCone):
 
     Examples::
 
-    >>> K = DirectSum([])
-    >>> K.dim
-    0
-    >>> K.rank
-    0
+        >>> K = DirectSum([])
+        >>> K.dim
+        0
+        >>> K.rank
+        0
 
     """
 
@@ -820,14 +826,14 @@ class DirectSum(SymmetricCone):
         Ensure that factors are flattened, and that trivial cones
         are removed::
 
-        >>> DirectSum([
-        ...   L(2),
-        ...   DirectSum([ L(0), HR(3) ]),
-        ...   DirectSum([ HC(3),
-        ...               DirectSum([HO(3), L(1)])
-        ...   ])
-        ... ])
-        L(1) + L(1) + L(1) + HR(3) + HC(3) + HO(3)
+            >>> DirectSum([
+            ...   L(2),
+            ...   DirectSum([ L(0), HR(3) ]),
+            ...   DirectSum([ HC(3),
+            ...               DirectSum([HO(3), L(1)])
+            ...   ])
+            ... ])
+            L(1) + L(1) + L(1) + HR(3) + HC(3) + HO(3)
 
         """
         lf = len(factors)
@@ -910,8 +916,8 @@ def random_irreducible_cone() -> SymmetricCone:
 
     Examples::
 
-    >>> isinstance(random_irreducible_cone(), DirectSum)
-    False
+        >>> isinstance(random_irreducible_cone(), DirectSum)
+        False
 
     """
     from random import choice, randint
@@ -934,13 +940,13 @@ def random_cone() -> SymmetricCone:
 
     Examples::
 
-    >>> K = random_cone()
-    >>> K.dim >= 0
-    True
-    >>> K.rank >= K.dim
-    True
-    >>> isinstance(K, SymmetricCone)
-    True
+        >>> K = random_cone()
+        >>> K.dim >= 0
+        True
+        >>> K.rank >= K.dim
+        True
+        >>> isinstance(K, SymmetricCone)
+        True
 
     """
     from random import choice, randint

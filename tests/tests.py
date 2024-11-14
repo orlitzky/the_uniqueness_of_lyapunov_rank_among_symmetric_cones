@@ -287,6 +287,18 @@ def lowerbound1(K):
     appearing as the first of three lower bounds in Theorem/Conjecture
     4.
 
+    Parameters
+    ----------
+
+    K : SymmetricCone
+      The cone for which you want the lower bound.
+
+    Returns
+    -------
+
+    int
+      The lower bound on "n" corresponding to ``K``.
+
     Examples
     --------
 
@@ -324,26 +336,54 @@ def lowerbound2(K):
     r"""
     The second lower bound for "n" in Theorem/Conjecture 4.
 
-    Examples:
+    Parameters
+    ----------
+
+    K : SymmetricCone
+      The cone for which you want the lower bound.
+
+    Returns
+    -------
+
+    int
+      The lower bound on "n" corresponding to ``K``.
+
+    Examples
+    --------
 
     It works with symbolic values, though we have to manually
-    eliminate the `floor` that arises from python's integer division
-    (m**2 + m + 2 is guaranteed to be even)::
+    eliminate the `floor` that arises from Python's integer division
+    (``m**2 + m + 2`` is guaranteed to be even)::
 
         >>> from sympy import expand, floor, symbols
         >>> m = symbols("m", integer=True, positive=True)
         >>> lb = lowerbound2(L(m)).replace(floor, lambda x: x)
         >>> expand(lb)
         m + 2
-
     """
     from signatures import f
     return 2 + f(1 + K.dim) - K.rank
 
 
-def lowerbound3(K):
+def lowerbound3(K : SymmetricCone) -> int:
     r"""
     The third precondition on ``n`` in Theorem (or Conjecture) 4.
+
+    Parameters
+    ----------
+
+    K : SymmetricCone
+      The cone for which you want the lower bound (this parameter is
+      essentially ignored).
+
+    Returns
+    -------
+
+    int
+      This lower bound is always 10.
+
+    Examples
+    --------
 
     Along with with the other two, this one implies a lower bound of
     ``2*K.dim - 1``. If ``n`` satisfies the other two, we can add
@@ -375,6 +415,5 @@ def lowerbound3(K):
 
         >>> [ g.subs({d:i}) for i in range(10) ]
         [14, 6, 0, -4, -6, -6, -4, 0, 6, 14]
-
     """
     return 10

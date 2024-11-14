@@ -1,5 +1,8 @@
 r"""
 Compute possible signatures for symmetric cones.
+
+This module is mostly obsolete, but it can still be used as a sanity
+check for the recursive/cached implementations of the same procedure.
 """
 
 def f(n : int) -> int:
@@ -25,14 +28,16 @@ def f(n : int) -> int:
     Examples
     --------
 
-    >>> f(0)
-    0
-    >>> f(1)
-    1
-    >>> f(2)
-    2
-    >>> f(3)
-    4
+    Small ``n`` are easy to check by hand::
+
+        >>> f(0)
+        0
+        >>> f(1)
+        1
+        >>> f(2)
+        2
+        >>> f(3)
+        4
 
     """
     if n == 0:
@@ -65,10 +70,10 @@ def _partitions(n : int) -> list[list[int]]:
 
     Each "partition" should actually partition ``n``::
 
-    >>> from random import randint
-    >>> n = randint(1,20)
-    >>> all( sum(p) == n for p in _partitions(n) )
-    True
+        >>> from random import randint
+        >>> n = randint(1,20)
+        >>> all( sum(p) == n for p in _partitions(n) )
+        True
 
     """
     a = [0 for i in range(n + 1)]
@@ -119,26 +124,26 @@ def _direct_lorentz_ranks(n : int) -> tuple:
     In dimensions two and fewer, the Lorentz cone is the nonnegative
     orthant::
 
-    >>> _direct_lorentz_ranks(0)
-    (0,)
-    >>> _direct_lorentz_ranks(1)
-    (1,)
-    >>> _direct_lorentz_ranks(2)
-    (2,)
+        >>> _direct_lorentz_ranks(0)
+        (0,)
+        >>> _direct_lorentz_ranks(1)
+        (1,)
+        >>> _direct_lorentz_ranks(2)
+        (2,)
 
     Some comparisons with the recursive algorithm / database::
 
-    >>> import compute
-    >>> import sql
-    >>> all( _direct_lorentz_ranks(k)
-    ...      ==
-    ...      sql.admissible_lorentz_ranks(k)
-    ...      ==
-    ...      compute.admissible_lorentz_ranks(k)
-    ...      for k in [7,12,15,19,23] )
-    True
+        >>> import compute
+        >>> import sql
+        >>> all( _direct_lorentz_ranks(k)
+        ...      ==
+        ...      sql.admissible_lorentz_ranks(k)
+        ...      ==
+        ...      compute.admissible_lorentz_ranks(k)
+        ...      for k in [7,12,15,19,23] )
+        True
 
     """
-    # dedupe
+    # go from list -> set -> tuple to deduplicate them
     return tuple(set( (sum(f(p_k) for p_k in p) )
                       for p in _partitions(n) ))

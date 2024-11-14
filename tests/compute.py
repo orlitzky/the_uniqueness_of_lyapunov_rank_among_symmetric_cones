@@ -63,8 +63,8 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
     Examples
     --------
 
-    The examples for :func:`admissible_lorents_ranks` all demonstrate
-    this indirectly, but we can check a few trivial cases by hand::
+    The examples for :func:`admissible_lorents_ranks` demonstrate this
+    indirectly, but we can check a few trivial cases by hand::
 
         >>> _admissible_lorentz_ranks(0, {}, "unused")
         (0,)
@@ -81,7 +81,6 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
 
         >>> sorted(_admissible_lorentz_ranks(3, None, sql.TEST_DATABASE))
         [3, 4]
-
     """
     if d is None:
         n_max = sql.max_lorentz_rank_dim(db=db)
@@ -349,6 +348,51 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
 
     If ``d`` is ``None`` instead of a dict, the SQL database ``db``
     will be consulted/updated instead.
+
+    Parameters
+    ----------
+
+    n : int
+      The dimension for which you want the rank => cones map.
+
+    d : dict|None
+      Either a dict to cache the results in, or ``None`` if you want
+      to use the SQL database ``db`` as a cache instead.
+
+    db : str
+      The name of the SQLite database to use as a cache (if ``d`` is
+      ``None``).
+
+    Returns
+    -------
+
+    dict
+      A dictionary whose keys are all possible Lyapunov ranks in
+      dimension ``n``, and whose values are tuples of (serialized)
+      cones in dimension ``n`` having that Lyapunov rank.
+
+    Examples
+    --------
+
+    The examples for :func:`dim_ranks_cones` demonstrate this
+    indirectly, but we can check a few trivial cases by hand::
+
+        >>> _dim_ranks_cones(0, {}, "unused")
+        {0: (1,)}
+        >>> _dim_ranks_cones(1, {}, "no database")
+        {1: (11,)}
+
+    This one will use a new, temporary database::
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE)
+        {3: ((11, 11, 11),), 4: (31,)}
+
+    And the second time, it will be cached::
+
+        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE)
+        {3: ((11, 11, 11),), 4: (31,)}
+
     """
     if d is None:
         n_max = sql.max_cone_dim(db=db)
