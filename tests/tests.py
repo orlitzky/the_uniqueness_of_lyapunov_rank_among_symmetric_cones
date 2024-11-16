@@ -212,6 +212,47 @@ complex PSD cones::
     >>> I_three.rank > HC(3).rank
     True
 
+We can do the same for the real PSD cones, based on whether or not
+``(m**2 + m) / 2`` is even or odd, again with a special case for ``m
+== 3``::
+
+    >>> I_even = DirectSum(2*[L((m**2 + m)/4)], False)
+    >>> I_even.dim == fix_floor(HR(m).dim)
+    True
+    >>> [(I_even.rank - HR(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+    [2, -2, 6, 64, 244, 630]
+    >>> I_odd = DirectSum(2*[L( ((m**2 + m)/2 - 1)/2 )] + [L(1)], False)
+    >>> I_odd.dim == fix_floor(HR(m).dim)
+    True
+    >>> [(I_odd.rank - HR(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+    [2, -4, 20, 122, 384, 904]
+    >>> I_three = L(6)
+    >>> I_three.dim == HR(3).dim
+    True
+    >>> I_three.rank > HR(3).rank
+    True
+
+And the quaternion PSD cones::
+
+    >>> I_even = DirectSum(2*[L((2*m**2 - m)/2)], False)
+    >>> I_even.dim == fix_floor(HH(m).dim)
+    True
+    >>> [(I_even.rank - HH(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+    [2, -8, 120, 914, 3286, 8532]
+    >>> I_odd = DirectSum(2*[L((2*m**2 - m - 1)/2)] + [L(1)], False)
+    >>> I_odd.dim == fix_floor(HH(m).dim)
+    True
+    >>> [(I_odd.rank - HH(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+    [-1, 9, 365, 1787, 5379, 12629]
+
+Finally, the 3x3 octonion cone::
+
+   >>> I = DirectSum(3*[L(9)], False)
+   >>> I.dim == HO(3).dim
+   True
+   >>> I.rank > HO(3).rank
+   True
+
 Check Theorem 4 using our precomputed dictionary of cones. We start
 with a cone ``K``, and then add ``L(n)`` factors to it. If the
 resulting sum has similacra, then each similacrum should have an
