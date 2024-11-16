@@ -1173,7 +1173,7 @@
             proof proceeds as before. By assumption we can apply
             \cref{impl:growth inequality for f pt2}, and then
             \cref{itm:condition2} gives $\sum_{i=1}^{k}f\of{n_{i}} <
-            f\of{n} + \lyapunovrank{K}$
+            f\of{n} + \lyapunovrank{K}$. \qedhere
           \end{case}
           \end{pcases}
       \end{proof}
@@ -1191,18 +1191,29 @@
         The ``if'' case is obvious and doesn't require any conditions
         on $n$. Likewise when $K = \set{0}$. In the other direction,
         and with $\dim\of{K} \ge 1$, our goal is to rule out every
-        other possibility: first we will show that $J$ cannot have
-        % NOT RIGHT
-        non-Lorentz factors, and then \cref{lem:no bigger factors
+        other possibility: first we will show that $J$ itself must
+        have Lorentz factors, and then \cref{lem:no bigger factors
           pt2,lem:not all smaller factors} will show that at least one
         of those factors is $\Lnplus$.
 
+        Towards the first goal, what we would like to do is show that
+        if $J \sim \directsum{\Lnplus}{K}$ consists of various
+        non-Lorentz factors, then there exists some symmetric cone $H$
+        having $\dim\of{H} = \dim\of{J}$ but $\lyapunovrank{J} <
+        \lyapunovrank{H} <
+        \lyapunovrank{\directsum{\Lnplus}{K}}$. This of course is a
+        contradiction, because then it is impossible for $J$ and
+        $\directsum{\Lnplus}{K}$ to share a signature.
+
         Suppose, for example, that $J \sim \directsum{\Lnplus}{K}$ has
-        a factor $\Hnplus[m]\of{\Cn[1]}$, for $m \ge 3$. Specifically,
-        suppose that $J \cong \Hnplus[m]\of{\Cn[1]} \oplus J'$ for
-        some symmetric $J'$. Can we ``replace''
-        $\Hnplus[m]\of{\Cn[1]}$ by a sum of Lorentz cones, each having
-        dimension strictly less than $n$? Since
+        a factor $\Hnplus[m]\of{\Cn[1]}$ for $m \ge 3$. In other
+        words, suppose that $J \cong \Hnplus[m]\of{\Cn[1]} \oplus
+        \bar{J}$ where $\bar{J}$ is itself symmetric. With \cref{lem:not
+          all smaller factors} in mind, what we would like to do is
+        find a set of Lorentz cones, each of dimension strictly less
+        than $n$, whose dimensions add up to the dimension of
+        $\Hnplus[m]\of{\Cn[1]}$, and whose combined Lyapunov ranks
+        exceed that of $\Hnplus[m]\of{\Cn[1]}$. Since
         $\Hnplus[m]\of{\Cn[1]}$ is a factor of $J$, and since
         $\dim\of{J} = n + \dim\of{K}$, we can say with certainty that
         %
@@ -1211,77 +1222,76 @@
         \end{equation*}
         %
         where the last inequality comes from \cref{lem:more
-          conditions}. Thus, $m^{2}/2 < n$. We may consider two cases
-        for $m$:
+          conditions}. Thus, $m^{2}/2 < n$, and this is an unsubtle
+        hint at the dimensions of our Lorentz cones. There are two
+        cases for $m$, each of which leads to a different set of
+        Lorentz cones:
+        %
         \begin{equation*}
-          H
+          I
           \coloneqq
-          \begin{cases}
+          \begin{cases*}
             \Lnplus[m^{2}/2]
             \oplus
-            \Lnplus[m^{2}/2],
-              \text{ if $m$ is even},\\
+            \Lnplus[m^{2}/2] &
+              if $m$ is even,\\
             \Lnplus[\qty{m^{2} - 1}/2]
             \oplus
             \Lnplus[\qty{m^{2} - 1}/2]
             \oplus
-            \Lnplus[1],
-            \text{ if $m$ is odd}.
-          \end{cases}
+            \Lnplus[1]
+            & if $m$ is odd.
+          \end{cases*}
         \end{equation*}
         %
-        In either case, $\dim\of{H} = \dim\of{\Hnplus[m]\of{\Cn[1]}}$,
-        and the Lorentz factors of $H$ are strictly smaller than $n$.
-
+        In either case, $\dim\of{I} = \dim\of{\Hnplus[m]\of{\Cn[1]}}$,
+        and the Lorentz factors of $I$ are strictly smaller than $n$.
         We would also like $\lyapunovrank{\Hnplus[m]\of{\Cn[1]}} <
-        \lyapunovrank{H}$. This will not be true for all $m$, but we
-        can simply check, and $\lyapunovrank{H} - 2m^{2} + 1 \ge 0$
-        holds if $m \ge 4$. And for $m = 3$, we may make the special
-        choice $H \coloneqq \Lnplus[9]$ which has $9 < n$ by
-        \cref{itm:condition3}. Now for all $m \ge 3$,
+        \lyapunovrank{I}$. A priori this may not be true for all $m$,
+        but we can simply check, and $\lyapunovrank{I} - 2m^{2} + 1
+        \ge 0$ holds if $m \ge 4$. For $m = 3$, we may take $I
+        \coloneqq \Lnplus[9]$ instead of using the formula, since $9 <
+        n$ by \cref{itm:condition3}. Now for all $m \ge 3$,
         %
         \begin{equation*}
           \lyapunovrank{J}
           =
-          \lyapunovrank{\Hnplus[m]\of{\Cn[1]}} + \lyapunovrank{J'}
+          \lyapunovrank{\Hnplus[m]\of{\Cn[1]}} + \lyapunovrank{\bar{J}}
           <
-          \lyapunovrank{H} + \lyapunovrank{J'}.
+          \lyapunovrank{I} + \lyapunovrank{\bar{J}}.
         \end{equation*}
         %
-        If $J'$ now consists only of Lorentz factors, we can invoke
-        \cref{lem:no bigger factors pt2,lem:not all smaller factors}
-        to conclude two things: none of those factors are bigger than
-        $\Lnplus$, and not all of them are smaller. As a result, one would
-        have to be $\Lnplus$.
+        Define $H \coloneqq \directsum{I}{\bar{J}}$. Does $H$ consist only
+        of Lorentz factors? If not, repeat the process above until it
+        does: each $\Hnplus[3]\of{\octonions}$ factor can be replaced
+        by $I \coloneqq \Lnplus[9] \oplus \Lnplus[9] \oplus
+        \Lnplus[9]$, and the other two families can be tackled in the
+        same manner as $\Hnplus[m]\of{\Cn[1]}$.
 
-        Of course, $J'$ might have other non-Lorentz factors. But it
-        has a finite number of them, and the procedure above can be
-        repeated for the other irreducible factors. For each
-        $\Hnplus[3]\of{\octonions}$ factor we can use $H \coloneqq
-        \Lnplus[9] \oplus \Lnplus[9] \oplus \Lnplus[9]$, and the other
-        two families can be tackled in the same manner as
-        $\Hnplus[m]\of{\Cn[1]}$.
+        After a finite number of steps (overwriting the names $I$ and
+        $H$ each time), we will be left with $H \coloneqq
+        \directsum{I}{\bar{J}}$ where $I$ consists only of Lorentz
+        factors whose dimensions are less than $n$, and where
+        $\bar{J}$ contains the remaining Lorentz factors that were in
+        $J$ when we started. By \cref{lem:no bigger factors pt2}, none
+        of the factors in $\bar{J}$ are larger than $\Lnplus$. And if
+        the factors of $\bar{J}$ are all smaller than $\Lnplus$, then
+        every factor of $H$ is smaller than $\Lnplus$, and
+        \cref{lem:not all smaller factors} would show that
+        $\lyapunovrank{H} < \directsum{\Lnplus}{K}$. But this of
+        course would be a contradiction, since $\lyapunovrank{J} <
+        \lyapunovrank{H}$. As a result, at least one of the Lorentz
+        factors remaining in $\bar{J}$ is $\Lnplus$, and it came from
+        $J$ to begin with.
 
-        % THIS NEXT PARAGRAPH AINT RIGHT
-        In the end, we conclude that $J$ has only Lorentz factors, and
-        that (at least) one of them is $\Lnplus$. Write $J \cong
-        \directsum{\Lnplus}{J'}$. It should be clear that if $J \sim
-        \directsum{\Lnplus}{K}$, then the signatures of $J'$ and $K$
-        agree. Moreover, $J'$ and $K$ cannot be isomorphic; for if
-        they were, then $J$ and $\directsum{\Lnplus}{K}$ would be
-        isomorphic, and they are not.
+        Take one of the $\Lnplus$ factors from within $J$, and write
+        $J \cong \directsum{\Lnplus}{J'}$. It should be clear that if
+        $J \sim \directsum{\Lnplus}{K}$, then the signatures of $J'$
+        and $K$ agree. Moreover, $J'$ and $K$ cannot be isomorphic;
+        for if they were, then $J$ and $\directsum{\Lnplus}{K}$ would
+        be isomorphic, and they are not.
       \end{proof}
     \end{theorem}
-
-    This is false if there are no restrictions on $n$. For example,
-    $\Hnplus[3]\of{\Rn[1]} \sim \directsum{\Lnplus[4]}{\Rnplus[2]}$,
-    but the former is not isomorphic to the latter. If we drop the
-    condition that $n \ge 10$, then $\Hnplus[3]\of{\Rn[1]} \sim
-    \directsum{\Lnplus[4]}{\Rnplus[2]}$ is in fact the only
-    counterexample. Once $\dim\of{K} \ge 7$ we have $\dim\of{K} \le
-    n$, so if we are checking all cases with $n \le 9$, there are
-    fewer than $9^{2}$ choices of $\pair{K}{n}$ that satisfy
-    \cref{itm:condition1,itm:condition2}.
 
     \begin{corollary}
       If $K$ is a symmetric cone having no symmetric similacra and if
@@ -1290,28 +1300,21 @@
       $\directsum{\Lnplus}{K}$ has no symmetric similacra.
     \end{corollary}
 
-    One might wonder whether all three of the conditions on $n$ in
-    \cref{thm:subproblem reduction} are strictly necessary. To
-    confirm that they are, we demonstrate that each of the three
-    conditions can fail even if the other two are met. Let
-    $\ell_{1}\of{K}$, $\ell_{2}\of{K}$, and $\ell_{3}\of{K}$ be the
-    lower bounds on $n$ given by
-    \cref{itm:condition1,itm:condition2,itm:condition3}, respectively.
-    %
-    \begin{itemize}
-      \begin{item}
-        If $K = \Lnplus[3]$, then $\ell_{1}\of{K} < \ell_{2}\of{K} <
-        \ell_{3}\of{K}$.
-      \end{item}
-      \begin{item}
-        If $K = \Rnplus[5]$, then $\ell_{1}\of{K} < \ell_{3}\of{K} <
-        \ell_{2}\of{K}$.
-      \end{item}
-      \begin{item}
-        If $K = \Lnplus[6]$, then $\ell_{2}\of{K} < \ell_{3}\of{K} <
-        \ell_{1}\of{K}$.
-      \end{item}
-    \end{itemize}
+    \cref{itm:condition3} can be weakened a bit so long as we keep the
+    other two. By adding \cref{itm:condition1,itm:condition2}, what we
+    obtain is $\dim\of{K}\qty{\dim\of{K} - 1} \le 4n - 10$. For this
+    to be true we must have $n \ge 3$, and the potential new cases are
+    $n \in \set{3,4,5,\ldots,9}$, because $n \ge 10$ is handled by the
+    theorem. For each $n$, then, we must then check all $K$ such that
+    $\dim\of{K}\qty{\dim\of{K} - 1} \le 4n - 10$. There are a finite
+    number of these, and computation shows that $\Hnplus[3]\of{\Rn[1]}
+    \sim \directsum{\Lnplus[4]}{\Rnplus[2]}$ is the sole
+    counterexample at $n = 4$. As a result, we could get away with
+    requiring $n \ge 5$ instead of $n \ge 10$.
+
+    It should be clear, on the other hand, that \cref{itm:condition1}
+    cannot be weakened without causing problems in \cref{lem:no bigger
+      factors pt2}.
   \end{section}
 
   \section*{Acknowledgments}{
