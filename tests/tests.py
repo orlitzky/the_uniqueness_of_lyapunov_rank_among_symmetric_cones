@@ -10,9 +10,6 @@ Sympy doesn't know (for example) that n^2 + n is even, so we have to
 fix the "floor" that it inserts everywhere we use integer
 division-by-two on an even expression::
 
-    >>> def fix_floor(s):
-    ...     return s.replace(floor, lambda x: x)
-
     >>> K = L(n)
     >>> J1 = L(k)
     >>> J2 = L(n-k)
@@ -276,32 +273,50 @@ and this will be a no-op in that case::
     >>> check(K)
     True
 
-Test the claim that if we drop the ``n >= 10`` condition, then the
-only counterexample we get is HR(3) ~ L(4) + L(2). ``n >= 3`` is
-implied by the first two bounds (add them), but for ``n == 4`` we do
-get one counterexample. Thus the real bound is ``n >= 5``::
-
-    >>> from sql import all_cones_of_dim
-    >>> winners = []
-    >>> for n in range(3,10):
-    ...     for d in range(1, floor(sqrt(4*n - 10))+2):
-    ...     for K in all_cones_of_dim(d):
-    ...         if n < lowerbound1(K) or n < lowerbound2(K):
-    ...             continue
-    ...         C = DirectSum([L(n), K])
-    ...         for s in C.similacra():
-    ...             if isinstance(s,DirectSum):
-    ...                 if L(n) not in s.factors():
-    ...                     winners.append((K,n,s))
-    ...             else:
-    ...                 if L(n) != s:
-    ...                     winners.append((K,n,s))
-    >>> winners
-    [(L(1) + L(1), 4, HR(3))]
 """
 
 from signatures import *
 from cones import *
+
+
+def fix_floor(s):
+    r"""
+    Strip symbolic "floor" calls from SymPy expressions.
+
+    Sympy doesn't know (for example) that ``n**2 + n`` is even, so it
+    will insert a :func:`sympy.functions.elementary.integers.floor`
+    around the result of ``(n**2 + n)//2``. We however know that the
+    "floor" is superfluous, so we can remove it using this function.
+
+    Parameters
+    ----------
+
+    s : sympy.core.expr.Expr
+      A sympy expression possibly containing a call to
+      :func:`sympy.functions.elementary.integers.floor`.
+
+    Returns
+    -------
+
+    Another :class:`sympy.core.expr.Expr`, devoid of floors.
+
+    Examples
+    --------
+
+    ``n**2 + n`` is even::
+
+        >>> from sympy import symbols
+        >>> n = symbols("n", integer=True, positive=True)
+        >>> expr = (n**2 + n) // 2
+        >>> expr
+        floor(n**2/2 + n/2)
+        >>> fix_floor(expr)
+        n**2/2 + n/2
+
+    """
+    from sympy.functions.elementary.integers import floor
+    return s.replace(floor, lambda x: x)
+
 
 def lowerbound1(K):
     r"""
@@ -439,3 +454,62 @@ def lowerbound3(K : SymmetricCone) -> int:
         [14, 6, 0, -4, -6, -6, -4, 0, 6, 14]
     """
     return 10
+
+
+def lowerbound4(K):
+    r"""
+    The fourth (and final) precondition on ``n`` in Theorem 4,
+    which we obtain near the end of the paper by loosening
+    :func:`lowerbound3`.
+
+    Parameters
+    ----------
+
+    K : SymmetricCone
+      The cone for which you want the lower bound (this parameter is
+      essentially ignored).
+
+    Returns
+    -------
+
+    int
+      This lower bound is always 5.
+
+    Examples
+    --------
+
+    Test the claim that if we drop the ``n >= 10`` condition, then the
+    only counterexample we get is HR(3) ~ L(4) + L(2). We have to
+    assume that ``n >= 3``, because that is implied by the first two
+    bounds (just add them), but for ``n == 4`` we do get one
+    counterexample. Thus the real bound is ``n >= 5``, for which we
+    get no counterexamples::
+
+        >>> from sql import all_cones_of_dim
+        >>> from math import floor
+        >>>
+        >>> def check(n_start):
+        ...     winners = []
+        ...     for n in range(n_start, 10):
+        ...         for d in range(1, floor(sqrt(4*n - 10))+2):
+        ...             for K in all_cones_of_dim(d):
+        ...                 if n < lowerbound1(K) or n < lowerbound2(K):
+        ...                     continue
+        ...                 C = DirectSum([L(n), K])
+        ...                 for s in C.similacra():
+        ...                     factors = [s]
+        ...                     if isinstance(s,DirectSum):
+        ...                         factors = s.factors()
+        ...                     if L(n) not in factors:
+        ...                         winners.append((K,n,s))
+        ...     return winners
+        >>>
+        >>> check(3)
+        [(L(1) + L(1), 4, HR(3))]
+        >>> check(4)
+        [(L(1) + L(1), 4, HR(3))]
+        >>> check(5)
+        []
+
+    """
+    return 5
