@@ -188,12 +188,36 @@ Check Giovanni's Theorem 4, as far as we can::
     [1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
 
 
-Check Theorem/Conjecture 4 using our precomputed dictionary of
-cones. We start with a cone ``K``, and then add ``L(n)`` factors to
-it. If the resulting sum has similacra, then each similacrum should
-have an ``L(n)`` factor. We do this for as many ``n`` as we can,
-constrained by the fact that ``K + L(n)`` needs to have a dimension
-that we have cached::
+In Theorem 4, we "replace" the non-Lorentz irreducible factors with
+sums of Lorentz cones. Here we confirm that those sums have the
+correct dimensions, and Lyapunov ranks that dominates the Lyapunov
+ranks of the things they replace. The first example we give is for the
+complex PSD cones::
+
+    >>> from sympy import symbols
+    >>> m = symbols("m", integer=True, positive=True)
+    >>> I_even = DirectSum(2*[L(m**2/2)], False)
+    >>> I_even.dim == HC(m).dim
+    True
+    >>> [(I_even.rank - HC(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+    [3, -3, 27, 237, 867, 2253]
+    >>> I_odd  = DirectSum(2*[L((m**2 - 1)/2)] + [L(1)], False)
+    >>> I_odd.dim == HC(m).dim
+    True
+    >>> [(I_odd.rank - HC(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+    [2, -2, 86, 458, 1402, 3302]
+    >>> I_three = L(9)
+    >>> I_three.dim == HC(3).dim
+    True
+    >>> I_three.rank > HC(3).rank
+    True
+
+Check Theorem 4 using our precomputed dictionary of cones. We start
+with a cone ``K``, and then add ``L(n)`` factors to it. If the
+resulting sum has similacra, then each similacrum should have an
+``L(n)`` factor. We do this for as many ``n`` as we can, constrained
+by the fact that ``K + L(n)`` needs to have a dimension that we have
+cached::
 
     >>> from sql import max_cone_dim
     >>> def check(K):
@@ -272,7 +296,6 @@ and this will be a no-op in that case::
     >>> K = random_cone()
     >>> check(K)
     True
-
 """
 
 from signatures import *
