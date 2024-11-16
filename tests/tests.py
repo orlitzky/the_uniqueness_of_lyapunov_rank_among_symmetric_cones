@@ -343,9 +343,8 @@ def fix_floor(s):
 
 def lowerbound1(K):
     r"""
-    The lower bound for "n" to be valid in Lemma 4, also
-    appearing as the first of three lower bounds in Theorem/Conjecture
-    4.
+    The first of the three lower bounds on "n" in Lemma 4, needed
+    for Lemma 5 to hold.
 
     Parameters
     ----------
@@ -362,7 +361,7 @@ def lowerbound1(K):
     Examples
     --------
 
-    Check Lemma 4 using our precomputed dict of admissible Lyapunov
+    Check Lemma 5 using our precomputed dict of admissible Lyapunov
     ranks. We start with a random cone ``K``, then add a Lorentz cone
     factor to it whose dimension is bounded below by this
     function. Then we loop through several values of "k", and check
@@ -388,13 +387,12 @@ def lowerbound1(K):
         ...         results.append(target_rank not in alr(target_dim))
         >>> all(results)
         True
-
     """
     return 2 + K.rank - K.dim
 
 def lowerbound2(K):
     r"""
-    The second lower bound for "n" in Theorem/Conjecture 4.
+    The second lower bound for "n" in Lemma 4.
 
     Parameters
     ----------
@@ -427,7 +425,7 @@ def lowerbound2(K):
 
 def lowerbound3(K : SymmetricCone) -> int:
     r"""
-    The third precondition on ``n`` in Theorem (or Conjecture) 4.
+    The third precondition on ``n`` in Lemma 4.
 
     Parameters
     ----------
@@ -481,8 +479,8 @@ def lowerbound3(K : SymmetricCone) -> int:
 
 def lowerbound4(K):
     r"""
-    The fourth (and final) precondition on ``n`` in Theorem 4,
-    which we obtain near the end of the paper by loosening
+    The fourth and final precondition on ``n`` that we can use
+    for Theorem 4, obtained near the end of the paper by loosening
     :func:`lowerbound3`.
 
     Parameters
@@ -533,6 +531,5 @@ def lowerbound4(K):
         [(L(1) + L(1), 4, HR(3))]
         >>> check(5)
         []
-
     """
     return 5
