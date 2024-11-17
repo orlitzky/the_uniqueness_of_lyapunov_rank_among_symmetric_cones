@@ -337,7 +337,7 @@ def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
     return tuple(sorted(a+b))
 
 
-def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
+def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
     r"""
     Recursive implementation underlying :func:`dim_ranks_cones`.
 
@@ -362,6 +362,11 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     db : str
       The name of the SQLite database to use as a cache (if ``d`` is
       ``None``).
+
+    progress : bool
+      Whether or not to print a dot "." as the function progresses.
+      This isn't tested or anything, but it's real nice to see things
+      moving when computing the (n+1)st dimension takes two days.
 
     Returns
     -------
@@ -415,7 +420,11 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     # gives the same result as (2,5).
     for i in range(1,(n//2)+1):
         s1 = _dim_ranks_cones(i, d, db)
+        if progress:
+            print(".", end="", flush=True)
         s2 = _dim_ranks_cones(n-i, d, db)
+        if progress:
+            print(".", end="", flush=True)
 
         # the ranks possible in dim=n are the sums of ranks possible
         # in dim=i and dim=(n-i)
@@ -448,7 +457,7 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str) -> dict:
     return d_n
 
 
-def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> dict:
+def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, progress : bool = False) -> dict:
     r"""
     Compute a rank => cones map for all cones of dimension ``n``.
 
@@ -462,6 +471,11 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -
 
     db : str, default=TEST_DATABASE
       The name of the SQLite database to use (if ``sql`` is ``True``).
+
+    progress : bool, default=False
+      Whether or not to print a dot "." as the function progresses.
+      This isn't tested or anything, but it's real nice to see things
+      moving when computing the (n+1)st dimension takes two days.
 
     Examples
     --------
@@ -505,7 +519,7 @@ if __name__ == "__main__":
     # if executed, we start computing more cones
     n = sql.max_cone_dim() + 1
     while True:
-        print(f"computing dimension {n}... ", end="", flush=True)
-        _ = dim_ranks_cones(n, True, sql.LIVE_DATABASE)
-        print("done")
+        print(f"computing dimension {n}", end="", flush=True)
+        _ = dim_ranks_cones(n, True, sql.LIVE_DATABASE, True)
+        print(" done.")
         n += 1
