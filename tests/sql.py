@@ -237,7 +237,7 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     say so::
 
         >>> max_cone_dim()
-        83
+        88
 
     In a new database, there won't be a maximum::
 
