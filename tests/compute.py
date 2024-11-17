@@ -382,20 +382,20 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
     The examples for :func:`dim_ranks_cones` demonstrate this
     indirectly, but we can check a few trivial cases by hand::
 
-        >>> _dim_ranks_cones(0, {}, "unused")
+        >>> _dim_ranks_cones(0, {}, "unused", False)
         {0: (1,)}
-        >>> _dim_ranks_cones(1, {}, "no database")
+        >>> _dim_ranks_cones(1, {}, "no database", False)
         {1: (11,)}
 
     This one will use a new, temporary database::
 
         >>> sql.new_database(sql.TEST_DATABASE)
-        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE)
+        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE, False)
         {3: ((11, 11, 11),), 4: (31,)}
 
     And the second time, it will be cached::
 
-        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE)
+        >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE, False)
         {3: ((11, 11, 11),), 4: (31,)}
 
     """
@@ -419,10 +419,10 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
     # passes n-i, the resulting set is going to be the same; (5,2)
     # gives the same result as (2,5).
     for i in range(1,(n//2)+1):
-        s1 = _dim_ranks_cones(i, d, db)
+        s1 = _dim_ranks_cones(i, d, db, progress)
         if progress:
             print(".", end="", flush=True)
-        s2 = _dim_ranks_cones(n-i, d, db)
+        s2 = _dim_ranks_cones(n-i, d, db, progress)
         if progress:
             print(".", end="", flush=True)
 
@@ -511,7 +511,7 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
     if sql:
         d = None
     # Now just run the real, recursive implementation.
-    return _dim_ranks_cones(n, d, db)
+    return _dim_ranks_cones(n, d, db, progress)
 
 
 
