@@ -485,18 +485,18 @@ def lowerbound3(K : SymmetricCone) -> int:
     --------
 
     Along with with the other two, this one implies a lower bound of
-    ``2*K.dim - 1``. If ``n`` satisfies the other two, we can add
-    them up and divide by two to get another lower bound on ``n``. For
-    ``n >= 10``, that lower bound will always be greater than
-    ``2*K.dim - 1``. We can check this in sympy using ``d`` for
-    ``K.dim`` and ``r`` for ``K.rank``::
+    ``2*K.dim``. If ``n`` satisfies the other two, we can add them up
+    and divide by two to get another lower bound on ``n``. For ``n >=
+    10``, that lower bound will always be greater than or equal to
+    ``2*K.dim``. We can check this in sympy using ``d`` for ``K.dim``
+    and ``r`` for ``K.rank``::
 
         >>> from sympy import expand, floor, symbols
         >>> d,r = symbols("d,r", integer=True, positive=True)
         >>> K = SymmetricCone(0)
         >>> K.dim = d
         >>> K.rank = r
-        >>> implied_bound = 2*d - 1
+        >>> implied_bound = 2*d
         >>> g = (lowerbound1(K) + lowerbound2(K))/2 - implied_bound
 
     We want ``g`` to be nonnegative, but we can multiply it by ``4``
@@ -506,14 +506,14 @@ def lowerbound3(K : SymmetricCone) -> int:
 
         >>> g = 4*g
         >>> expand(g).replace(floor, lambda x: x)
-        d**2 - 9*d + 14
+        d**2 - 9*d + 10
 
     Since ``g`` is an upwards-facing parabola, it will be negative on
     an interval, and nonnegative everywhere else. Here's the
     interval::
 
         >>> [ g.subs({d:i}) for i in range(10) ]
-        [14, 6, 0, -4, -6, -6, -4, 0, 6, 14]
+        [10, 2, -4, -8, -10, -10, -8, -4, 2, 10]
     """
     return 10
 
