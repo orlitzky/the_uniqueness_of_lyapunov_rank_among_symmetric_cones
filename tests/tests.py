@@ -486,10 +486,13 @@ def lowerbound3(K : SymmetricCone) -> int:
 
     Along with with the other two, this one implies a lower bound of
     ``2*K.dim``. If ``n`` satisfies the other two, we can add them up
-    and divide by two to get another lower bound on ``n``. For ``n >=
-    10``, that lower bound will always be greater than or equal to
-    ``2*K.dim``. We can check this in sympy using ``d`` for ``K.dim``
-    and ``r`` for ``K.rank``::
+    and divide by two to get another lower bound on ``n`` in terms of
+    ``K.dim``. The assumption that ``n >= 10`` takes care of cones of
+    dimension five or less, and then the newly-derived inequality can
+    be set greater than or equal to ``2*K.dim`` and solved to obtain a
+    quadratic inequality that will be true for ``K.dim() >= 8``.
+    Below we let the symbols ``d`` and ``r`` stand for ``K.dim`` and
+    ``K.rank``::
 
         >>> from sympy import expand, floor, symbols
         >>> d,r = symbols("d,r", integer=True, positive=True)
@@ -509,11 +512,28 @@ def lowerbound3(K : SymmetricCone) -> int:
         d**2 - 9*d + 10
 
     Since ``g`` is an upwards-facing parabola, it will be negative on
-    an interval, and nonnegative everywhere else. Here's the
-    interval::
+    an interval, and nonnegative everywhere else. We see tat for ``d >= 8``,
+    g will be nonnegative::
 
         >>> [ g.subs({d:i}) for i in range(10) ]
         [10, 2, -4, -8, -10, -10, -8, -4, 2, 10]
+
+    We can check the remaining two cases, ``d == 6`` and ``d == 7``,
+    manually. The argument we give for Lemma 4 handles ``L(d)`` and
+    all other cones as two separate cases::
+
+        >>> from sql import all_cones_of_dim
+        >>> def check(d):
+        ...     lowerbound1(L(d)) >= 2*d
+        ...     cs = all_cones_of_dim(d)
+        ...     return all( lowerbound2(c) >= 2*d
+        ...                 for c in cs
+        ...                 if not c == L(d) )
+        >>> check(6)
+        True
+        >>> check(7)
+        True
+
     """
     return 10
 
