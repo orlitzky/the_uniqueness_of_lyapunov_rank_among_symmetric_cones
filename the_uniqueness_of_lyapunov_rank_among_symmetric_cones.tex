@@ -1077,10 +1077,33 @@
       then $n \ge 2\dim\of{K}$ and $n > \dim\of{K}$.
 
       \begin{proof}
-        By averaging the first two conditions and using the third to
-        rule out small $n$, we derive the additional bound $n -
-        2\dim\of{K} \ge 0$. And since $K$ is nontrivial, $2\dim\of{K}
-        > \dim\of{K}$.
+        Since $K$ is nontrivial, it suffices to show that $n \ge
+        2\dim\of{K}$. And from the assumption that $n \ge 10$, this
+        will obviously hold whenever $\dim\of{K} \le 5$.
+
+        Averaging \cref{itm:condition1,itm:condition2}, we obtain
+        another lower bound on $n$, a quadratic function of
+        $\dim\of{K}$. If this lower bound were itself bounded below by
+        $2\dim\of{K}$, then we would be done, but this won't work for
+        all values of $\dim\of{K}$. It is however easy to check (by
+        solving the quadratic) that $\dim\of{K} \ge 8$ will imply $n
+        \ge 2\dim\of{K}$. This leaves only $\dim\of{K} \in \set{6,7}$
+        to consider.
+
+        Let $d \in \set{6,7}$. If $K = \Lnplus[d]$, then
+        \cref{itm:condition1} will give $n \ge 2\dim\of{K}$. And if $K
+        \ne \Lnplus[d]$, then $\lyapunovrank{K} \le \lyapunovrank{J}$
+        where $J \coloneqq \directsum{\Lnplus[d-1]}{\Roneplus}$. For
+        both $d = 6$ and $d = 7$, one can now easily see that
+        %
+        \begin{equation*}
+          n \ge 2 + \lyapunovrank{\Lnplus[1 + d]} - \lyapunovrank{K}
+            \ge 2 + \lyapunovrank{\Lnplus[1 + d]} - \lyapunovrank{J}
+            \ge 2d.
+        \end{equation*}
+        %
+        \cref{itm:condition2} therefore gives the desired bound in
+        this case.
       \end{proof}
     \end{lemma}
 
