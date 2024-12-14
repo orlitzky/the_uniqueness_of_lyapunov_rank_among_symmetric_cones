@@ -1,3 +1,12 @@
 1. The natural numbers include zero for us.
 
 2. Condition (1) can't be weakened, right? What about Condition (2)?
+
+3. Why does it suffice to check only Lorentz cone ranks in the table
+   for Proposition 8? That's not what Theorem 3 (now) says. The HR(3)
+   example can be extended to e.g.
+
+     K = HC(3) + L(4) + L(1) + L(1) ~ HC(3) + HR(3)
+
+   but there is probably something special about HC(3) + L(n) that
+   allows us to get away with only Lorentz factors.
