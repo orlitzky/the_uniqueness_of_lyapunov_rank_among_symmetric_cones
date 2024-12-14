@@ -1333,8 +1333,90 @@
     $\dim\of{K}\qty{\dim\of{K} - 1} \le 4n - 10$. There are a finite
     number of these, and computation shows that $\Hnplus[3]\of{\Rn[1]}
     \sim \directsum{\Lnplus[4]}{\Rnplus[2]}$ is the sole
-    counterexample at $n = 4$. As a result, we could get away with
+    counterexample at $n = 4$. As a result, we can get away with
     requiring $n \ge 5$ instead of $n \ge 10$.
+
+    \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
+      Suppose that $K,J$ are symmetric cones and that $n \ge 5$
+      satisfies \cref{itm:condition1,itm:condition2}. Then $J \sim
+      \directsum{\Lnplus}{K}$ if and only if there exists a symmetric
+      $J'$ such that $J \cong \directsum{\Lnplus}{J'}$ and $J' \sim
+      K$.
+
+      \begin{proof}
+        Recall from the proof of \cref{thm:subproblem reduction} that
+        the ``if'' direction was obvious and required no conditions on
+        $n$. For the other direction, as just discussed, we must check
+        the cones $K$ satisfying $\dim\of{K}\qty{\dim\of{K} - 1} \le
+        4n - 10$ for each $n \in \set{5,6,7,8,9}$. We begin by
+        computing the maximum value of $\dim\of{K}$ corresponding to
+        each $n$.
+        %
+        \begin{table}[H]
+          \begin{center}
+            \begin{tabular}{c c}
+              $n$ & $\dim\of{K}$\\
+              \midrule
+              $5$ & $\set{1,2,3}$\\
+              $6$ & $\set{1,2,3,4}$\\
+              $7$ & $\set{1,2,3,4}$\\
+              $8$ & $\set{1,2,3,4,5}$\\
+              $9$ & $\set{1,2,3,4,5}$
+            \end{tabular}
+          \end{center}
+        \end{table}
+        %
+        The total dimension of $J$ is therefore at most $14$, which
+        allows us to systematically eliminate the low-dimensional
+        non-Lorentz cones as possible factors of $J$. Note first that
+        $\lyapunovrank{\directsum{\Lnplus}{K}} \ge
+        \lyapunovrank{\Lnplus} + \dim\of{K}$. If $J$ has an
+        $\Hnplus[3]\of{\Rn[1]}$ factor, then $\lyapunovrank{J} = 9 +
+        \lyapunovrank{J'} \le 9 + \lyapunovrank{\Lnplus[n + \dim\of{K}
+            - 6]}$. Subtracting, if
+        %
+        \begin{equation*}
+          \lyapunovrank{\Lnplus} + \dim\of{K}
+          -9
+          -\lyapunovrank{\Lnplus[n + \dim\of{K} - 6]}
+          > 0,
+        \end{equation*}
+        %
+        then the Lyapunov rank of $J$ is not large enough to be a
+        similacrum. Expanding the expression on the left, we arrive at
+        %
+        \begin{equation*}
+          -\dim\of{K}^{2} + 2(6-\dim\of{K})n + 15\dim\of{K} - 60
+          >
+          0,
+        \end{equation*}
+        %
+        a strictly increasing function of $n$ for all valid
+        $\dim\of{K}$. Substituting $n=5$ and $n=6$, it is thus easy to
+        verify. This rules out $\Hnplus[3]\of{\Rn[1]}$. Nor can $J$
+        have an $\Hnplus[4]\of{\Rn[1]}$ factor, because
+        $\signature{\Hnplus[4]\of{\Rn[1]}} =
+        \signature{\directsum{\Hnplus[3]\of{\Rn[1]}}{\Lnplus[4]}}$,
+        and the Lyapunov rank of the latter, as we have just seen, is
+        too small. The only other non-Lorentz factor of total
+        dimension less than or equal to $14$ is
+        $\Hnplus[3]\of{\Cn[1]}$, and the same gimmick shows that
+        %
+        \begin{equation*}
+          \lyapunovrank{\Lnplus} + \dim\of{K}
+          -17
+          -\lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}
+          > 0.
+        \end{equation*}
+        %
+        As a result, $J$ has only Lorentz factors. The dimension of
+        $K$ is too small to admit non-Lorentz factors, so we have
+        Lorentz factors everywhere. Brute-force enumeration of the
+        partitions of $\dim\of{K}$ and $n + \dim\of{K}$ for all valid
+        pairs of $\pair{n}{\dim\of{K}}$ suffices to check the
+        remaining cases.
+      \end{proof}
+    \end{theorem}
   \end{section}
 
   \section*{Acknowledgments}{
