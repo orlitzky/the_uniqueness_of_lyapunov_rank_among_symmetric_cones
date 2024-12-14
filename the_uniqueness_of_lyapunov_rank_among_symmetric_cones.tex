@@ -691,51 +691,6 @@
         similacra}.
     \end{example}
 
-    Using \cref{thm:two unique families} we can reduce the search for
-    similacra to essentially two integer partition problems, one for
-    $j = 0$ and one for $j = 1$ in \cref{thm:two unique
-      families}. Suppose $\signature{K} =
-    \pair{\dim\of{K}}{\lyapunovrank{K}}$ is given. One possibility is
-    that $K$ has a similacrum with no $\Hnplus[3]\of{\Cn[1]}$ factor;
-    that is, that
-    %
-    \begin{equation*}
-      K
-      \sim
-      \Lnplus[n_{1}]
-        \oplus
-        \Lnplus[n_{2}]
-        \oplus
-        \cdots
-        \oplus
-        \Lnplus[n_{k}]
-    \end{equation*}
-    %
-    where $\set{n_{i}}_{i=1}^{k}$ is an integer partition of
-    $\dim\of{K}$ and
-    %
-    \begin{equation*}
-      \lyapunovrank{K}
-      =
-      \sum_{i=1}^{k} \lyapunovrank{\Lnplus[n_{i}]}
-      =
-      \sum_{i=1}^{k} \qty{n_{i}^{2} - n_{i} + 2}/2.
-    \end{equation*}
-    %
-    The set of all such integer partitions can be enumerated, and the
-    corresponding sums are easily checked against
-    $\lyapunovrank{K}$. The other option is that $K$ has a similacrum
-    with exactly one $\Hnplus[3]\of{\Cn[1]}$ factor. In that case, we
-    can subtract $\signature{\Hnplus[3]\of{\Cn[1]}} = \pair{9}{17}$ from
-    $\signature{K}$ and repeat the procedure above. All \emph{other}
-    factors will be Lorentz cone factors, so the problem is reduced to
-    finding an integer partition $\set{n_{i}}_{i=1}^{k}$ of $\dim\of{K}
-    - 9$ such that $\lyapunovrank{K} - 17 = \sum_{i=1}^{k}
-    \qty{n_{i}^{2} - n_{i} + 2}/2$. This leads to a straightforward
-    algorithm for checking examples of reasonably small dimension using
-    (say) the accelerated integer partitioning scheme of Kelleher and
-    O'Sullivan~\cite{kelleher-osullivan}.
-
     \cref{lem:no multiple complex factors} shows that if a symmetric
     cone has one $\Hnplus[3]\of{\Cn[1]}$ factor, then it cannot have any
     additional $\Hnplus[3]\of{\Cn[1]}$ factors without acquiring
