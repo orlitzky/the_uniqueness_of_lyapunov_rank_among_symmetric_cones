@@ -95,6 +95,19 @@ Confirm the table for ``n <= 30``::
     >>> all( check(n) for n in range(31) )
     True
 
+To be extra sure, we check the table for Proposition 8 using the
+similacra method as well::
+
+    >>> n_with_similacra = []
+    >>>
+    >>> for n in range(31):
+    ...     K = DirectSum([HC(3),L(n)])
+    ...     if len(K.similacra()) != 0:
+    ...         n_with_similacra.append(n)
+    >>>
+    >>> n_with_similacra
+    [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
+
 Check the symbolic identity in Proposition 8 for the derivative of the
 g-delta function::
 

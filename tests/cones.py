@@ -835,7 +835,15 @@ class DirectSum(SymmetricCone):
             ... ])
             L(1) + L(1) + L(1) + HR(3) + HC(3) + HO(3)
 
+            >>> DirectSum([HC(3),L(0)]) == HC(3)
+            True
+
         """
+        # We have to remove trivial factors before we do anything
+        # else, otherwise the length of the factors list might be
+        # wrong. For example we need [HC(3),L(0)] to return HC(3),
+        # which only happens if there is one factor.
+        factors = [f for f in factors if not f.dim == 0]
         lf = len(factors)
         if lf == 0:
             return L(0)
@@ -886,7 +894,7 @@ class DirectSum(SymmetricCone):
         for f in factors:
             if isinstance(f, DirectSum):
                 result += DirectSum._flatten_factors(f._factors)
-            elif f.dim != 0:
+            else:
                 result.append(f)
 
         return result
