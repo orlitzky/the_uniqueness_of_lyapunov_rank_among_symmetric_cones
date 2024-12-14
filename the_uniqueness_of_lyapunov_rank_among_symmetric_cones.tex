@@ -738,17 +738,23 @@
       has no symmetric similacra.
 
       \begin{proof}
-        We first note that it suffices to search for a similacrum of the
-        form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n_{1} \ge
-        n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. If a similacrum
-        contains $\Hnplus[3]\of{\Cn[1]}$, then, by subtracting
-        $\pair{9}{17}$ from both sides, it also contains a similacrum
-        for $\Lnplus$, which is not possible by \cref{cor:lorentz cone
-          has no similacra}. The same corollary makes $k = 1$
-        impossible, and we may reorder components to put the
-        superscripts in whatever order we like. In light of \cref{lem:no
-          bigger factors}, we may further assume that $n_{1} \le n-1$,
-        and thus $n_{i} \le n-1$ for all $i \in \set{1,2,\ldots,k}$.
+        We first note that it suffices to search for a similacrum of
+        the form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n-1
+        \ge n_{1} \ge n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. If a
+        similacrum contains $\Hnplus[3]\of{\Cn[1]}$, then, by
+        subtracting $\pair{9}{17}$ from both sides, it also contains a
+        similacrum for $\Lnplus$, which is not possible by
+        \cref{cor:lorentz cone has no similacra}. And if a similacrum
+        does not contain $\Hnplus[3]\of{\Cn[1]}$, then either it
+        consists of only Lorentz factors, or the results in
+        \cref{sec:irreducible cones} let us find some other similacrum
+        consisting of only Lorentz factors. Now, assuming that all
+        factors are Lorentz, we may reorder them to put the
+        superscripts in whatever order we like, and use
+        \cref{cor:lorentz cone has no similacra} to conclude that $k
+        \ge 2$. Finally, in light of \cref{lem:no bigger factors}, we
+        may further assume that $n_{1} \le n-1$, and thus $n_{i} \le
+        n-1$ for all $i \in \set{1,2,\ldots,k}$.
 
         The problem now is to find an integer partition
         $\set{n_{1},n_{2},\ldots,n_{k}}$ of $n+9$ such that
@@ -877,86 +883,91 @@
 
     To catalogue the similacra of
     $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it now suffices to
-    check only the first thirty values of $n$. Using the integer
-    partition approach we have calculated the cases $n = 1,2\ldots,30$
-    and have listed their similacra below. Absent rows indicate the
-    absence of similacra.
-
-    \begin{equation*}
-      \begin{array}{c ccc}
-        K & \dim\of{K} & \lyapunovrank{K} & \sim\\
-        \midrule
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[2] &
-          11 &
-          19 &
-          \Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3] &
-          12 &
-          21 &
-          \Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[4] &
-          13 &
-          24 &
-          \Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[5] &
-          14 &
-          28 &
-          \Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[6] &
-          15 &
-          33 &
-          \Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[7] &
-          16 &
-          39 &
-          \Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[8] &
-          17 &
-          46 &
-          \Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[9] &
-          18 &
-          54 &
-          \Lnplus[10] \oplus \Rnplus[8]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[10] &
-          19 &
-          63 &
-          \Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[15] &
-          24 &
-          123 &
-          \Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[18] &
-          27 &
-          171 &
-          \Lnplus[14] \oplus \Lnplus[13]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[21] &
-          30 &
-          228 &
-          \Lnplus[19] \oplus \Lnplus[11]\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[22] &
-          31 &
-          249 &
-          \Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus\\
-        %
-        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[30] &
-          39 &
-          453 &
-          \Lnplus[29] \oplus \Lnplus[10]\\
-      \end{array}
-    \end{equation*}
+    check the first thirty values of $n$. Since we need only consider
+    Lorentz factors, this is easily done by partitioning $9+n$ (using,
+    for example, the accelerated integer partitioning scheme of
+    Kelleher and O'Sullivan~\cite{kelleher-osullivan}) and computing
+    the corresponding Lypaunov ranks. Absent rows indicate the absence
+    of similacra.
+    %
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}{c ccc}
+          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$ & $\sim$\\
+          \midrule
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[2]$ &
+            $11$ &
+            $19$ &
+            $\Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3]$ &
+            $12$ &
+            $21$ &
+            $\Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[4]$ &
+            $13$ &
+            $24$ &
+            $\Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[5]$ &
+            $14$ &
+            $28$ &
+            $\Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[6]$ &
+            $15$ &
+            $33$ &
+            $\Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[7]$ &
+            $16$ &
+            $39$ &
+            $\Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[8]$ &
+            $17$ &
+            $46$ &
+            $\Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[9]$ &
+            $18$ &
+            $54$ &
+            $\Lnplus[10] \oplus \Rnplus[8]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[10]$ &
+            $19$ &
+            $63$ &
+          $\Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[15]$ &
+            $24$ &
+            $123$ &
+          $\Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[18]$ &
+            $27$ &
+            $171$ &
+            $\Lnplus[14] \oplus \Lnplus[13]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[21]$ &
+            $30$ &
+            $228$ &
+            $\Lnplus[19] \oplus \Lnplus[11]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[22]$ &
+            $31$ &
+            $249$ &
+            $\Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[30]$ &
+            $39$ &
+            $453$ &
+            $\Lnplus[29] \oplus \Lnplus[10]$\\
+          \end{tabular}
+        \caption{Similacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}\label{tab:HC(3)+L(n) similacra}
+      \end{center}
+    \end{table}
 
     \begin{proposition}\label{prop:h3plus plus lnplus characterization}
       $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric similacra if
@@ -1369,9 +1380,8 @@
         Lorentz factors everywhere. The remaining cases may therefore
         be checked by enumerating the integer partitions of
         $\dim\of{K}$ and $n + \dim\of{K}$ for all valid combinations
-        of $n$ and $\dim\of{K}$ using, for example, the accelerated
-        integer partitioning scheme of Kelleher and
-        O'Sullivan~\cite{kelleher-osullivan}.
+        of $n$ and $\dim\of{K}$ as we have done earlier in
+        \cref{tab:HC(3)+L(n) similacra}.
       \end{proof}
     \end{theorem}
   \end{section}
