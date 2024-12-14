@@ -350,6 +350,47 @@ and this will be a no-op in that case::
     >>> K = random_cone()
     >>> check(K)
     True
+
+Check the table in Theorem 5::
+
+   >>> def maxd(n):
+   ...     d = 1
+   ...     while d*(d-1) <= (4*n - 10):
+   ...         d += 1
+   ...     return d-1
+   >>>
+   >>> maxd(5)
+   3
+   >>> maxd(6)
+   4
+   >>> maxd(7)
+   4
+   >>> maxd(8)
+   5
+   >>> maxd(9)
+   5
+
+And the argument to rule out ``HR(3)`` factors::
+
+   >>> from sympy import symbols
+   >>> n,d = symbols("n,d", integer=True, positive=True)
+   >>> f = lambda x: (x**2 - x + 2)/2
+   >>> g = f(n) + d - HR(3).rank - f(n+d-HR(3).dim)
+   >>> all( g.subs({n:i,d:j}) > 0
+   ...      for i in range(5,10)
+   ...      for j in range(1, maxd(i)+1) )
+   True
+
+And ``HC(3)`` factors. In this case we need to be careful that ``n +
+K.dim`` is at least ``9``, i.e. big enough to hold ``HC(3)``::
+
+   >>> g = f(n) + d - HC(3).rank - f(n+d-HC(3).dim)
+   >>> all( g.subs({n:i,d:j}) > 0
+   ...      for i in range(5,10)
+   ...      for j in range(1, maxd(i)+1)
+   ...      if i+j-HC(3).dim >= 0 )
+   True
+
 """
 
 from signatures import *
