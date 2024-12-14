@@ -1339,49 +1339,44 @@
         \lyapunovrank{\Lnplus} + \dim\of{K}$. If $J$ has an
         $\Hnplus[3]\of{\Rn[1]}$ factor, then $\lyapunovrank{J} = 9 +
         \lyapunovrank{J'} \le 9 + \lyapunovrank{\Lnplus[n + \dim\of{K}
-            - 6]}$. Subtracting, if
+            - 6]}$ by \cref{prop:rank of lorentz is
+          maximal}. Subtracting and substituting the values of
+        $\pair{n}{\dim\of{K}}$ from the table above, we find that
         %
         \begin{equation*}
           \lyapunovrank{\Lnplus} + \dim\of{K}
           -9
           -\lyapunovrank{\Lnplus[n + \dim\of{K} - 6]}
-          > 0,
+          > 0
         \end{equation*}
         %
-        then the Lyapunov rank of $J$ is not large enough to be a
-        similacrum. Expanding the expression on the left, we arrive at
-        %
-        \begin{equation*}
-          -\dim\of{K}^{2} + 2(6-\dim\of{K})n + 15\dim\of{K} - 60
-          >
-          0,
-        \end{equation*}
-        %
-        a strictly increasing function of $n$ for all valid
-        $\dim\of{K}$. Substituting $n=5$ and $n=6$, it is thus easy to
-        verify. This rules out $\Hnplus[3]\of{\Rn[1]}$. Nor can $J$
-        have an $\Hnplus[4]\of{\Rn[1]}$ factor, because
+        in all cases. Thus the Lyapunov rank of $J$ is not large
+        enough to be a similacrum. This rules out
+        $\Hnplus[3]\of{\Rn[1]}$ factors. Nor can $J$ have an
+        $\Hnplus[4]\of{\Rn[1]}$ factor, because
         $\signature{\Hnplus[4]\of{\Rn[1]}} =
         \signature{\directsum{\Hnplus[3]\of{\Rn[1]}}{\Lnplus[4]}}$,
         and the Lyapunov rank of the latter, as we have just seen, is
-        too small. The only other non-Lorentz factor of total
-        dimension less than or equal to $14$ is
+        too small. The only other irreducible non-Lorentz factor of
+        total dimension less than or equal to $14$ is
         $\Hnplus[3]\of{\Cn[1]}$, and the same gimmick shows that
         %
         \begin{equation*}
           \lyapunovrank{\Lnplus} + \dim\of{K}
           -17
           -\lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}
-          > 0.
+          > 0,
         \end{equation*}
         %
-        As a result, $J$ has only Lorentz factors. The dimension of
-        $K$ is too small to admit non-Lorentz factors, so we have
-        Lorentz factors everywhere. The remaining cases may therefore
-        be checked by enumerating the integer partitions of
-        $\dim\of{K}$ and $n + \dim\of{K}$ for all valid combinations
-        of $n$ and $\dim\of{K}$ as we have done earlier in
-        \cref{tab:HC(3)+L(n) similacra}.
+        although here we check only the pairs $\pair{n}{\dim\of{K}}$
+        where $n + \dim\of{K} \ge 9$; that is, where $J$ is big enough
+        to hold $\Hnplus[3]\of{\Cn[1]}$. As a result, $J$ has only
+        Lorentz factors. The dimension of $K$ is too small to admit
+        non-Lorentz factors, so we have Lorentz factors
+        everywhere. The remaining cases may therefore be checked by
+        enumerating the integer partitions of $\dim\of{K}$ and $n +
+        \dim\of{K}$ for all valid combinations of $n$ and $\dim\of{K}$
+        as we have done earlier in \cref{tab:HC(3)+L(n) similacra}.
       \end{proof}
     \end{theorem}
   \end{section}
