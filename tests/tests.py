@@ -508,11 +508,11 @@ def lowerbound2(K):
     eliminate the `floor` that arises from Python's integer division
     (``m**2 + m + 2`` is guaranteed to be even)::
 
-        >>> from sympy import expand, floor, symbols
+        >>> from sympy import expand, symbols
         >>> m = symbols("m", integer=True, positive=True)
-        >>> lb = lowerbound2(L(m)).replace(floor, lambda x: x)
-        >>> expand(lb)
+        >>> expand(fix_floor(lowerbound2(L(m))))
         m + 2
+
     """
     from signatures import f
     return 2 + f(1 + K.dim) - K.rank
@@ -562,7 +562,7 @@ def lowerbound3(K : SymmetricCone) -> int:
     `d**2 + d` is even::
 
         >>> g = 4*g
-        >>> expand(g).replace(floor, lambda x: x)
+        >>> fix_floor(expand(g))
         d**2 - 9*d + 10
 
     Since ``g`` is an upwards-facing parabola, it will be negative on
