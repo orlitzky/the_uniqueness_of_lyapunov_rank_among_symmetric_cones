@@ -1379,6 +1379,35 @@
         as we have done earlier in \cref{tab:HC(3)+L(n) similacra}.
       \end{proof}
     \end{theorem}
+
+    None of the remaining conditions can be
+    weakened. \cref{itm:condition1} was chosen to exceed the value of
+    an explicit counterexample in \cref{lem:no bigger factors pt2}. If
+    $n = 1 + \lyapunovrank{K} - \dim\of{K}$, one fewer than the bound,
+    then except for a few carefully-chosen $K$,
+    %
+    \begin{equation*}
+      \directsum{K}{\Lnplus}
+      \sim
+      \directsum{\Lnplus[n+1]}{\Rnplus[\dim\of{K}-1]}.
+    \end{equation*}
+    %
+    By taking $K \coloneqq \Lnplus[m]$ for $m \ge 5$, we can be sure
+    that this remains a counterexample even when the other two
+    conditions are satisfied. When $K \coloneqq \Rnplus[2]$ and $n =
+    4$, only the condition $n \ge 5$ is violated, and we get the
+    similacra $\Hnplus[3]\of{\Rn[1]} \sim \directsum{K}{\Rnplus[2]}$.
+    Finally, when $K \coloneqq \Hnplus[3]\of{\Cn[1]}$,
+    \cref{itm:condition2} gives the bound $n \ge 31$. But for $n =
+    30$, the other two conditions are satisfied, and
+    %
+    \begin{equation*}
+      \directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}
+      \sim
+      \directsum{\Lnplus[29]}{\Lnplus[10]}.
+    \end{equation*}
+    %
+    Each bound is therefore essential.
   \end{section}
 
   \section*{Acknowledgments}{
