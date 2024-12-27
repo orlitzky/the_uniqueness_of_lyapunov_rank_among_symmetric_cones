@@ -482,6 +482,36 @@ def lowerbound1(K):
         ...         results.append(target_rank not in alr(target_dim))
         >>> all(results)
         True
+
+    This lower bound is tight, regardless of the other two::
+
+        >>> K = random_cone()
+        >>> while K.dim == 0:
+        ...     K = random_cone()
+        >>> n = lowerbound1(K) - 1
+        >>> J1 = DirectSum([L(n), K])
+        >>> J2 = DirectSum([L(n+1), RN(K.dim - 1)])
+        >>> J1.signature() == J2.signature()
+        True
+
+    But we know some examples where this is the bound that's tight,
+    and where ``K`` is big enough to ensure non-isomorphism (the
+    existence of a real similacrum, not just a matching signature)::
+
+        >>> m = 5
+        >>> K = L(m)
+        >>> n = lowerbound1(K) - 1
+        >>> n >= lowerbound2(K)
+        True
+        >>> n >= lowerbound4(K)
+        True
+        >>> J1 = DirectSum([L(n), K])
+        >>> J2 = DirectSum([L(n+1), RN(K.dim - 1)])
+        >>> J1.signature() == J2.signature()
+        True
+        >>> J1 == J2
+        False
+
     """
     return 2 + K.rank - K.dim
 
@@ -512,6 +542,23 @@ def lowerbound2(K):
         >>> m = symbols("m", integer=True, positive=True)
         >>> expand(fix_floor(lowerbound2(L(m))))
         m + 2
+
+    This bound is tight, because we have already computed
+    a counterexample wherein the other two lower bounds are
+    satisfied::
+
+        >>> K = HC(3)
+        >>> n = lowerbound2(K) - 1
+        >>> n >= lowerbound1(K)
+        True
+        >>> n >= lowerbound4(K)
+        True
+        >>> J1 = DirectSum([K,L(n)])
+        >>> J2 = DirectSum([L(29),L(10)])
+        >>> J1.signature() == J2.signature()
+        True
+        >>> J1 == J2
+        False
 
     """
     from signatures import f
@@ -646,5 +693,18 @@ def lowerbound4(K):
         [(L(1) + L(1), 4, HR(3))]
         >>> check(5)
         []
+
+    This bound cannot be lowered independent of the other two, which
+    are both satisfied for the counterexample HR(3) ~ L(4) + L(2)::
+
+        >>> K = RN(2)
+        >>> n = lowerbound4(K) - 1
+        >>> n >= lowerbound1(K)
+        True
+        >>> n >= lowerbound2(K)
+        True
+        >>> DirectSum([K,L(n)]).similacra()
+        (HR(3),)
+
     """
     return 5
