@@ -1411,7 +1411,9 @@
 
     \begin{proposition}
       If $m \ne 2$ and if $n \ge \qty{m^2 - 3m + 6}/2$, then
-      $\directsum{\Lnplus[m]}{\Lnplus}$ has no symmetric similacra.
+      $\directsum{\Lnplus[m]}{\Lnplus}$ has no symmetric
+      similacra. When $m = 2$, the only counterexample that arises is
+      $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim \Hnplus[3]\of{\Rn[1]}$.
       %
       \begin{proof}
         \cref{itm:condition1} dominates the other two for $m \ge 5$
@@ -1428,21 +1430,23 @@
             but leads to no similacra.
           \end{item}
           \begin{item}
-            $m = 3$ and $n = 4$, which satisfies neither
+            $m = 3$ and $n \in \set{3,4}$, which satisfies neither
             \cref{itm:condition2} nor $n \ge 5$, but still leads to no
             similacra.
           \end{item}
           \begin{item}
-            $m = 3$ and $n = 3$, ditto.
+            $m = 2$ and $n = 4$, where only $n \ge 5$ is violated but
+            the counterexample $\directsum{\Rnplus[2]}{\Lnplus[4]}
+            \sim \Hnplus[3]\of{\Rn[1]}$ arises.
           \end{item}
           \begin{item}
-            $m = 2$, where we have the counterexample
-            $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim
-            \Hnplus[3]\of{\Rn[1]}$.
+            $m = 2$ and $n \in \set{2,3}$, where \cref{itm:condition2}
+            and $n \ge 5$ are both violated; there are no similacra.
           \end{item}
           \begin{item}
-            $m = 1$, where none of $n \in \set{2,3,4,5}$ give
-            similacra.
+            $m = 1$ where no similacra arise for $n \in \set{2,3,4}$
+            despite $n \ge 5$ being violated and \cref{itm:condition2}
+            being violated for $n=2$.
           \end{item}
           \begin{item}
             $m = 0$, which is just \cref{cor:lorentz cone has no
