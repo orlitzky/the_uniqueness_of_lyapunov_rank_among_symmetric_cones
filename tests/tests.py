@@ -152,38 +152,73 @@ Check the relationships between the lower bounds on ``n``::
     >>> lowerbound2(K) < lowerbound3(K) < lowerbound1(K)
     True
 
+Verify the cases mentioned explicitly in Proposition 11. First, the
+``m != 2`` cases where there are no similacra::
 
-Test the ``n < 9`` case of Giovanni's Theorem 3::
+    >>> m = 4
+    >>> K = L(m)
+    >>> n = 5
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, False, True)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
 
-    >>> def check(m,n):
-    ...     d = m+n
-    ...     if d < 11:
-    ...         # no similacra, RHS is too big, and we need at least
-    ...         # two lorentz factors to avoid the previous result
-    ...         return True
-    ...     ranks = ( 17 + r for r in admissible_lorentz_ranks(d - 9) )
-    ...     return (f(m)+f(n)) not in ranks
-    ...
-    >>> all( check(m,n) for m in range(1,9) for n in range(max(2,m),9) )
-    True
+    >>> m = 3
+    >>> K = L(m)
+    >>> n = 4
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, False, False)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
+    >>> n = 3
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, False, False)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
 
-Check Giovanni's Theorem 3 directly::
+    >>> m = 1
+    >>> K = L(m)
+    >>> n = 2
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, False, False)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
+    >>> n = 3
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, True, False)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
+    >>> n = 4
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    (True, True, False)
+    >>> DirectSum([K,L(n)]).similacra()
+    ()
+
+And now the ``m == 2`` case where there is exactly one counterexample::
+
+    >>> m = 2
+    >>> K = L(m)
+    >>> lowerbound1(K)
+    2
+    >>> DirectSum([K,L(2)]).similacra()
+    ()
+    >>> DirectSum([K,L(3)]).similacra()
+    ()
+    >>> DirectSum([K,L(4)]).similacra()
+    (HR(3),)
+
+Check Proposition 11 directly::
 
     >>> def check(m,n):
     ...     K = DirectSum([L(m),L(n)])
-    ...     s = K.similacra()
-    ...     if not s:
-    ...         return True
-    ...     if len(s) == 1 and s[0] == HR(3):
-    ...         return True
-    ...     ub = (m**2 - 3*m + 4) // 2
-    ...     return ub >= n >= m >= 4
+    ...     return not K.similacra()
     >>> from sql import max_cone_dim
     >>> # need m+n <= max_cone_dim()
     >>> m_max = max_cone_dim() // 2
     >>> all( check(m,n)
-    ...      for m in range(4, m_max)
-    ...      for n in range(m, max_cone_dim() - m) )
+    ...      for m in range(1, m_max)
+    ...      for n in range(lowerbound1(L(m)), max_cone_dim() - m)
+    ...      if m != 2 )
     True
 
 Check Giovanni's Theorem 4, as far as we can::
@@ -390,7 +425,6 @@ K.dim`` is at least ``9``, i.e. big enough to hold ``HC(3)``::
    ...      for j in range(1, maxd(i)+1)
    ...      if i+j-HC(3).dim >= 0 )
    True
-
 """
 
 from signatures import *
@@ -511,6 +545,14 @@ def lowerbound1(K):
         True
         >>> J1 == J2
         False
+
+    We compute this lower bound in Proposition 11::
+
+       >>> from sympy import symbols
+       >>> m = symbols("m", integer=True, positive=True)
+       >>> K = L(m)
+       >>> fix_floor(lowerbound1(K)) == (m**2 - 3*m + 6)/2
+       True
 
     """
     return 2 + K.rank - K.dim
