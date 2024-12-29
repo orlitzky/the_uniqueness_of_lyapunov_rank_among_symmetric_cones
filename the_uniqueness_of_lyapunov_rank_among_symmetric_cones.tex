@@ -902,9 +902,12 @@
       \end{item}
     \end{enumerate}
 
-    Taken together, these conditions imply two others that we'll need.
+    The $n \ge 15$ bound is not very elegant. Either way we are going
+    to wind up checking some low-dimensional cases by hand; this way
+    we have more cases to check, but in exchange, a few of the proofs
+    are simplified.
 
-    \begin{lemma}\label{lem:more conditions}
+    \begin{lemma}\label{lem:condition4}
       If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
       \cref{itm:condition1,itm:condition2,itm:condition3}, then $n >
       2\dim\of{K}$.
@@ -1015,7 +1018,7 @@
             $\smallestidx$ to be the smallest index such that
             $S\of{\smallestidx} > \dim\of{K}$. Since $S\of{k} = n +
             \dim\of{K} > \dim\of{K}$, this is well-defined. From
-            \cref{lem:more conditions} we have that $n > \dim\of{K}$,
+            \cref{lem:condition4} we have that $n > \dim\of{K}$,
             which moreover implies that $\smallestidx < k$. Applying
             \cref{ineq:f is superadditive} repeatedly, we find that
             %
@@ -1036,11 +1039,11 @@
             $\smallestidx$, and $\dim\of{K} + 1 + \delta =
             S\of{\smallestidx} \le 2\dim\of{K}$ because
             $S\of{\smallestidx - 1} \le \dim\of{K}$ and
-            $n_{\smallestidx} \le \dim\of{K}$. Thus by \cref{lem:more
-              conditions}, $\dim\of{K} + 1 + \delta < n$, which is
-            what we need to replace $S\of{\smallestidx}$ by $\delta$
-            and apply \cref{impl:growth inequality for f pt2}. Doing
-            so,
+            $n_{\smallestidx} \le \dim\of{K}$. Thus by
+            \cref{lem:condition4}, $\dim\of{K} + 1 + \delta < n$,
+            which is what we need to replace $S\of{\smallestidx}$ by
+            $\delta$ and apply \cref{impl:growth inequality for f
+              pt2}. Doing so,
             %
             \begin{align*}
               \sum_{i=1}^{k}f\of{n_{i}}
@@ -1128,9 +1131,9 @@
           \dim\of{\Hnplus[m]\of{\Cn[1]}} = m^{2} \le n + \dim\of{K} < 2n,
         \end{equation*}
         %
-        where the last inequality comes from \cref{lem:more
-          conditions}. Thus, $m^{2}/2 < n$, and this tells us exactly
-        how big our Lorentz cones can be if we intend to apply
+        where the last inequality comes from
+        \cref{lem:condition4}. Thus, $m^{2}/2 < n$, and this tells us
+        exactly how big our Lorentz cones can be if we intend to apply
         \cref{lem:not all smaller factors}. There are two cases for
         $m$, each of which leads to a different set of Lorentz cones:
         %
