@@ -138,18 +138,20 @@ Check implication (3) in Proposition 8::
     >>> all(results)
     True
 
-Check the relationships between the lower bounds on ``n``::
+Check the relationships between the lower bounds on ``n``. This isn't
+stated anywhere in the paper, but it shows that no bound is implied by
+the other (each bound can be strictly the largest)::
 
-    >>> K = L(3)
-    >>> lowerbound1(K) < lowerbound2(K) < lowerbound3(K)
+    >>> K = L(2)
+    >>> lowerbound1(K) < lowerbound2(K) < lowerbound3b(K)
     True
 
     >>> K = RN(5)
-    >>> lowerbound1(K) < lowerbound3(K) < lowerbound2(K)
+    >>> lowerbound1(K) < lowerbound3b(K) < lowerbound2(K)
     True
 
-    >>> K = L(6)
-    >>> lowerbound2(K) < lowerbound3(K) < lowerbound1(K)
+    >>> K = L(5)
+    >>> lowerbound3b(K) < lowerbound2(K) < lowerbound1(K)
     True
 
 Verify the cases mentioned explicitly in Proposition 11. First, the
@@ -158,7 +160,7 @@ Verify the cases mentioned explicitly in Proposition 11. First, the
     >>> m = 4
     >>> K = L(m)
     >>> n = 5
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, False, True)
     >>> DirectSum([K,L(n)]).similacra()
     ()
@@ -166,12 +168,12 @@ Verify the cases mentioned explicitly in Proposition 11. First, the
     >>> m = 3
     >>> K = L(m)
     >>> n = 4
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, False, False)
     >>> DirectSum([K,L(n)]).similacra()
     ()
     >>> n = 3
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, False, False)
     >>> DirectSum([K,L(n)]).similacra()
     ()
@@ -179,17 +181,17 @@ Verify the cases mentioned explicitly in Proposition 11. First, the
     >>> m = 1
     >>> K = L(m)
     >>> n = 2
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, False, False)
     >>> DirectSum([K,L(n)]).similacra()
     ()
     >>> n = 3
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, True, False)
     >>> DirectSum([K,L(n)]).similacra()
     ()
     >>> n = 4
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound4(K))
+    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
     (True, True, False)
     >>> DirectSum([K,L(n)]).similacra()
     ()
@@ -310,7 +312,7 @@ cached::
 
     >>> from sql import max_cone_dim
     >>> def check(K):
-    ...     n_min = max(lowerbound1(K),lowerbound2(K),lowerbound3(K))
+    ...     n_min = max(lowerbound1(K),lowerbound2(K),lowerbound3b(K))
     ...     n_max = max_cone_dim() - K.dim
     ...     result = True
     ...     for n in range(n_min, n_max+1):
@@ -537,7 +539,7 @@ def lowerbound1(K):
         >>> n = lowerbound1(K) - 1
         >>> n >= lowerbound2(K)
         True
-        >>> n >= lowerbound4(K)
+        >>> n >= lowerbound3b(K)
         True
         >>> J1 = DirectSum([L(n), K])
         >>> J2 = DirectSum([L(n+1), RN(K.dim - 1)])
@@ -593,7 +595,7 @@ def lowerbound2(K):
         >>> n = lowerbound2(K) - 1
         >>> n >= lowerbound1(K)
         True
-        >>> n >= lowerbound4(K)
+        >>> n >= lowerbound3b(K)
         True
         >>> J1 = DirectSum([K,L(n)])
         >>> J2 = DirectSum([L(29),L(10)])
@@ -607,7 +609,7 @@ def lowerbound2(K):
     return 2 + f(1 + K.dim) - K.rank
 
 
-def lowerbound3(K : SymmetricCone) -> int:
+def lowerbound3a(K : SymmetricCone) -> int:
     r"""
     The third precondition on ``n`` in Lemma 4.
 
@@ -622,20 +624,20 @@ def lowerbound3(K : SymmetricCone) -> int:
     -------
 
     int
-      This lower bound is always 10.
+      This lower bound is always 15.
 
     Examples
     --------
 
-    Along with with the other two, this one implies a lower bound of
-    ``2*K.dim``. If ``n`` satisfies the other two, we can add them up
-    and divide by two to get another lower bound on ``n`` in terms of
-    ``K.dim``. The assumption that ``n >= 10`` takes care of cones of
-    dimension five or less, and then the newly-derived inequality can
-    be set greater than or equal to ``2*K.dim`` and solved to obtain a
-    quadratic inequality that will be true for ``K.dim() >= 8``.
-    Below we let the symbols ``d`` and ``r`` stand for ``K.dim`` and
-    ``K.rank``::
+    Along with with the other two, this one implies a strict lower
+    bound of ``2*K.dim``. If ``n`` satisfies the other two, we can add
+    them up and divide by two to get another lower bound on ``n`` in
+    terms of ``K.dim``. The assumption that ``n >= 15`` takes care of
+    cones of dimension seven or less, and then the newly-derived
+    inequality can be set greater than ``2*K.dim`` and solved to
+    obtain a quadratic inequality that will be true for ``K.dim() >=
+    8``.  Below we let the symbols ``d`` and ``r`` stand for ``K.dim``
+    and ``K.rank``::
 
         >>> from sympy import expand, floor, symbols
         >>> d,r = symbols("d,r", integer=True, positive=True)
@@ -645,47 +647,31 @@ def lowerbound3(K : SymmetricCone) -> int:
         >>> implied_bound = 2*d
         >>> g = (lowerbound1(K) + lowerbound2(K))/2 - implied_bound
 
-    We want ``g`` to be nonnegative, but we can multiply it by ``4``
-    without changing when it is nonnegative. Again we have to strip
+    We want ``g`` to be positive, but we can multiply it by ``4``
+    without changing when it is positive. Again we have to strip
     the symbolic `floor` ourselves because sympy doesn't know that
-    `d**2 + d` is even::
+    ``d**2 + d`` is even::
 
         >>> g = 4*g
         >>> fix_floor(expand(g))
         d**2 - 9*d + 10
 
-    Since ``g`` is an upwards-facing parabola, it will be negative on
-    an interval, and nonnegative everywhere else. We see tat for ``d >= 8``,
-    g will be nonnegative::
+    Since ``g`` is an upwards-facing parabola, it will be nonpositive
+    on an interval, and positive everywhere else. We see that for ``d
+    >= 8``, g will be positive::
 
         >>> [ g.subs({d:i}) for i in range(10) ]
         [10, 2, -4, -8, -10, -10, -8, -4, 2, 10]
 
-    We can check the remaining two cases, ``d == 6`` and ``d == 7``,
-    manually. The argument we give for Lemma 4 handles ``L(d)`` and
-    all other cones as two separate cases::
-
-        >>> from sql import all_cones_of_dim
-        >>> def check(d):
-        ...     lowerbound1(L(d)) >= 2*d
-        ...     cs = all_cones_of_dim(d)
-        ...     return all( lowerbound2(c) >= 2*d
-        ...                 for c in cs
-        ...                 if not c == L(d) )
-        >>> check(6)
-        True
-        >>> check(7)
-        True
-
     """
-    return 10
+    return 15
 
 
-def lowerbound4(K):
+def lowerbound3b(K):
     r"""
     The fourth and final precondition on ``n`` that we can use
     for Theorem 4, obtained near the end of the paper by loosening
-    :func:`lowerbound3`.
+    :func:`lowerbound3a`.
 
     Parameters
     ----------
@@ -740,7 +726,7 @@ def lowerbound4(K):
     are both satisfied for the counterexample HR(3) ~ L(4) + L(2)::
 
         >>> K = RN(2)
-        >>> n = lowerbound4(K) - 1
+        >>> n = lowerbound3b(K) - 1
         >>> n >= lowerbound1(K)
         True
         >>> n >= lowerbound2(K)
