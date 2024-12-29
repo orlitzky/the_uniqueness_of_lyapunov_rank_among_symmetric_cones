@@ -1038,38 +1038,17 @@
 
     \begin{lemma}\label{lem:more conditions}
       If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
-      \cref{itm:condition1,itm:condition2,itm:condition3}, then $n \ge
-      2\dim\of{K}$ and $n > \dim\of{K}$.
+      \cref{itm:condition1,itm:condition2,itm:condition3}, then $n >
+      2\dim\of{K}$.
 
       \begin{proof}
-        The conclusion is obviously true if $K$ is trivial. If $K$ is
-        nontrivial, it suffices to show that $n \ge 2\dim\of{K}$. And
-        from the assumption that $n \ge 10$, this will obviously hold
-        whenever $\dim\of{K} \le 5$.
-
-        Averaging \cref{itm:condition1,itm:condition2}, we obtain
-        another lower bound on $n$, a quadratic function of
-        $\dim\of{K}$. If this lower bound were itself bounded below by
-        $2\dim\of{K}$, then we would be done, but this won't work for
-        all values of $\dim\of{K}$. It is however easy to check (by
-        solving the quadratic) that $\dim\of{K} \ge 8$ will imply $n
-        \ge 2\dim\of{K}$. This leaves only $\dim\of{K} \in \set{6,7}$
-        to consider.
-
-        Let $d \in \set{6,7}$. If $K = \Lnplus[d]$, then
-        \cref{itm:condition1} will give $n \ge 2\dim\of{K}$. And if $K
-        \ne \Lnplus[d]$, then $\lyapunovrank{K} \le \lyapunovrank{J}$
-        where $J \coloneqq \directsum{\Lnplus[d-1]}{\Roneplus}$. For
-        both $d = 6$ and $d = 7$, one can now easily see that
-        %
-        \begin{equation*}
-          n \ge 2 + \lyapunovrank{\Lnplus[1 + d]} - \lyapunovrank{K}
-            \ge 2 + \lyapunovrank{\Lnplus[1 + d]} - \lyapunovrank{J}
-            \ge 2d.
-        \end{equation*}
-        %
-        \cref{itm:condition2} therefore gives the desired bound in
-        this case.
+        From the assumption that $n \ge 15$, the conclusion is
+        obviously true whenever $\dim\of{K} \le 7$. Averaging
+        \cref{itm:condition1,itm:condition2}, we obtain a quadratic
+        function of $\dim\of{K}$ that serves as another lower bound on
+        $n$. One can set this new bound to be greater than
+        $2\dim\of{K}$ and solve the quadratic to see that
+        $\dim\of{K} \ge 8$ implies $n > 2\dim\of{K}$.
       \end{proof}
     \end{lemma}
 
