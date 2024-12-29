@@ -733,162 +733,30 @@
       \end{proof}
     \end{lemma}
 
-    \begin{proposition}\label{prop:no similacra for h3plus and big enough lnplus}
+    \begin{corollary}
       If $n \ge 31$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$
       has no symmetric similacra.
-
-      \begin{proof}
-        We first note that it suffices to search for a similacrum of
-        the form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n-1
-        \ge n_{1} \ge n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. If a
-        similacrum contains $\Hnplus[3]\of{\Cn[1]}$, then, by
-        subtracting $\pair{9}{17}$ from both sides, it also contains a
-        similacrum for $\Lnplus$, which is not possible by
-        \cref{cor:lorentz cone has no similacra}. And if a similacrum
-        does not contain $\Hnplus[3]\of{\Cn[1]}$, then either it
-        consists of only Lorentz factors, or the results in
-        \cref{sec:irreducible cones} let us find some other similacrum
-        consisting of only Lorentz factors. Now, assuming that all
-        factors are Lorentz, we may reorder them to put the
-        superscripts in whatever order we like, and use
-        \cref{cor:lorentz cone has no similacra} to conclude that $k
-        \ge 2$. Finally, in light of \cref{lem:no bigger factors}, we
-        may further assume that $n_{1} \le n-1$, and thus $n_{i} \le
-        n-1$ for all $i \in \set{1,2,\ldots,k}$.
-
-        The problem now is to find an integer partition
-        $\set{n_{1},n_{2},\ldots,n_{k}}$ of $n+9$ such that
-        $\sum_{i=1}^{k}\lyapunovrank{\Lnplus[n_{i}]} =
-        \lyapunovrank{\Lnplus} + 17$. To simplify the notation, we let
-        %
-        \begin{equation*}
-          f\of{x} \coloneqq \lyapunovrank{\Lnplus[x]},
-        \end{equation*}
-        %
-        and note that, by \cref{prop:rank of lorentz is maximal},
-        %
-        \begin{equation}\label[inequality]{ineq:f is superadditive}
-          f\of{x} + f\of{y} \le f\of{x + y}.
-        \end{equation}
-        %
-        It is also easy to see that
-        %
-        \begin{equation}\label{eq:f of n - 1}
-          f\of{n - 1} = f\of{n} - \qty{n - 1}.
-        \end{equation}
-        %
-        If we fix $\delta > 0$, then $g_{\delta}\of{x} \coloneqq f\of{x}
-        - f\of{x - \delta}$ is increasing since $g_{\delta}'\of{x} =
-        \delta$. In particular, $g_{\delta}\of{n - 1} \ge
-        g_{\delta}\of{10+\delta}$ whenever $n - 1 \ge 10 + \delta$. In
-        other words,
-        %
-        \begin{equation}\label[implication]{impl:growth inequality for f}
-          \begin{gathered}
-            n - 1 \ge 10 + \delta\\
-            \implies\\
-            f\of{n - 1} + f\of{10} \ge f\of{n - 1 - \delta} + f\of{10 + \delta}.
-          \end{gathered}
-        \end{equation}
-        %
-        Suppose we have a partition $\set{n_{1},n_{2},\ldots,n_{k}}$ of
-        $n+9$. We split the proof into two cases based on the dimension
-        of the largest factor, $n_{1}$. In each case we will see that
-        $\sum_{i=1}^{k}f\of{n_{i}}$ cannot be equal to $f\of{n} + 17$.
-        %
-        \begin{pcases}
-          \begin{case}[$n_{1} \le 9$]
-            Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$ with $S\of{0}
-            \coloneqq 0$. By assumption and definition we may
-            immediately conclude that $S\of{j} + 9 \ge S\of{j+1} >
-            S\of{j}$ for all $j<k$, and that $S\of{k} = n + 9 \ge 40$.
-            Define $\smallestidx$ to be the smallest index for which
-            $S\of{\smallestidx} > 9$ holds. There is such an index,
-            and $\smallestidx \ge 2$. It follows that $S\of{\smallestidx
-              - 1} \le 9$, $S\of{\smallestidx} \le 18$, and $\smallestidx <
-            k$. Applying \cref{ineq:f is superadditive} repeatedly, we
-            find that
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              =
-              \sum_{i=1}^{\smallestidx}f\of{n_{i}}
-              +
-              \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
-              \le
-              f\of{S\of{\smallestidx}} + f\of{n + 9 - S\of{\smallestidx}}.
-            \end{equation*}
-            %
-            Let $\delta \coloneqq S\of{\smallestidx} - 10$. Then
-            $\delta \ge 0$ by definition, and $10 + \delta =
-            S\of{\smallestidx} \le 18 \le n - 1$.  As a result, we may
-            rewrite the expression above in terms of $\delta$, and
-            apply \cref{impl:growth inequality for f} to conclude that
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              \le
-              f\of{10 + \delta} + f\of{n - 1 - \delta}
-              \le
-              f\of{n - 1} + f\of{10}.
-            \end{equation*}
-            %
-            Finally, using \cref{eq:f of n - 1}, we arrive at
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              \le
-              f\of{n} - \qty{n-1} + f\of{10}
-              \le
-              f\of{n} - 30 + 46
-              <
-              f\of{n} + 17.
-            \end{equation*}
-          \end{case}
-          \begin{case}[$n_{1} \ge 10$]
-            Recall that $n_{1} \le n-1$, and let $\delta \coloneqq n - 1 -
-            n_{1} \ge 0$. Then $n_{1} = n - 1 - \delta$ and $\sum_{i=2}^{k}
-            n_{i} = 10 + \delta$, so using \cref{ineq:f is superadditive},
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k} f\of{n_{i}}
-              \le
-              f\of{n - 1 - \delta} + f\of{10 + \delta}.
-            \end{equation*}
-            %
-            We have $n_{1} \ge 10$ by assumption, so from \cref{impl:growth
-              inequality for f} we conclude that
-            %
-            \begin{equation*}
-              f\of{n - 1 - \delta} + f\of{10 + \delta}
-              \le
-              f\of{n-1} + f\of{10}.
-            \end{equation*}
-            %
-            Finally, \cref{eq:f of n - 1} and the assumption that $n \ge
-            31$ now quickly lead to
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k} f\of{n_{i}}
-              \le
-              f\of{n} - n + 47
-              <
-              f\of{n} + 17. \qedhere
-            \end{equation*}
-            %
-          \end{case}
-        \end{pcases}
-      \end{proof}
-    \end{proposition}
+    \end{corollary}
 
     To catalogue the similacra of
-    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it now suffices to
-    check the first thirty values of $n$. Since we need only consider
-    Lorentz factors, this is easily done by partitioning $9+n$ (using,
+    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it therefore
+    suffices to check the first thirty values of $n$. And we need only
+    consider similacra the form
+    $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n-1 \ge n_{1} \ge
+    n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. For if a similacrum
+    contains $\Hnplus[3]\of{\Cn[1]}$, then, by subtracting
+    $\pair{9}{17}$ from both sides, it also contains a similacrum for
+    $\Lnplus$, which is not possible by \cref{cor:lorentz cone has no
+      similacra}. And if a similacrum does not contain
+    $\Hnplus[3]\of{\Cn[1]}$, then either it consists of only Lorentz
+    factors, or the results in \cref{sec:irreducible cones} let us
+    find some other similacrum consisting of only Lorentz factors.
+
+    Now since we need only consider Lorentz factors, enumerating the
+    possibilities is easily accomplished by partitioning $9+n$ (using,
     for example, the accelerated integer partitioning scheme of
-    Kelleher and O'Sullivan~\cite{kelleher-osullivan}) and computing
-    the corresponding Lypaunov ranks. Absent rows indicate the absence
-    of similacra.
+    Kelleher and O'Sullivan~\cite{kelleher-osullivan}). Absent rows
+    indicate the absence of similacra.
     %
     \begin{table}[H]
       \begin{center}
@@ -1100,18 +968,32 @@
       such that $\sum_{i=1}^{k} n_{i} = \dim\of{K} + n$.
 
       \begin{proof}
-        The reasoning here follows closely that of \cref{prop:no
-          similacra for h3plus and big enough lnplus}, with the new
-        bounds on $n$ supplied by
-        \cref{itm:condition1,itm:condition2,itm:condition3}. We
-        quickly sketch the idea. As before, by rearranging factors, we
-        may assume that $n_{1} \ge n_{2} \ge \cdots \ge n_{k}$.
-
-        Recall the definition $f\of{x} \coloneqq
-        \lyapunovrank{\Lnplus[x]}$ satisfying \cref{ineq:f is
-          superadditive} and \cref{eq:f of n - 1}. One can derive a
-        more-general version of \cref{impl:growth inequality for f},
-        namely
+        Note that $k \ge 2$ since $n_{1} < n$. By rearranging the
+        factors, we may assume that $n_{1} \ge n_{2} \ge \cdots \ge
+        n_{k}$. To simplify the notation, we let
+        %
+        \begin{equation*}
+          f\of{x} \coloneqq \lyapunovrank{\Lnplus[x]},
+        \end{equation*}
+        %
+        and note that, by \cref{prop:rank of lorentz is maximal},
+        %
+        \begin{equation}\label[inequality]{ineq:f is superadditive}
+          f\of{x} + f\of{y} \le f\of{x + y}.
+        \end{equation}
+        %
+        It is also easy to see for $n \ge 2$, which is guaranteed by
+        \cref{itm:condition3}, that
+        %
+        \begin{equation}\label{eq:f of n - 1}
+          f\of{n - 1} = f\of{n} - \qty{n - 1}.
+        \end{equation}
+        %
+        If we fix $\delta > 0$, then $g_{\delta}\of{x} \coloneqq
+        f\of{x} - f\of{x - \delta}$ is increasing since
+        $g_{\delta}'\of{x} = \delta$. In particular, $g_{\delta}\of{n
+          - 1} \ge g_{\delta}\of{1 + \dim\of{K} + \delta}$ whenever $n
+        - 1 \ge 1 + \dim\of{K} + \delta$. In other words,
         %
         \begin{equation}\label[implication]{impl:growth inequality for f pt2}
           \begin{gathered}
@@ -1123,28 +1005,92 @@
           \end{gathered}
         \end{equation}
 
-        As before, we consider two cases.
+        We split the proof into two cases based on the dimension of
+        the largest factor, $n_{1}$. In each case we will see that
+        $\sum_{i=1}^{k}f\of{n_{i}}$ is too small.
 
         \begin{pcases}
           \begin{case}[$n_{1} \le \dim\of{K}$]
-            This time around we define $\smallestidx$ to be the
-            smallest index such that $S\of{\smallestidx} >
-            \dim\of{K}$. Then $S\of{k} \le 2\dim\of{K}$, and we need
-            $n > \dim\of{K}$ to conclude that $\smallestidx < k$.
-            \cref{lem:more conditions} gives us that, and moreover
-            lets us apply \cref{impl:growth inequality for f pt2}.
-            Then finally, \cref{itm:condition2} lets us conclude that
-            $\sum_{i=1}^{k}f\of{n_{i}} < f\of{n} + \lyapunovrank{K}$.
+            Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$, and define
+            $\smallestidx$ to be the smallest index such that
+            $S\of{\smallestidx} > \dim\of{K}$. Since $S\of{k} = n +
+            \dim\of{K} > \dim\of{K}$, this is well-defined. From
+            \cref{lem:more conditions} we have that $n > \dim\of{K}$,
+            which moreover implies that $\smallestidx < k$. Applying
+            \cref{ineq:f is superadditive} repeatedly, we find that
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              =
+              \sum_{i=1}^{\smallestidx}f\of{n_{i}}
+              +
+              \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
+              \le
+              f\of{S\of{\smallestidx}}
+                + f\of{n + \dim\of{K}
+                - S\of{\smallestidx}}.
+            \end{equation*}
+            %
+            Let $\delta \coloneqq S\of{\smallestidx} - \dim\of{K} -
+            1$. Then $\delta \ge 0$ by the definition of
+            $\smallestidx$, and $\dim\of{K} + 1 + \delta =
+            S\of{\smallestidx} \le 2\dim\of{K}$ because
+            $S\of{\smallestidx - 1} \le \dim\of{K}$ and
+            $n_{\smallestidx} \le \dim\of{K}$. Thus by \cref{lem:more
+              conditions}, $\dim\of{K} + 1 + \delta < n$, which is
+            what we need to replace $S\of{\smallestidx}$ by $\delta$
+            and apply \cref{impl:growth inequality for f pt2}. Doing
+            so,
+            %
+            \begin{align*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              &\le
+              f\of{1 + \dim\of{K} + \delta} + f\of{n - 1 - \delta}\\
+              &\le
+              f\of{n-1} + f\of{1 + \dim\of{K}}.
+            \end{align*}
+            %
+            Finally, using \cref{eq:f of n - 1}, we arrive at
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              \le
+              f\of{n} - \qty{n-1}+ f\of{1 + \dim\of{K}},
+            \end{equation*}
+            %
+            which, by \cref{itm:condition2}, is strictly less than
+            $f\of{n} + \lyapunovrank{K}$.
           \end{case}
 
           \begin{case}[$n_{1} > \dim\of{K}$]
-            With $\sum_{i=2}^{k} n_{i} = \dim\of{K} + 1 + \delta$, the
-            proof proceeds as before. By assumption we can apply
-            \cref{impl:growth inequality for f pt2}, and then
-            \cref{itm:condition2} gives $\sum_{i=1}^{k}f\of{n_{i}} <
-            f\of{n} + \lyapunovrank{K}$. \qedhere
+            Recall that $n_{1} \le n-1$, and let $\delta \coloneqq n -
+            1 - n_{1} \ge 0$. Then $n_{1} = n - 1 - \delta$ and
+            $\sum_{i=2}^{k} n_{i} = 1 + \dim\of{K} + \delta$, so using
+            \cref{ineq:f is superadditive},
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k} f\of{n_{i}}
+              \le
+              f\of{n - 1 - \delta} + f\of{1 + \dim\of{K} + \delta}.
+            \end{equation*}
+            %
+            By assumption we can apply \cref{impl:growth inequality
+              for f pt2}, and then use \cref{eq:f of n - 1} on the
+            result:
+            %
+            \begin{align*}
+              \sum_{i=1}^{k} f\of{n_{i}}
+              &\le
+              f\of{n - 1} + f\of{1 + \dim\of{K}}\\
+              &=
+              f\of{n} - \qty{n - 1} + f\of{1 + \dim\of{K}}.
+            \end{align*}
+            %
+            \cref{itm:condition2} now gives $\sum_{i=1}^{k}f\of{n_{i}} <
+            f\of{n} + \lyapunovrank{K}$ as in the previous case.
+            \qedhere
           \end{case}
-          \end{pcases}
+        \end{pcases}
       \end{proof}
     \end{lemma}
 
