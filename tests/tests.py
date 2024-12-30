@@ -455,6 +455,48 @@ from signatures import *
 from cones import *
 
 
+def partition_rank(p):
+    r"""
+    Return the Lyapunov rank of a sum of Lorentz factors whose
+    dimensions are given by an integer partition.
+
+    A direct sum of Lorentz cones is determined (almost) uniquely by
+    the dimensions of its factors. The "almost" is because ``L(2)``
+    and ``L(1) + L(1)`` are equal, but ``[1,1]`` and ``[2]`` are not.
+    In any case, if we are given an integer partition that is intended
+    to identify a direct sum of Lorentz cone (for example, computed by
+    the :func:`signatures.partitions` function), then this function
+    computes the Lyapunov rank of that direct sum.
+
+    Parameters
+    ----------
+
+    p : [int]
+      A partition of some integer, represented as a list
+      of integers (whose sum if the one being partitioned).
+
+    Returns
+    -------
+
+    An integer: the Lypaunov rank of the direct sum of Lorentz cones
+    where the superscripts (i.e. the dimensions of the factors) are
+    given by this partition.
+
+    Examples
+    --------
+
+        >>> partition_rank([])
+        0
+        >>> partition_rank([0])
+        0
+        >>> partition_rank([1,2,3])
+        7
+
+    """
+    from signatures import f
+    return sum( map(f,p) )
+
+
 def fix_floor(s):
     r"""
     Strip symbolic "floor" calls from SymPy expressions.
