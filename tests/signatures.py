@@ -45,7 +45,7 @@ def f(n : int) -> int:
     return (n**2 - n + 2) // 2
 
 
-def _partitions(n : int) -> list[list[int]]:
+def partitions(n : int) -> list[list[int]]:
     r"""
     Return all partitions of the integer ``n`` in ascending order.
 
@@ -72,7 +72,7 @@ def _partitions(n : int) -> list[list[int]]:
 
         >>> from random import randint
         >>> n = randint(1,20)
-        >>> all( sum(p) == n for p in _partitions(n) )
+        >>> all( sum(p) == n for p in partitions(n) )
         True
 
     """
@@ -146,4 +146,4 @@ def _direct_lorentz_ranks(n : int) -> tuple:
     """
     # go from list -> set -> tuple to deduplicate them
     return tuple(set( (sum(f(p_k) for p_k in p) )
-                      for p in _partitions(n) ))
+                      for p in partitions(n) ))
