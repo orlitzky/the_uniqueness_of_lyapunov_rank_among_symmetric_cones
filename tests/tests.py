@@ -345,35 +345,6 @@ dimension, i.e. by solving ``K.dim + 2 + K.dim > max_cone_dim()``::
     >>> result
     True
 
-Check the table in Theorem 5::
-
-   >>> def maxd(n):
-   ...     d = 1
-   ...     while d*(d-1) <= (4*n - 10):
-   ...         d += 1
-   ...     return d-1
-   >>>
-   >>> maxd(5)
-   3
-   >>> maxd(6)
-   4
-   >>> maxd(7)
-   4
-   >>> maxd(8)
-   5
-   >>> maxd(9)
-   5
-   >>> maxd(10)
-   6
-   >>> maxd(11)
-   6
-   >>> maxd(12)
-   6
-   >>> maxd(13)
-   7
-   >>> maxd(14)
-   7
-
 This is the function we'll use to check that most non-Lorentz factors
 have a Lypaunov rank too small to be considered in Theorem 5. We need
 to be careful that ``n + K.dim`` is at least large enough to hold the
@@ -385,7 +356,7 @@ cone, otherwise we might get false positives::
     ...     g = f(n) + d - X.rank - f(n+d-X.dim)
     ...     return all( g.subs({n:i,d:j}) > 0
     ...                 for i in range(5,15)
-    ...                 for j in range(1, maxd(i)+1)
+    ...                 for j in range(1, max_dimK(i)+1)
     ...                 if i+j-X.dim >= 0 )
 
 The argument to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``, and
@@ -427,7 +398,7 @@ when ``n >= 10`` and ``K.dim >= 6``::
     >>> g = f(n) + d - X.rank - f(n+d-X.dim)
     >>> all( g.subs({n:i,d:j}) > 0
     ...      for i in range(5,15)
-    ...      for j in range(1, maxd(i)+1)
+    ...      for j in range(1, max_dimK(i)+1)
     ...      if (i < 10 or j < 6) )
     True
 
@@ -437,7 +408,7 @@ similacra for any of the valid cases::
     >>> from sql import all_cones_of_dim
     >>> all( not DirectSum([L(n),K]).similacra()
     ...      for n in range(5,15)
-    ...      for d in range(1,maxd(n)+1)
+    ...      for d in range(1,max_dimK(n)+1)
     ...      for K in all_cones_of_dim(d)
     ...      if n >= max(lowerbound1(K),lowerbound2(K)) )
     True
@@ -446,8 +417,11 @@ Oh, and ensure we have enough cones computed for this to actually be
 reliable::
 
     >>> from sql import max_cone_dim
-    >>> 14 + maxd(14) <= max_cone_dim()
+    >>> 14 + max_dimK(14) <= max_cone_dim()
     True
+
+Finally, we check the argument in Theorem 5 using the method that we
+have described (partitions, possibly offset by one ``HR(3)`` factor).
 
 """
 
@@ -455,8 +429,80 @@ from signatures import *
 from cones import *
 
 
-def partition_rank(p):
+
+def max_dimK(n):
     r"""
+    The largest possible dimension for ``K`` when ``n`` is fixed
+    and must satisfy :func:`lowerbound1` and :func:`lowerbound2`.
+
+    This is computed the dumb way rather than by solving the
+    quadratic.
+
+    Parameters
+    ----------
+
+    n : int
+      The fixed dimension of the Lorentz cone in Theorem 5.
+
+    Returns
+    -------
+
+    The largest integer dimension that ``K`` can have if ``n`` will
+    satisfy both ``lowerbound1(K)`` and ``lowerbound2(K)``.
+
+    Examples
+    --------
+
+    Check the table in Theorem 5::
+
+        >>> max_dimK(5)
+        3
+        >>> max_dimK(6)
+        4
+        >>> max_dimK(7)
+        4
+        >>> max_dimK(8)
+        5
+        >>> max_dimK(9)
+        5
+        >>> max_dimK(10)
+        6
+        >>> max_dimK(11)
+        6
+        >>> max_dimK(12)
+        6
+        >>> max_dimK(13)
+        7
+        >>> max_dimK(14)
+        7
+
+    Compare the answer against the smart way, by solving the quadratic
+    inequality ``d**2 - d - 4*n + 10 <= 0`` to find where the
+    upwards-facing parabola last crosses the x-axis. (Note that
+    we need ``n >= 3`` to get real solutions to this.)
+
+        >>> from math import floor, sqrt
+        >>> def qf(n):
+        ...     a = 1
+        ...     b = -1
+        ...     c = 10 - 4*n
+        ...     if (b**2 - 4*a*c) < 0:
+        ...         return None
+        ...     else:
+        ...         return floor( (-b + sqrt(b**2 - 4*a*c)) / (2*a) )
+        >>> all( qf(n) == max_dimK(n) for n in range(3,15) )
+        True
+
+    """
+    d = 1
+    while d*(d-1) <= (4*n - 10):
+        d += 1
+    return d-1
+
+
+def partition_rank(p):
+    r
+    """
     Return the Lyapunov rank of a sum of Lorentz factors whose
     dimensions are given by an integer partition.
 
