@@ -301,7 +301,7 @@ Finally, the 3x3 octonion cone::
    >>> I.rank > HO(3).rank
    True
 
-Check Theorem 4 using our precomputed dictionary of cones. We start
+Check Theorem 5 using our precomputed dictionary of cones. We start
 with a cone ``K``, and then add ``L(n)`` factors to it. If the
 resulting sum has similacra, then each similacrum should have an
 ``L(n)`` factor. We do this for as many ``n`` as we can, constrained
@@ -404,27 +404,92 @@ Check the table in Theorem 5::
    5
    >>> maxd(9)
    5
+   >>> maxd(10)
+   6
+   >>> maxd(11)
+   6
+   >>> maxd(12)
+   6
+   >>> maxd(13)
+   7
+   >>> maxd(14)
+   7
 
-And the argument to rule out ``HR(3)`` factors::
+This is the function we'll use to check that most non-Lorentz factors
+have a Lypaunov rank too small to be considered in Theorem 5. We need
+to be careful that ``n + K.dim`` is at least large enough to hold the
+cone, otherwise we might get false positives::
 
-   >>> from sympy import symbols
-   >>> n,d = symbols("n,d", integer=True, positive=True)
-   >>> f = lambda x: (x**2 - x + 2)/2
-   >>> g = f(n) + d - HR(3).rank - f(n+d-HR(3).dim)
-   >>> all( g.subs({n:i,d:j}) > 0
-   ...      for i in range(5,10)
-   ...      for j in range(1, maxd(i)+1) )
-   True
+    >>> n,d = symbols("n,d", integer=True, positive=True)
+    >>> f = lambda x: (x**2 - x + 2)/2   # no integer division... sympy
+    >>> def rank_too_small(X):
+    ...     g = f(n) + d - X.rank - f(n+d-X.dim)
+    ...     return all( g.subs({n:i,d:j}) > 0
+    ...                 for i in range(5,15)
+    ...                 for j in range(1, maxd(i)+1)
+    ...                 if i+j-X.dim >= 0 )
 
-And ``HC(3)`` factors. In this case we need to be careful that ``n +
-K.dim`` is at least ``9``, i.e. big enough to hold ``HC(3)``::
+The argument to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``, and
+``HH(3)`` factors::
 
-   >>> g = f(n) + d - HC(3).rank - f(n+d-HC(3).dim)
-   >>> all( g.subs({n:i,d:j}) > 0
-   ...      for i in range(5,10)
-   ...      for j in range(1, maxd(i)+1)
-   ...      if i+j-HC(3).dim >= 0 )
-   True
+    >>> X = HC(3)
+    >>> rank_too_small(X)
+    True
+
+    >>> X = HR(4)
+    >>> rank_too_small(X)
+    True
+
+    >>> X = HC(4)
+    >>> rank_too_small(X)
+    True
+
+    >>> X = HH(3)
+    >>> rank_too_small(X)
+    True
+
+Also check the two cases that we argue via similacra::
+
+    >>> DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra()
+    True
+    >>> DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra()
+    True
+
+Rule out multiple ``HR(3)`` factors to simplify the argument::
+
+    >>> X = DirectSum(2*[HR(3)])
+    >>> rank_too_small(X)
+    True
+
+And check that a single ``HR(3)`` is only viable as a factor of ``J``
+when ``n >= 10`` and ``K.dim >= 6``::
+
+    >>> X = HR(3)
+    >>> g = f(n) + d - X.rank - f(n+d-X.dim)
+    >>> all( g.subs({n:i,d:j}) > 0
+    ...      for i in range(5,15)
+    ...      for j in range(1, maxd(i)+1)
+    ...      if (i < 10 or j < 6) )
+    True
+
+Check Theorem 5 directly by confirming that there simply aren't any
+similacra for any of the valid cases::
+
+    >>> from sql import all_cones_of_dim
+    >>> all( not DirectSum([L(n),K]).similacra()
+    ...      for n in range(5,15)
+    ...      for d in range(1,maxd(n)+1)
+    ...      for K in all_cones_of_dim(d)
+    ...      if n >= max(lowerbound1(K),lowerbound2(K)) )
+    True
+
+Oh, and ensure we have enough cones computed for this to actually be
+reliable::
+
+    >>> from sql import max_cone_dim
+    >>> 14 + maxd(14) <= max_cone_dim()
+    True
+
 """
 
 from signatures import *

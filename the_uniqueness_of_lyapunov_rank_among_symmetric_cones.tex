@@ -1223,13 +1223,13 @@
     other two. By adding \cref{itm:condition1,itm:condition2}, what we
     obtain is $\dim\of{K}\qty{\dim\of{K} - 1} \le 4n - 10$. For this
     to be true we must have $n \ge 3$, and the potential new cases are
-    $n \in \set{3,4,5,\ldots,9}$, because $n \ge 10$ is handled by the
+    $n \in \set{3,4,\ldots,14}$, because $n \ge 15$ is handled by the
     theorem. For each $n$, then, we must then check all $K$ such that
     $\dim\of{K}\qty{\dim\of{K} - 1} \le 4n - 10$. There are a finite
     number of these, and computation shows that $\Hnplus[3]\of{\Rn[1]}
     \sim \directsum{\Lnplus[4]}{\Rnplus[2]}$ is the sole
     counterexample at $n = 4$. As a result, we can get away with
-    requiring $n \ge 5$ instead of $n \ge 10$.
+    requiring $n \ge 5$ instead of $n \ge 15$.
 
     \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \ge 5$
@@ -1243,7 +1243,7 @@
         the ``if'' direction was obvious and required no conditions on
         $n$. For the other direction, as just discussed, we must check
         the cones $K$ satisfying $\dim\of{K}\qty{\dim\of{K} - 1} \le
-        4n - 10$ for each $n \in \set{5,6,7,8,9}$. We begin by
+        4n - 10$ for each $n \in \set{5,6,\ldots,14}$. We begin by
         computing the maximum value of $\dim\of{K}$ corresponding to
         each $n$.
         %
@@ -1256,39 +1256,36 @@
               $6$ & $\set{1,2,3,4}$\\
               $7$ & $\set{1,2,3,4}$\\
               $8$ & $\set{1,2,3,4,5}$\\
-              $9$ & $\set{1,2,3,4,5}$
+              $9$ & $\set{1,2,3,4,5}$\\
+              $10$ & $\set{1,2,3,4,5,6}$\\
+              $11$ & $\set{1,2,3,4,5,6}$\\
+              $12$ & $\set{1,2,3,4,5,6}$\\
+              $13$ & $\set{1,2,3,4,5,6,7}$\\
+              $14$ & $\set{1,2,3,4,5,6,7}$\\
             \end{tabular}
           \end{center}
         \end{table}
         %
-        The total dimension of $J$ is therefore at most $14$, which
-        allows us to systematically eliminate the low-dimensional
-        non-Lorentz cones as possible factors of $J$. Note first that
-        $\lyapunovrank{\directsum{\Lnplus}{K}} \ge
+        The total dimension of $J$ is therefore at most $21$, which
+        allows us to eliminate all but one non-Lorentz cone as
+        possible factors of $J$ and $K$. The only non-Lorentz,
+        irreducible cone of dimension $7$ or less is
+        $\Hnplus[3]\of{\Rn[1]}$, so immediately we see that no other
+        non-Lorentz factors can be present in $K$. If we allow
+        dimensions of $21$ or less (for factors of $J$), then a few
+        more possibilities arise: $\Hnplus[4]\of{\Rn[1]}$,
+        $\Hnplus[5]\of{\Rn[1]}$, $\Hnplus[6]\of{\Rn[1]}$,
+        $\Hnplus[3]\of{\Cn[1]}$, $\Hnplus[4]\of{\Cn[1]}$, and
+        $\Hnplus[3]\of{\quaternions}$. However, each of these can be
+        ruled out.
+
+        Recall that $\lyapunovrank{\directsum{\Lnplus}{K}} \ge
         \lyapunovrank{\Lnplus} + \dim\of{K}$. If $J$ has an
-        $\Hnplus[3]\of{\Rn[1]}$ factor, then $\lyapunovrank{J} = 9 +
-        \lyapunovrank{J'} \le 9 + \lyapunovrank{\Lnplus[n + \dim\of{K}
-            - 6]}$ by \cref{prop:rank of lorentz is
+        $\Hnplus[3]\of{\Cn[1]}$ factor, then $\lyapunovrank{J} = 17 +
+        \lyapunovrank{J'} \le 17 + \lyapunovrank{\Lnplus[n + \dim\of{K}
+            - 9]}$ by \cref{prop:rank of lorentz is
           maximal}. Subtracting and substituting the values of
         $\pair{n}{\dim\of{K}}$ from the table above, we find that
-        %
-        \begin{equation*}
-          \lyapunovrank{\Lnplus} + \dim\of{K}
-          -9
-          -\lyapunovrank{\Lnplus[n + \dim\of{K} - 6]}
-          > 0
-        \end{equation*}
-        %
-        in all cases. Thus the Lyapunov rank of $J$ is not large
-        enough to be a similacrum. This rules out
-        $\Hnplus[3]\of{\Rn[1]}$ factors. Nor can $J$ have an
-        $\Hnplus[4]\of{\Rn[1]}$ factor, because
-        $\signature{\Hnplus[4]\of{\Rn[1]}} =
-        \signature{\directsum{\Hnplus[3]\of{\Rn[1]}}{\Lnplus[4]}}$,
-        and the Lyapunov rank of the latter, as we have just seen, is
-        too small. The only other irreducible non-Lorentz factor of
-        total dimension less than or equal to $14$ is
-        $\Hnplus[3]\of{\Cn[1]}$, and the same gimmick shows that
         %
         \begin{equation*}
           \lyapunovrank{\Lnplus} + \dim\of{K}
@@ -1297,15 +1294,85 @@
           > 0,
         \end{equation*}
         %
-        although here we check only the pairs $\pair{n}{\dim\of{K}}$
-        where $n + \dim\of{K} \ge 9$; that is, where $J$ is big enough
-        to hold $\Hnplus[3]\of{\Cn[1]}$. As a result, $J$ has only
-        Lorentz factors. The dimension of $K$ is too small to admit
-        non-Lorentz factors, so we have Lorentz factors
-        everywhere. The remaining cases may therefore be checked by
-        enumerating the integer partitions of $\dim\of{K}$ and $n +
-        \dim\of{K}$ for all valid combinations of $n$ and $\dim\of{K}$
-        as we have done earlier in \cref{tab:HC(3)+L(n) similacra}.
+        for all pairs $\pair{n}{\dim\of{K}}$ such that $n + \dim\of{K}
+        \ge 9$; that is, all pairs that would make $J$ large enough to
+        hold an $\Hnplus[3]\of{\Cn[1]}$ factor. An analogous argument
+        rules out $\Hnplus[4]\of{\Rn[1]}$, $\Hnplus[4]\of{\Cn[1]}$,
+        and $\Hnplus[3]\of{\quaternions}$. For the remaining two, we
+        can take a shortcut by noticing that
+        %
+        \begin{align*}
+          \Hnplus[5]\of{\Rn[1]}
+          &\sim
+          \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3] \oplus \Lnplus[3],\\
+          \Hnplus[6]\of{\Rn[1]}
+          &\sim
+          \Hnplus[3]\of{\Cn[1]}
+            \oplus \Lnplus[4]
+            \oplus \Lnplus[4]
+            \oplus \Lnplus[3]
+            \oplus \Roneplus.
+        \end{align*}
+        %
+        The $\Hnplus[3]\of{\Cn[1]}$ factor in these makes their
+        Lyapunov ranks too small, so neither of them can be factors in
+        $J$.
+
+        This leaves only $\Hnplus[3]\of{\Rn[1]}$ to
+        consider. Unfortunately, the strategy we have used so far
+        cannot rule $\Hnplus[3]\of{\Rn[1]}$ out entirely. We may only
+        conclude that,
+        %
+        \begin{itemize}
+          \begin{item}
+            $\Hnplus[3]\of{\Rn[1]}$ does not appear as a factor of $J$
+            unless $n \ge 10$ and $\dim\of{K} \ge 6$.
+          \end{item}
+          \begin{item}
+            The dimension of
+            $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Hnplus[3]\of{\Rn[1]}}$
+            is too large to fit in $K$.
+          \end{item}
+          \begin{item}
+            The Lyapunov rank of
+            $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Hnplus[3]\of{\Rn[1]}}$
+            is too small to appear as a factor of $J$.
+          \end{item}
+        \end{itemize}
+
+        So at most we will have to worry about a single
+        $\Hnplus[3]\of{\Rn[1]}$ factor in $J$, and only when $n \ge
+        10$. For lack of a better approach, the remaining cases can be
+        checked by brute force. If we had only Lorentz factors in $K$
+        and $J$, we could enumerate the possibilities by partitioning
+        the integers $\dim\of{K}$ and $n + \dim\of{K}$ for $K$ and $J$
+        respectively. (There are algorithms to do this; for example,
+        the accelerated integer partitioning scheme of Kelleher and
+        O'Sullivan~\cite{kelleher-osullivan}). But as there may be an
+        $\Hnplus[3]\of{\Rn[1]}$ in either cone, the process gets a
+        little more complicated.
+
+        For $n \le 9$ a pure integer-partition comparison can be used.
+        For each $n \ge 10$ and each associated $\dim\of{K}$ in the
+        table, there are a few possibilities. For $K$, we have the
+        sums of Lorentz cones that arise from the integer partitions
+        of $\dim\of{K}$, but we also have $\Hnplus[3]\of{\Rn[1]}$ in
+        $\dim\of{K} = 6$ and
+        $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Roneplus}$ in $\dim\of{K}
+        = 7$. For $J$, we have the sums of Lorentz cones arising from
+        the integer partitions of $n + \dim\of{K}$, but also those
+        cones that arise as a direct sum of $\Hnplus[3]\of{\Rn[1]}$
+        and an integer partition of $n + \dim\of{K} - 6$. Essentially
+        we decide whether or not to include $\Hnplus[3]\of{\Rn[1]}$,
+        and then partition the remaining dimensions.
+
+        Once the possibilities are computed for a fixed $n$ and
+        $\dim\of{K}$, we compare Lyapunov ranks. They will be equal in
+        a few cases, but keeping in mind that the partitions $1 + 1$
+        and $2$ are the same ($\Rnplus[2] \cong \Lnplus[2]$) and that
+        \cref{itm:condition1,itm:condition2} must hold, it easy to see
+        that the theorem holds because $J \nsim
+        \directsum{\Lnplus}{K}$ for all generated $K$ and $J$.
       \end{proof}
     \end{theorem}
 
