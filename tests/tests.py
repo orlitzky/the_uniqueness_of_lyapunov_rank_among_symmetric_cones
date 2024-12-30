@@ -301,89 +301,48 @@ Finally, the 3x3 octonion cone::
    >>> I.rank > HO(3).rank
    True
 
-Check Theorem 5 using our precomputed dictionary of cones. We start
-with a cone ``K``, and then add ``L(n)`` factors to it. If the
-resulting sum has similacra, then each similacrum should have an
-``L(n)`` factor. We do this for as many ``n`` as we can, constrained
-by the fact that ``K + L(n)`` needs to have a dimension that we have
-cached::
 
-    >>> from sql import max_cone_dim
-    >>> def check(K):
-    ...     n_min = max(lowerbound1(K),lowerbound2(K),lowerbound3b(K))
-    ...     n_max = max_cone_dim() - K.dim
-    ...     result = True
-    ...     for n in range(n_min, n_max+1):
-    ...         lhs = DirectSum([L(n),K])
-    ...         result &= all( L(n) in f.factors()
-    ...                        for f in lhs.similacra() )
-    ...     return result
+A systematic check of Theorem 5. For a given ``K.dim``,
+``lowerbound3b`` is constant, ``lowerbound1`` is minimized by the
+nonnegative orthant (with value ``n >= 2``), and ``lowerbound2`` is
+minimized by the Lorentz cone with value ``K.dim + 2`` (proof: we are
+either maximizing beta(K) or minimizing the Lyapunov rank in fixed
+dimensions)::
 
-Some small, hand-crafted examples::
+   >>> from sympy import symbols, expand
+   >>> d = symbols("d", integer=True, positive=True)
+   >>> expand(fix_floor(lowerbound2(L(d))))
+   d + 2
 
-   >>> K = DirectSum([HC(3), L(1)])
-   >>> check(K)
-   True
+The second bound is increasing with ``K.dim`` and dominates the
+first. As a result, we can use ``lowerbound2`` to determine the first
+potentially valid ``n`` corresponding to any ``K.dim``. Moreover we
+can easily compute the first ``K.dim`` where ``n + K.dim`` is
+guaranteed to exceed the largest dimension we have cached by adding
+``K.dim`` to the bound and setting it greater than that cached
+dimension, i.e. by solving ``K.dim + 2 + K.dim > max_cone_dim()``::
 
-   >>> K = DirectSum([HC(3), L(2)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HC(3), L(3)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HC(3), L(4)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HC(3), L(3), L(1)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HC(3), RN(4)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HR(3), RN(4)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HR(3), L(1)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HR(3), L(2)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HR(3), L(3)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([HR(3), HR(3)])
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([L(3)]*2)
-   >>> check(K)
-   True
-
-   >>> K = DirectSum([L(3)]*3)
-   >>> check(K)
-   True
-
-   >>> K = RN(5)
-   >>> check(K)
-   True
-
-A random example. Unfortunately the lower bound on ``n`` is almost
-always going to be higher than the largest dimension we have cached,
-and this will be a no-op in that case::
-
-    >>> from cones import random_cone
-    >>> K = random_cone()
-    >>> check(K)
+    >>> from sql import all_cones_of_dim
+    >>> result = True
+    >>> max_d = (max_cone_dim() - 2) // 2
+    >>> for d in range(1, max_d+1):
+    ...     min_n = max(lowerbound1(RN(d)),
+    ...                 lowerbound2(L(d)),
+    ...                 lowerbound3b(L(d)))
+    ...     max_n = max_cone_dim() - d
+    ...     for n in range(min_n, max_n+1):
+    ...         for K in all_cones_of_dim(d):
+    ...             if n < lowerbound1(K): continue
+    ...             if n < lowerbound2(K): continue
+    ...             if n < lowerbound3b(K): continue
+    ...             lhs = DirectSum([L(n),K])
+    ...             for J in lhs.similacra():
+    ...                 fs = list(J.factors())
+    ...                 # remove() raises an error if L(n) isn't a factor!
+    ...                 fs.remove(L(n))
+    ...                 J_prime = DirectSum(fs)
+    ...                 result &= J_prime in K.similacra()
+    >>> result
     True
 
 Check the table in Theorem 5::
