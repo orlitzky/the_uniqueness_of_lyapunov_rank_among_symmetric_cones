@@ -421,7 +421,35 @@ reliable::
     True
 
 Finally, we check the argument in Theorem 5 using the method that we
-have described (partitions, possibly offset by one ``HR(3)`` factor).
+have described (partitions, possibly offset by one ``HR(3)``
+factor). First, the small ``n`` where there are no ``HR(3)`` factors
+to worry about. We'll get a bunch of matching signatures, but they're
+all from isomorphic cones once you consider that ``L(2) == RN(2)``::
+
+    >>> from signatures import partitions, f
+    >>>
+    >>> # We'll collect the matching signatures in a list
+    >>> matches = []
+    >>>
+    >>> # reimplement the lower bounds in terms of partitions
+    >>> lb1 = lambda p: 2 + partition_rank(p) - sum(p)
+    >>> lb2 = lambda p: 2 + f(1+sum(p)) - partition_rank(p)
+    >>> lb3 = lambda p: 5
+    >>>
+    >>> for n in range(5,10):
+    ...     for d in range(1,max_dimK(n)+1):
+    ...         for K in partitions(d):
+    ...             if n < lb1(K): continue
+    ...             if n < lb2(K): continue
+    ...             if n < lb3(K): continue
+    ...             Ln_K_rank = f(n) + partition_rank(K)
+    ...             for J in partitions(d+n):
+    ...                 if (partition_rank(J) == Ln_K_rank):
+    ...                         Ln_K = [n] + K
+    ...                         if not partitions_equivalent(J,Ln_K):
+    ...                             matches.append( (Ln_K, J) )
+    >>> matches
+    []
 
 """
 
