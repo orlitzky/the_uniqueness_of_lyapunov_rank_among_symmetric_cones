@@ -1316,55 +1316,54 @@
         %
         The $\Hnplus[3]\of{\Cn[1]}$ factor in these makes their
         Lyapunov ranks too small, so neither of them can be factors in
-        $J$.
-
-        This leaves only $\Hnplus[3]\of{\Rn[1]}$ to
+        $J$. This leaves only $\Hnplus[3]\of{\Rn[1]}$ to
         consider. Unfortunately, the strategy we have used so far
-        cannot rule $\Hnplus[3]\of{\Rn[1]}$ out entirely. We may only
-        conclude that,
+        cannot rule $\Hnplus[3]\of{\Rn[1]}$ out entirely. We may
+        however draw several conclusions:
         %
         \begin{itemize}
           \begin{item}
-            $\Hnplus[3]\of{\Rn[1]}$ does not appear as a factor of $J$
-            unless $n \ge 10$ and $\dim\of{K} \ge 6$.
+            $\Hnplus[3]\of{\Rn[1]}$ cannot be a factor of $K$, because
+            \cref{itm:condition2} applied to $\Hnplus[3]\of{\Rn[1]}$
+            or $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Roneplus}$, the
+            only two possibilities for $K$, would require $n \ge 15$.
           \end{item}
+
           \begin{item}
-            The dimension of
-            $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Hnplus[3]\of{\Rn[1]}}$
-            is too large to fit in $K$.
+            $\Hnplus[3]\of{\Rn[1]}$ does not appear as a factor of $J$
+            unless $n \ge 10$ and $\dim\of{K} \ge 6$ because the
+            resulting Lyapunov rank is too small.
           \end{item}
+
           \begin{item}
             The Lyapunov rank of
             $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Hnplus[3]\of{\Rn[1]}}$
             is too small to appear as a factor of $J$.
           \end{item}
         \end{itemize}
-
+        %
         So at most we will have to worry about a single
         $\Hnplus[3]\of{\Rn[1]}$ factor in $J$, and only when $n \ge
         10$. For lack of a better approach, the remaining cases can be
-        checked by brute force. If we had only Lorentz factors in $K$
-        and $J$, we could enumerate the possibilities by partitioning
-        the integers $\dim\of{K}$ and $n + \dim\of{K}$ for $K$ and $J$
-        respectively. (There are algorithms to do this; for example,
-        the accelerated integer partitioning scheme of Kelleher and
-        O'Sullivan~\cite{kelleher-osullivan}). But as there may be an
-        $\Hnplus[3]\of{\Rn[1]}$ in either cone, the process gets a
-        little more complicated.
+        checked by brute force. If we had only Lorentz factors in both
+        $K$ and $J$, we could enumerate the possibilities by
+        partitioning the integers $\dim\of{K}$ and $n + \dim\of{K}$
+        for $K$ and $J$ respectively. (There are algorithms to do
+        this; for example, the accelerated integer partitioning scheme
+        of Kelleher and O'Sullivan~\cite{kelleher-osullivan}). But as
+        there may be an $\Hnplus[3]\of{\Rn[1]}$ in $J$, the process
+        gets a little more complicated.
 
         For $n \le 9$ a pure integer-partition comparison can be used.
         For each $n \ge 10$ and each associated $\dim\of{K}$ in the
-        table, there are a few possibilities. For $K$, we have the
-        sums of Lorentz cones that arise from the integer partitions
-        of $\dim\of{K}$, but we also have $\Hnplus[3]\of{\Rn[1]}$ in
-        $\dim\of{K} = 6$ and
-        $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Roneplus}$ in $\dim\of{K}
-        = 7$. For $J$, we have the sums of Lorentz cones arising from
-        the integer partitions of $n + \dim\of{K}$, but also those
-        cones that arise as a direct sum of $\Hnplus[3]\of{\Rn[1]}$
-        and an integer partition of $n + \dim\of{K} - 6$. Essentially
-        we decide whether or not to include $\Hnplus[3]\of{\Rn[1]}$,
-        and then partition the remaining dimensions.
+        table, there are a two cases. For $K$, we have the integer
+        partitions of $\dim\of{K}$; but for $J$, we have not only the
+        sums of Lorentz cones arising from the integer partitions of
+        $n + \dim\of{K}$, but also those cones that arise from a
+        direct sum of $\Hnplus[3]\of{\Rn[1]}$ and an integer partition
+        of $n + \dim\of{K} - 6$. Essentially we decide whether or not
+        to include $\Hnplus[3]\of{\Rn[1]}$ in $J$, and then partition
+        the remaining dimensions.
 
         Once the possibilities are computed for a fixed $n$ and
         $\dim\of{K}$, we compare Lyapunov ranks. They will be equal in
