@@ -429,6 +429,108 @@ from signatures import *
 from cones import *
 
 
+def partitions_equivalent(p,q):
+    r"""
+    Determine whether two partitions represent the same
+    sum-of-Lorentz cones.
+
+    The order of factors in a direct sum does not matter, so one thing
+    this function does is sort the elements of each partition. But we
+    also must take care that ``RN(2)`` and ``L(2)`` are the same cone.
+
+    Parameters
+    ----------
+
+    p,q : [int]
+      Integer partitions representing sums of Lorentz cones.
+
+    Returns
+    -------
+
+    ``True`` if ``p`` and ``q`` represent the same sum-of-Lorentz
+    cone, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Small batch, hand-crafted examples::
+
+        >>> partitions_equivalent([], [0])
+        True
+        >>> partitions_equivalent([1], [2])
+        False
+        >>> partitions_equivalent([0,0], [])
+        True
+        >>> partitions_equivalent([1,2,3], [1,2,2,1])
+        False
+        >>> partitions_equivalent([1,1,2], [1,1,1,1])
+        True
+        >>> partitions_equivalent([2,1,2], [1,1,1,1,1])
+        True
+        >>> partitions_equivalent([1,1,3], [2,3])
+        True
+        >>> partitions_equivalent([1,1,3], [3,2])
+        True
+
+    Being equivalent is a symmetric relationship::
+
+        >>> from random import choice, randint
+        >>> from signatures import partitions
+        >>> n = randint(1,10)
+        >>> ps = list(partitions(n))
+        >>> p = choice(ps)
+        >>> q = choice(ps)
+        >>> partitions_equivalent(p,q) == partitions_equivalent(q,p)
+        True
+
+    """
+    if (sum(p) != sum(q)):
+        return False
+
+    # sort and remove zeros (which shouldn't be there in the first
+    # place)
+    p = sorted(i for i in p if not i == 0)
+    q = sorted(j for j in q if not j == 0)
+
+    # Remove all factors of size >= 3 in p from both p and q
+    for i in p:
+        if i <= 2:
+            continue
+        elif i not in q:
+            # Since i >= 3, if i is missing from q, they're not
+            # isomorphic. (Without i >= 3 this doesn't work, because
+            # for example [1,1] and [2] have no elements in common.)
+            return False
+        else:
+            p.remove(i)
+            q.remove(i)
+
+    # Now what's left in p is its 1,2 elements; and what's left in q
+    # is whatever 1,2 elements it had plus any elements >= 3 that
+    # were not in p. We can repeat in the opposite direction.
+    for j in q:
+        if j <= 2:
+            continue
+        elif j not in p:
+            return False
+        else:
+            p.remove(j)
+            q.remove(j)
+
+    # Now both p and q should have only 1s and 2s in them. They should
+    # still sum to the same value if they are isomorphic.
+    if (not p) or (not q):
+        # one of them's empty, they both had better be
+        return (p == q)
+
+    # Both nonempty, this is safe
+    if max(p) > 2 or max(q) > 2:
+        raise ValueError("elements of size >= 2 left in partition")
+
+    # Otherwise, so long as they still add up to the same size, the
+    # 1-dim and 2-dim factors can all be grouped.
+    return sum(p) == sum(q)
+
 
 def max_dimK(n):
     r"""
