@@ -602,46 +602,49 @@
     difficult. We already have several examples of non-irreducible
     cones whose Lyapunov ranks are not unique. Every similacrum we've
     constructed so far has symmetric similacra---that's why we
-    constructed it! The best we can hope for is to narrow down the
-    possibilities a bit.
+    constructed them! The best we can hope for is to narrow down the
+    possibilities a bit. In this section our focus will be on reducing
+    the general problem to smaller subproblems. It is worth
+    investigating due to the following (rather obvious) result.
 
-  \begin{lemma}\label{lem:no multiple complex factors}
+    \begin{lemma}\label{lem:subcone similacra}
+      If any symmetric subcone of a symmetric cone $K$ has symmetric
+      similacra, then so does $K$.
+      %
+      \begin{proof}
+        If $K = \directsum{K_{1}}{K_{2}}$ and if $K_{2} \sim J_{2}$,
+        then $K \sim \directsum{K_{1}}{J_{2}}$.
+      \end{proof}
+    \end{lemma}
+
+    If we can determine which pairs of factors have symmetric
+    similacra, then those pairs cannot appear in any larger symmetric
+    cone without inducing symmetric similacra. This might be called a
+    ``bottom up'' approach. Or, suppose we can prove that
+    $\directsum{J}{K}$ has symmetric similacra if and only if $K$
+    does. In that case our job has become easier, and if we are lucky,
+    the process may be repeated, making it easier still. This would be
+    the ``top down'' approach.
+
+    \begin{corollary}\label{cor:no multiple complex factors}
       If a symmetric cone contains more than one
       $\Hnplus[3]\of{\Cn[1]}$ factor (up to isomorphism), then it has
       symmetric similacra.
       %
       \begin{proof}
-        Let,
-        \begin{align*}
-          K_{2} &\coloneqq \Lnplus[7]
-                 \oplus    \Lnplus[3]
-                 \oplus    \Rnplus[8],\\
-          K_{3} &\coloneqq \Lnplus[8]
-                 \oplus    \Lnplus[4]
-                 \oplus    \Rnplus[15].
-        \end{align*}
+        If the cone contains two or more $\Hnplus[3]\of{\Cn[1]}$
+        factors, then it contains two $\Hnplus[3]\of{\Cn[1]}$ factors,
+        and for the purposes of \cref{lem:subcone similacra} we may use
         %
-        Then,
+        \begin{equation*}
+          \directsum{\Hnplus[3]\of{\Cn[1]}}{\Hnplus[3]\of{\Cn[1]}}
+          \sim
+          \Lnplus[7] \oplus \Lnplus[3] \oplus \Rnplus[8].
+          \qedhere
+        \end{equation*}
         %
-        \begin{align*}
-          \signature{K_{2}}
-            = \pair{18}{34}
-            &= 2\signature{\Hnplus[3]\of{\Cn[1]}},\\
-          \signature{K_{3}}
-            = \pair{27}{51}
-            &= 3\signature{\Hnplus[3]\of{\Cn[1]}}.
-        \end{align*}
-        %
-        Suppose our target cone contains $m$ copies of
-        $\Hnplus[3]\of{\Cn[1]}$. Since $m = 2k + 3j$ for some $k \in
-        \Nn[1]$ and $j \in \set{0,1}$, we can construct a symmetric cone
-        containing $k$ copies of $K_{2}$ and $j$ copies of $K_{3}$ (in
-        lieu of the $m$ copies of $\Hnplus[3]\of{\Cn[1]}$) sharing its
-        signature. The new cone cannot be isomorphic to the original
-        because the direct sum decomposition into a set of irreducible
-        factors is unique up to isomorphism.
       \end{proof}
-    \end{lemma}
+    \end{corollary}
 
     \begin{theorem}\label{thm:two unique families}
       Up to isomorphism, every symmetric cone $K$ is either of, or has
@@ -665,7 +668,7 @@
       \begin{proof}
         \cref{thm:only irreducible factors} shows that the other
         irreducible families have similacra involving
-        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, and \cref{lem:no
+        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, and \cref{cor:no
           multiple complex factors} shows that we need (or can have)
         at most one $\Hnplus[3]\of{\Cn[1]}$ factor.
       \end{proof}
@@ -673,9 +676,9 @@
 
     This result can be interpreted as saying that every symmetric cone
     shares its signature with a direct sum of Lorentz cones and/or
-    $\Hnplus[3]\of{\Cn[1]}$ via either isomorphism or similacra. This
-    much is true, but we caution that even this ``reduced''
-    representation of a similacrum is not unique.
+    $\Hnplus[3]\of{\Cn[1]}$ via either isomorphism or similacra. We
+    caution however that even this ``reduced'' form of a similacrum is
+    not unique.
 
     \begin{example}\label{ex:reduction is not unique}
       It is easy to check that
@@ -686,178 +689,23 @@
         \Lnplus[5] \oplus \Rnplus[8].
       \end{equation*}
       %
-      As a result, we can derive a second (non-isomorphic) similacrum
-      consisting only of Lorentz cones in \cref{prop:octonion psd has
-        similacra}.
+      As a result, there are (at least) two similacra of
+      $\Hnplus[3]\of{\octonions}$ that consist only of Lorentz cones.
     \end{example}
 
-    \cref{lem:no multiple complex factors} shows that if a symmetric
-    cone has one $\Hnplus[3]\of{\Cn[1]}$ factor, then it cannot have any
-    additional $\Hnplus[3]\of{\Cn[1]}$ factors without acquiring
-    symmetric similacra. Does something similar happen when we combine
-    $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors? It is worth
-    investigating due to the following (rather obvious) result.
+    \cref{cor:no multiple complex factors} shows that if a symmetric
+    cone has one $\Hnplus[3]\of{\Cn[1]}$ factor, then it cannot have
+    any additional $\Hnplus[3]\of{\Cn[1]}$ factors without acquiring
+    symmetric similacra. We will see later in \cref{cor:HC(3)+L(n)}
+    that almost the opposite happens when we combine
+    $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors for large $n$. But
+    to prove that result it is easier to consider the general problem,
+    and ask when we can reduce the problem for
+    $\directsum{\Lnplus}{K}$ to that for $K$.
 
-    \begin{lemma}\label{lem:subcone similacra}
-      If any symmetric subcone of a symmetric cone $K$ has symmetric
-      similacra, then so does $K$.
-    \end{lemma}
-
-    If we can determine which pairs of irreducible factors induce
-    symmetric similacra, then we can rule out those pairs as factors in
-    any larger symmetric cone that does not have symmetric
-    similacra.
-
-    \begin{corollary}
-      If $n \ge 31$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$
-      has no symmetric similacra.
-    \end{corollary}
-
-    To catalogue the similacra of
-    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it therefore
-    suffices to check the first thirty values of $n$. And we need only
-    consider similacra the form
-    $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n-1 \ge n_{1} \ge
-    n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. For if a similacrum
-    contains $\Hnplus[3]\of{\Cn[1]}$, then, by subtracting
-    $\pair{9}{17}$ from both sides, it also contains a similacrum for
-    $\Lnplus$, which is not possible by \cref{cor:lorentz cone has no
-      similacra}. And if a similacrum does not contain
-    $\Hnplus[3]\of{\Cn[1]}$, then either it consists of only Lorentz
-    factors, or the results in \cref{sec:irreducible cones} let us
-    find some other similacrum consisting of only Lorentz factors.
-
-    Now since we need only consider Lorentz factors, enumerating the
-    possibilities is easily accomplished by partitioning $9+n$ (using,
-    for example, the accelerated integer partitioning scheme of
-    Kelleher and O'Sullivan~\cite{kelleher-osullivan}). Absent rows
-    indicate the absence of similacra.
-    %
-    \begin{table}[H]
-      \begin{center}
-        \begin{tabular}{c ccc}
-          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$ & $\sim$\\
-          \midrule
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[2]$ &
-            $11$ &
-            $19$ &
-            $\Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3]$ &
-            $12$ &
-            $21$ &
-            $\Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[4]$ &
-            $13$ &
-            $24$ &
-            $\Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[5]$ &
-            $14$ &
-            $28$ &
-            $\Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[6]$ &
-            $15$ &
-            $33$ &
-            $\Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[7]$ &
-            $16$ &
-            $39$ &
-            $\Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[8]$ &
-            $17$ &
-            $46$ &
-            $\Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[9]$ &
-            $18$ &
-            $54$ &
-            $\Lnplus[10] \oplus \Rnplus[8]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[10]$ &
-            $19$ &
-            $63$ &
-          $\Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[15]$ &
-            $24$ &
-            $123$ &
-          $\Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[18]$ &
-            $27$ &
-            $171$ &
-            $\Lnplus[14] \oplus \Lnplus[13]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[21]$ &
-            $30$ &
-            $228$ &
-            $\Lnplus[19] \oplus \Lnplus[11]$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[22]$ &
-            $31$ &
-            $249$ &
-            $\Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus$\\
-          %
-          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[30]$ &
-            $39$ &
-            $453$ &
-            $\Lnplus[29] \oplus \Lnplus[10]$\\
-          \end{tabular}
-        \caption{Similacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}\label{tab:HC(3)+L(n) similacra}
-      \end{center}
-    \end{table}
-
-    \begin{proposition}
-      $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric similacra
-      if and only if $n \in \set{2,3,\ldots,10,15,18,21,22,30}$. If
-      $K$ is a symmetric cone with an $\Hnplus[3]\of{\Cn[1]}$ factor
-      and no symmetric similacra, then
-      %
-      \begin{equation*}
-        K
-        \cong
-        \Hnplus[3]\of{\Cn[1]}
-        \oplus
-        \Lnplus[n_{1}]
-        \oplus
-        \Lnplus[n_{2}]
-        \oplus
-        \cdots
-        \oplus
-        \Lnplus[n_{k}]
-      \end{equation*}
-      %
-      where $k \in \Nn[1]$ and $n_{i} \in \Nn[1]
-      \setminus \set{2,3,\ldots,10,15,18,21,22,30}$.
-      %
-      \begin{proof}
-        With \cref{lem:subcone similacra} in mind, start from
-        \cref{thm:two unique families} and remove the known similacra
-        from the table.
-      \end{proof}
-    \end{proposition}
-
-    The meta-problem we are up against with reducible cones is that,
-    since there are so many possibilities, it is not terribly
-    interesting to start crossing them off the list one at a time. It
-    was worth looking at $\Hnplus[3]\of{\Cn[1]}$ because it is
-    ``unique.'' But where can we go from here?
-
-    Our last result aims to eliminate an entire family of
-    possibilities by reducing them to subproblems. The idea is that,
-    if a given cone has an $\Lnplus$ factor for large enough $n$, then
-    any similacrum must have that same factor. Those two factors can
-    then be subtracted, leaving the subproblem for whatever is
-    left. This is essentially a generalization of... (removed)
-
-    If the problem is to find similacra of $\directsum{\Lnplus}{K}$,
+    When the problem is to find similacra of $\directsum{\Lnplus}{K}$,
     we will impose three conditions on $n$ relative to $K$:
-
+    %
     \begin{enumerate}
       \begin{item}\label[condition]{itm:condition1}
         $n \ge 2 + \lyapunovrank{K} - \dim\of{K}$,
@@ -869,11 +717,11 @@
         $n \ge 15$.
       \end{item}
     \end{enumerate}
-
-    The $n \ge 15$ bound is not very elegant. Either way we are going
-    to wind up checking some low-dimensional cases by hand; this way
-    we have more cases to check, but in exchange, a few of the proofs
-    are simplified.
+    %
+    The $n \ge 15$ bound is not very elegant, but either way, we are
+    going to wind up checking some low-dimensional cases by hand. With
+    the $n \ge 15$ bound we have more cases to check, but in exchange,
+    a few of the proofs are simplified.
 
     \begin{lemma}\label{lem:condition4}
       If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
@@ -1371,6 +1219,137 @@
     \end{equation*}
     %
     Each bound is therefore essential.
+
+    \begin{corollary}\label{cor:HC(3)+L(n)}
+      If $n \ge 31$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$
+      has no symmetric similacra.
+    \end{corollary}
+
+    To catalogue the similacra of
+    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it therefore
+    suffices to check the first thirty values of $n$. And we need only
+    consider similacra the form
+    $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n-1 \ge n_{1} \ge
+    n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. For if a similacrum
+    contains $\Hnplus[3]\of{\Cn[1]}$, then, by subtracting
+    $\pair{9}{17}$ from both sides, it also contains a similacrum for
+    $\Lnplus$, which is not possible by \cref{cor:lorentz cone has no
+      similacra}. And if a similacrum does not contain
+    $\Hnplus[3]\of{\Cn[1]}$, then either it consists of only Lorentz
+    factors, or the results in \cref{sec:irreducible cones} let us
+    find another cone having the same signature and only Lorentz
+    factors. Since we need only consider Lorentz factors, enumerating
+    the possibilities is easily accomplished by partitioning
+    $9+n$. Absent rows indicate the absence of similacra.
+    %
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}{c ccc}
+          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$ & $\sim$\\
+          \midrule
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[2]$ &
+            $11$ &
+            $19$ &
+            $\Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3]$ &
+            $12$ &
+            $21$ &
+            $\Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[4]$ &
+            $13$ &
+            $24$ &
+            $\Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[5]$ &
+            $14$ &
+            $28$ &
+            $\Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[6]$ &
+            $15$ &
+            $33$ &
+            $\Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[7]$ &
+            $16$ &
+            $39$ &
+            $\Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[8]$ &
+            $17$ &
+            $46$ &
+            $\Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[9]$ &
+            $18$ &
+            $54$ &
+            $\Lnplus[10] \oplus \Rnplus[8]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[10]$ &
+            $19$ &
+            $63$ &
+          $\Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[15]$ &
+            $24$ &
+            $123$ &
+          $\Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[18]$ &
+            $27$ &
+            $171$ &
+            $\Lnplus[14] \oplus \Lnplus[13]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[21]$ &
+            $30$ &
+            $228$ &
+            $\Lnplus[19] \oplus \Lnplus[11]$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[22]$ &
+            $31$ &
+            $249$ &
+            $\Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus$\\
+          %
+          $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[30]$ &
+            $39$ &
+            $453$ &
+            $\Lnplus[29] \oplus \Lnplus[10]$\\
+          \end{tabular}
+        \caption{Similacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}\label{tab:HC(3)+L(n) similacra}
+      \end{center}
+    \end{table}
+
+    \begin{proposition}
+      $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric similacra
+      if and only if $n \in \set{2,3,\ldots,10,15,18,21,22,30}$. If
+      $K$ is a symmetric cone with an $\Hnplus[3]\of{\Cn[1]}$ factor
+      and no symmetric similacra, then
+      %
+      \begin{equation*}
+        K
+        \cong
+        \Hnplus[3]\of{\Cn[1]}
+        \oplus
+        \Lnplus[n_{1}]
+        \oplus
+        \Lnplus[n_{2}]
+        \oplus
+        \cdots
+        \oplus
+        \Lnplus[n_{k}]
+      \end{equation*}
+      %
+      where $k \in \Nn[1]$ and $n_{i} \in \Nn[1]
+      \setminus \set{2,3,\ldots,10,15,18,21,22,30}$.
+      %
+      \begin{proof}
+        With \cref{lem:subcone similacra} in mind, start from
+        \cref{thm:two unique families} and remove the known similacra
+        from the table.
+      \end{proof}
+    \end{proposition}
 
     \begin{proposition}
       If $m \ne 2$ and if $n \ge \qty{m^2 - 3m + 6}/2$, then
