@@ -501,8 +501,7 @@ def max_dimK(n):
 
 
 def partition_rank(p):
-    r
-    """
+    r"""
     Return the Lyapunov rank of a sum of Lorentz factors whose
     dimensions are given by an integer partition.
 
