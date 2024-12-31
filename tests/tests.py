@@ -108,7 +108,7 @@ similacra method as well::
     >>> n_with_similacra
     [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
 
-Check the symbolic identity in Lemma 6 for the derivative of the
+Check the symbolic identity in Lemma 5 for the derivative of the
 g-delta function::
 
     >>> from sympy import diff, symbols
@@ -117,7 +117,7 @@ g-delta function::
     >>> diff(g, x)
     d
 
-Check the symbolic identity in Lemma 6 for the Lyapunov rank of
+Check the symbolic identity in Lemma 5 for the Lyapunov rank of
 ``L(n-1)`` in terms of that of ``L(n)``::
 
     >>> from sympy import simplify, symbols
@@ -127,7 +127,7 @@ Check the symbolic identity in Lemma 6 for the Lyapunov rank of
     >>> simplify(fix_floor(lhs - rhs))
     0
 
-Check implication (3) in Lemma 6::
+Check implication (3) in Lemma 5::
 
     >>> f = lambda x: L(x).rank
     >>> all( f(n-1) + f(1+dimK) >= f(n-1-d) + f(1+dimK+d)
