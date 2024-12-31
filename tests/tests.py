@@ -541,16 +541,22 @@ def partitions_equivalent(p,q):
         True
         >>> partitions_equivalent([1,1,3], [3,2])
         True
+        >>> partitions_equivalent([1,3,3], [2,2,3])
+        False
 
     Being equivalent is a symmetric relationship::
 
-        >>> from random import choice, randint
+        >>> from random import randint
         >>> from signatures import partitions
         >>> n = randint(1,10)
         >>> ps = list(partitions(n))
-        >>> p = choice(ps)
-        >>> q = choice(ps)
-        >>> partitions_equivalent(p,q) == partitions_equivalent(q,p)
+        >>> all(
+        ...   partitions_equivalent(p,q)
+        ...   ==
+        ...   partitions_equivalent(q,p)
+        ...   for p in ps
+        ...   for q in ps
+        ... )
         True
 
     """
@@ -562,30 +568,44 @@ def partitions_equivalent(p,q):
     p = sorted(i for i in p if not i == 0)
     q = sorted(j for j in q if not j == 0)
 
-    # Remove all factors of size >= 3 in p from both p and q
-    for i in p:
-        if i <= 2:
-            continue
-        elif i not in q:
-            # Since i >= 3, if i is missing from q, they're not
-            # isomorphic. (Without i >= 3 this doesn't work, because
-            # for example [1,1] and [2] have no elements in common.)
+    # Remove all factors of size >= 3 in p from both p and q. Use
+    # indices instead of a "for foo in bar" loop because we're going
+    # to be deleting items from the list we're iterating over.
+    idx = 0
+    len_p = len(p)
+    while idx < len_p:
+        if p[idx] <= 2:
+            # skip it
+            idx += 1
+        elif p[idx] not in q:
+            # Since p[idx] >= 3, if it's missing from q, they're not
+            # isomorphic. (Without p[idx] >= 3 this doesn't work,
+            # because for example [1,1] and [2] have no elements in
+            # common.)
             return False
         else:
-            p.remove(i)
-            q.remove(i)
+            # Otherwise, remove this element from both p and q, but
+            # don't increment idx, because they'll all shift down by
+            # one.
+            q.remove(p[idx])
+            del(p[idx])
+            len_p -= 1
 
     # Now what's left in p is its 1,2 elements; and what's left in q
     # is whatever 1,2 elements it had plus any elements >= 3 that
     # were not in p. We can repeat in the opposite direction.
-    for j in q:
-        if j <= 2:
-            continue
-        elif j not in p:
+    idx = 0
+    len_q = len(q)
+    while idx < len_q:
+        if q[idx] <= 2:
+            # skip it
+            idx += 1
+        elif q[idx] not in p:
             return False
         else:
-            p.remove(j)
-            q.remove(j)
+            p.remove(q[idx])
+            del(q[idx])
+            len_q -= 1
 
     # Now both p and q should have only 1s and 2s in them. They should
     # still sum to the same value if they are isomorphic.
