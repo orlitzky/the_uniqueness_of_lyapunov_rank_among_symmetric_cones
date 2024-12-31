@@ -708,31 +708,6 @@
     any larger symmetric cone that does not have symmetric
     similacra.
 
-    \begin{lemma}\label{lem:no bigger factors}
-      If $n \ge 10$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}
-      \nsim \directsum{J}{\Lnplus[n+k]}$ for any symmetric $J$ and any
-      $k \ge 0$.
-      %
-      \begin{proof}
-        We can rule out $k = 0$, because in that case, we are left with
-        just $\Hnplus[3]\of{\Cn[1]}$ which has no similacra. With $k \ge
-        1$, the smallest possible Lyapunov rank of any similacrum is at
-        $k = 1$ with $J = \Rnplus[8]$. But if $n \ge 10$, then
-        %
-        \begin{equation*}
-          \lyapunovrank{\Rnplus[8] \oplus \Lnplus[n+1]}
-          -
-          \lyapunovrank{\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus}
-          =
-          n-9
-          \ge
-          1.
-        \end{equation*}
-        %
-        Thus, the smallest possible Lyapunov rank is too large to work.
-      \end{proof}
-    \end{lemma}
-
     \begin{corollary}
       If $n \ge 31$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$
       has no symmetric similacra.
@@ -927,7 +902,7 @@
     $\directsum{\Lnplus}{K}$ shares its signature with some other cone
     having a larger Lorentz cone factor than $\Lnplus$.
 
-    \begin{lemma}\label{lem:no bigger factors pt2}
+    \begin{lemma}\label{lem:no bigger factors}
       If $K$ is symmetric and if $n \ge 2 + \lyapunovrank{K} -
       \dim\of{K}$, then $ \signature{\directsum{J}{\Lnplus[n+k]}} \ne
       \signature{\directsum{K}{\Lnplus}}$ for any symmetric $J$ and
@@ -1192,7 +1167,7 @@
         $\bar{J}$ contains whatever Lorentz factors were in $J$ when
         we started\footnote{If $J$ has no non-Lorentz factors, we set $H
         \coloneqq \bar{J} \coloneqq J$ as step zero.}. By \cref{lem:no
-          bigger factors pt2}, none of the factors in $\bar{J}$ are
+          bigger factors}, none of the factors in $\bar{J}$ are
         larger than $\Lnplus$. And if the factors of $\bar{J}$ were
         all smaller than $\Lnplus$, then every factor of $H$ would be
         smaller than $\Lnplus$, and \cref{lem:not all smaller factors}
@@ -1377,7 +1352,7 @@
 
     None of the remaining conditions can be
     weakened. \cref{itm:condition1} was chosen to exceed the value of
-    an explicit counterexample in \cref{lem:no bigger factors pt2}. If
+    an explicit counterexample in \cref{lem:no bigger factors}. If
     $n = 1 + \lyapunovrank{K} - \dim\of{K}$, one fewer than the bound,
     then except for a few carefully-chosen $K$,
     %
