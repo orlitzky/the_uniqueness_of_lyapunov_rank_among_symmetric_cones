@@ -423,8 +423,8 @@ reliable::
 Finally, we check the argument in Theorem 5 using the method that we
 have described (partitions, possibly offset by one ``HR(3)``
 factor). First, the small ``n`` where there are no ``HR(3)`` factors
-to worry about. We'll get a bunch of matching signatures, but they're
-all from isomorphic cones once you consider that ``L(2) == RN(2)``::
+to worry about. There are many matching signatures, but they're all
+from isomorphic cones once you consider that ``L(2) == RN(2)``::
 
     >>> from signatures import partitions, f
     >>>
@@ -448,6 +448,48 @@ all from isomorphic cones once you consider that ``L(2) == RN(2)``::
     ...                         Ln_K = [n] + K
     ...                         if not partitions_equivalent(J,Ln_K):
     ...                             matches.append( (Ln_K, J) )
+    >>> matches
+    []
+
+Now things get a bit ugly, since we have to (potentially) include
+``HR(3)`` in ``J``, which is always big enough to hold one. Whereas
+before we represented a cone as a partition, we now represent it as an
+``(j, p)`` pair, where ``j`` is either zero or one, indicating the
+presence of an ``HR(3)`` factor, and ``p`` is a partition representing
+its Lorentz factors::
+
+    >>> matches = []
+    >>> for n in range(10,15):
+    ...     for d in range(1,max_dimK(n)+1):
+    ...         Ks = []
+    ...         for p in partitions(d):
+    ...             # K is pure Lorentz, per the theorem
+    ...             if n < lb1(p): continue
+    ...             if n < lb2(p): continue
+    ...             if n < lb3(p): continue
+    ...             Ks.append( (0,p) )
+    ...
+    ...         # Always include pure-Lorentz J
+    ...         Js = [ (0,p) for p in partitions(d+n) ]
+    ...
+    ...         # And since d+n is always >= 6, always include HR(3)
+    ...         # with a partition of whatever's left.
+    ...         for q in partitions(d + n - HR(3).dim):
+    ...             Js.append( (1,q) )
+    ...
+    ...         for K in Ks:
+    ...             Ln_K = (K[0], [n] + K[1])
+    ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3)s here
+    ...
+    ...             for J in Js:
+    ...                 J_rank = partition_rank(J[1]) + HR(3).rank*J[0]
+    ...                 if J_rank == Ln_K_rank:
+    ...                     # These two conditions aren't perfect, but
+    ...                     # they're enough to eliminate all matches.
+    ...                     if J[0] != Ln_K[0]:
+    ...                         matches.append( (Ln_K,J) )
+    ...                     if not partitions_equivalent(Ln_K[1],J[1]):
+    ...                         matches.append( (Ln_K,J) )
     >>> matches
     []
 
