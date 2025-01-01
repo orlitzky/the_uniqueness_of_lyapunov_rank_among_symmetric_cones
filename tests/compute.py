@@ -517,7 +517,13 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
 if __name__ == "__main__":
     # if executed, we start computing more cones
-    n = sql.max_cone_dim() + 1
+    mcd = sql.max_cone_dim()
+    if mcd:
+        n = mcd + 1
+    else:
+        # there won't be a maximum dimension if the DB is empty
+        n = 0
+
     while True:
         print(f"computing dimension {n}", end="", flush=True)
         _ = dim_ranks_cones(n, True, sql.LIVE_DATABASE, True)
