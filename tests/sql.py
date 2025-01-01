@@ -217,6 +217,58 @@ def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCon
 
 
 
+def have_cone_dim(d : int, db : str = LIVE_DATABASE) -> bool:
+    r"""
+    Return ``True`` if we have cached the cones of the given
+    dimension, and ``False`` otherwise.
+
+    Since this does not modify the database, we use the live database
+    by default. This is _almost_ redundant, since we should have all
+    cones of dimension less than func:`max_cone_dim`, but it's nicer
+    to check for exactly what we need.
+
+    Parameters
+    ----------
+
+    d : int
+      The dimension to check for in the database.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
+
+    An outrageously large example::
+
+        >>> have_cone_dim(8675309)
+        False
+
+    In a new database, we won't have anything...::
+
+       >>> new_database(db=TEST_DATABASE)
+       >>> all( not have_cone_dim(n, db=TEST_DATABASE)
+       ...      for n in range(25) )
+       True
+
+    ...until we add it::
+
+       >>> import compute
+       >>> _ = compute.dim_ranks_cones(5, True)
+       >>> have_cone_dim(5, db=TEST_DATABASE)
+       True
+
+    """
+    conn = sqlite3.connect(db)
+    stmt = "SELECT dim FROM cones where dim=?"
+    result = False
+    with conn:
+        if conn.execute(stmt, (d,)).fetchone():
+            result = True
+    conn.close()
+    return result
+
+
 def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     r"""
     Return the maximum dimension of any cone in the database.
