@@ -81,11 +81,10 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
 
         >>> sorted(_admissible_lorentz_ranks(3, None, sql.TEST_DATABASE))
         [3, 4]
+
     """
     if d is None:
-        n_max = sql.max_lorentz_rank_dim(db=db)
-        if n_max and n <= n_max:
-            # n_max can be None if db is empty
+        if sql.have_lorentz_rank_dim(n, db=db):
             return sql.admissible_lorentz_ranks(n, db=db)
     else:
         if n in d:
@@ -169,8 +168,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     tuples, the order that they wind up in is not meaningful::
 
         >>> def check(n):
-        ...     mlrd = sql.max_lorentz_rank_dim()
-        ...     if not mlrd or n > mlrd:
+        ...     if not sql.have_lorentz_rank_dim(n):
         ...         # don't fail if we're just missing the data
         ...         return True
         ...     actual = sorted(sql.admissible_lorentz_ranks(n))
@@ -188,6 +186,16 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
         >>> n = randint(1,76)
         >>> check(n)
         True
+
+    Since we don't recurse all the way down to ``n = 0``, some care is
+    needed to make sure that we don't assume the existence of that row
+    based on the presence of rows for larger dimensions::
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> sorted(admissible_lorentz_ranks(4, True))
+        [4, 5, 7]
+        >>> admissible_lorentz_ranks(0, True)
+        (0,)
 
     """
     # The implementation of this function _always_ uses a cache,
@@ -404,9 +412,7 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
 
     """
     if d is None:
-        n_max = sql.max_cone_dim(db=db)
-        if n_max and n <= n_max:
-            # n_max can be None if db is empty
+        if sql.have_cone_dim(n, db=db):
             return sql.dim_ranks_cones(n, db=db)
     else:
         if n in d:
@@ -497,15 +503,24 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
     The precomputed values should agree with the ones we compute::
 
-    >>> def check(n):
-    ...     d1 = sql.dim_ranks_cones(n)
-    ...     d2 = dim_ranks_cones(n)
-    ...     return ( all( set(d1[r]) == set(d2[r]) for r in d1 )
-    ...              and sorted(d1.keys()) == sorted(d2.keys()) )
-    >>> from random import randint
-    >>> n = randint(0,40)
-    >>> check(n)
-    True
+        >>> def check(n):
+        ...     d1 = sql.dim_ranks_cones(n)
+        ...     d2 = dim_ranks_cones(n)
+        ...     return ( all( set(d1[r]) == set(d2[r]) for r in d1 )
+        ...              and sorted(d1.keys()) == sorted(d2.keys()) )
+        >>> from random import randint
+        >>> n = randint(0,40)
+        >>> check(n)
+        True
+
+    Since we don't recurse all the way down to ``n = 0``, some care is
+    needed to make sure that we don't assume the existence of that row
+    based on the presence of rows for larger dimensions::
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> _ = dim_ranks_cones(4, True)
+        >>> dim_ranks_cones(0, True)
+        {0: (1,)}
 
     """
     # The implementation of this function _always_ uses a cache, the
