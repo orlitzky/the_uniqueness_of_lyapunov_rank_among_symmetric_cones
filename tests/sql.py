@@ -373,6 +373,58 @@ def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int]:
     return tuple(set(a+b)) # dedupe
 
 
+
+def have_lorentz_rank_dim(d : int, db : str = LIVE_DATABASE) -> bool:
+    r"""
+    Return ``True`` if we know the admissible Lorentz ranks for
+    the given dimension, and ``False`` otherwise.
+
+    Since this does not modify the database, we use the live database
+    by default. This is _almost_ redundant, since we should have all
+    ranks for dimensions less than func:`max_lorentz_rank_dim`, but
+    it's nicer to check for exactly what we need.
+
+    Parameters
+    ----------
+
+    d : int
+      The dimension to check for in the database.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
+
+    An outrageously large example::
+
+        >>> have_lorentz_rank_dim(8675309)
+        False
+
+    In a new database, we won't have anything...::
+
+       >>> new_database(db=TEST_DATABASE)
+       >>> all( not have_lorentz_rank_dim(n, db=TEST_DATABASE)
+       ...      for n in range(25) )
+       True
+
+    ...until we add it::
+
+       >>> import compute
+       >>> _ = compute.admissible_lorentz_ranks(10, True)
+       >>> have_lorentz_rank_dim(10, db=TEST_DATABASE)
+       True
+    """
+    conn = sqlite3.connect(db)
+    stmt = "SELECT dim FROM lorentz_ranks where dim=?"
+    result = False
+    with conn:
+        if conn.execute(stmt, (d,)).fetchone():
+            result = True
+    conn.close()
+    return result
+
+
 def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     r"""
     Return the maximum dimension for which we know the admissible
