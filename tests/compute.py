@@ -82,7 +82,30 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
         >>> sorted(_admissible_lorentz_ranks(3, None, sql.TEST_DATABASE))
         [3, 4]
 
+    To avoid surprises, ensure that the ``n = 0`` case gets added to the
+    dictionary or database::
+
+        >>> d = {}
+        >>> _admissible_lorentz_ranks(2, d, None)
+        (2,)
+        >>> d
+        {0: (0,), 1: (1,), 2: (2,)}
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> _admissible_lorentz_ranks(2, None, sql.TEST_DATABASE)
+        (2,)
+        >>> sql.admissible_lorentz_ranks(0, sql.TEST_DATABASE)
+        (0,)
+
     """
+    if n == 1:
+        # This function has side effects (updating the dictionary or
+        # database) that are missed for n=0 because we never recurse
+        # that far down. To avoid surprises, we call the theoretical
+        # base case from the de facto base case to trigger its side
+        # effects.
+        _ = _admissible_lorentz_ranks(0, d, db)
+
     if d is None:
         if sql.have_lorentz_rank_dim(n, db=db):
             return sql.admissible_lorentz_ranks(n, db=db)
@@ -410,7 +433,28 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
         >>> _dim_ranks_cones(3, None, sql.TEST_DATABASE, False)
         {3: ((11, 11, 11),), 4: (31,)}
 
+    To avoid surprises, ensure that the ``n = 0`` case gets added to the
+    dictionary or database::
+
+        >>> d = {}
+        >>> _ = _dim_ranks_cones(2, d, None, False)
+        >>> d[0]
+        {0: (1,)}
+
+        >>> sql.new_database(sql.TEST_DATABASE)
+        >>> _ = _dim_ranks_cones(2, None, sql.TEST_DATABASE, False)
+        >>> sql.dim_ranks_cones(0, sql.TEST_DATABASE)
+        {0: (1,)}
+
     """
+    if n == 1:
+        # This function has side effects (updating the dictionary or
+        # database) that are missed for n=0 because we never recurse
+        # that far down. To avoid surprises, we call the theoretical
+        # base case from the de facto base case to trigger its side
+        # effects.
+        _ = _dim_ranks_cones(0, d, db, progress)
+
     if d is None:
         if sql.have_cone_dim(n, db=db):
             return sql.dim_ranks_cones(n, db=db)
