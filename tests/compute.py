@@ -169,6 +169,10 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     tuples, the order that they wind up in is not meaningful::
 
         >>> def check(n):
+        ...     mlrd = sql.max_lorentz_rank_dim()
+        ...     if not mlrd or n > mlrd:
+        ...         # don't fail if we're just missing the data
+        ...         return True
         ...     actual = sorted(sql.admissible_lorentz_ranks(n))
         ...     expected = sorted(admissible_lorentz_ranks(n))
         ...     return (actual == expected)
