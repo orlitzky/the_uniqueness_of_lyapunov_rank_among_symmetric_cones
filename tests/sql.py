@@ -233,11 +233,12 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     Examples
     --------
 
-    This is the right answer, because I computed the database and I
-    say so::
+    The right answer depends on how long you're willing to wait (and
+    whether or not the data exist)::
 
-        >>> max_cone_dim()
-        88
+        >>> mcd = max_cone_dim()
+        >>> mcd is None or isinstance(mcd, int)
+        True
 
     In a new database, there won't be a maximum::
 
@@ -389,11 +390,12 @@ def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     Examples
     --------
 
-    This is the right answer, because I computed the database and I
-    say so::
+    The right answer depends on how long you're willing to wait (and
+    whether or not the data exist)::
 
-        >>> max_lorentz_rank_dim()
-        250
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> mlrd is None or isinstance(mlrd, int)
+        True
 
     In a new database, there won't be a maximum::
 
