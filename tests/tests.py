@@ -1075,3 +1075,63 @@ def test_proposition2():
 
     # They could be isomorphic; but if not, it's a strict inequality.
     return ( J == K or J.rank > K.rank )
+
+
+def test_proposition3():
+    r"""
+    Test the statement of Proposition 3.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_proposition3()
+        True
+
+    From the proof of Proposition 3, we know that for ``n >= 3``,
+    ``HR(n)`` has symmetric similacra with only Lorentz
+    factors. Moreover when ``n < 3``, ``HR(n)`` _is_ a Lorentz
+    cone. In either case, ``HR(n)`` should share its signature with a
+    sum of Lorentz cones. We begin by computing the largest ``n`` for
+    which we have the corresponding sum-of-Lorentz-cone data cached::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> n_max = 0
+        >>> while (n_max**2 + n_max)//2 <= max_lorentz_rank_dim():
+        ...     n_max += 1
+        >>> n_max -= 1
+        >>> all(
+        ...   HR(n).rank
+        ...   in admissible_lorentz_ranks(HR(n).dim)
+        ...   for n in range(n_max+1)
+        ... )
+        True
+
+    In fact, we know the formula for at least one such similacrum::
+
+        >>> def check(n):
+        ...     K1 = L(n+1)
+        ...     K2 = RN((n**2 - n - 2) // 2)
+        ...     K = DirectSum([K1,K2])
+        ...     return (HR(n).signature() == K.signature())
+        >>>
+        >>> all( check(n) for n in range(2,100) )
+        True
+
+    """
+    from sql import max_cone_dim
+
+    # figure out how big "n" can be if we want to use the database of
+    # cached cones.
+    n_max = 0
+    while (n_max**2 + n_max)//2 <= max_cone_dim():
+        n_max += 1
+    n_max -= 1
+
+    n_min = 3
+    if n_max < n_min:
+        # No cached cones?
+        return True
+
+    return all( HR(n).similacra() for n in range(n_min, n_max+1) )

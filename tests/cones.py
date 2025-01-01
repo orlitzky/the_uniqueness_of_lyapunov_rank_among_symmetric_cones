@@ -425,26 +425,8 @@ class HR(SymmetricCone):
     r"""
     The real PSD cone of order ``n``.
 
-    This cone has symmetric similacra for all n >= 3::
-
-        >>> from sql import admissible_lorentz_ranks
-        >>> all(
-        ...   HR(n).rank
-        ...   in admissible_lorentz_ranks(HR(n).dim)
-        ...   for n in range(22)
-        ... )
-        True
-
-    We know the formula for each similacrum from Proposition 2::
-
-        >>> def check(n):
-        ...     K1 = L(n+1)
-        ...     K2 = RN((n**2 - n - 2) // 2)
-        ...     K = DirectSum([K1,K2])
-        ...     return (HR(n).signature() == K.signature())
-        >>>
-        >>> all( check(n) for n in range(2,100) )
-        True
+    Examples
+    --------
 
     Test the inverse dimension formula::
 
