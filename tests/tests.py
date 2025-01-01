@@ -1,52 +1,4 @@
 r"""
-Exhaustive integer partition calculations to confirm results.
-
-Test the expressions derived in Proposition 1::
-
-    >>> from sympy import expand, floor, simplify, symbols
-    >>> m,n,k = symbols("m,n,k", integer=True, positive=True)
-
-Sympy doesn't know (for example) that n^2 + n is even, so we have to
-fix the "floor" that it inserts everywhere we use integer
-division-by-two on an even expression::
-
-    >>> K = L(n)
-    >>> J1 = L(k)
-    >>> J2 = L(n-k)
-    >>> J = DirectSum([J1,J2], False)  # can't sort symbolics
-    >>> actual = fix_floor(K.rank - J.rank)
-    >>> expected = (n-k)*k - 1
-    >>> simplify(actual - expected)
-    0
-
-    >>> K = L(27)
-    >>> J = HO(3)
-    >>> K.dim == J.dim
-    True
-    >>> K.rank > J.rank
-    True
-
-    >>> K = L((m**2 + m)/2)
-    >>> J = HR(m)
-    >>> fix_floor(K.dim - J.dim)
-    0
-    >>> expand(fix_floor(K.rank - J.rank))
-    m**4/8 + m**3/4 - 9*m**2/8 - m/4 + 1
-
-    >>> K = L(m**2)
-    >>> J = HC(m)
-    >>> fix_floor(K.dim - J.dim)
-    0
-    >>> fix_floor(K.rank - J.rank)
-    m**4/2 - 5*m**2/2 + 2
-
-    >>> K = L(2*m**2 - m)
-    >>> J = HH(m)
-    >>> fix_floor(K.dim - J.dim)
-    0
-    >>> expand(fix_floor(K.rank - J.rank))
-    2*m**4 - 2*m**3 - 9*m**2/2 + m/2 + 1
-
 We verify Proposition 8: if ``n > 30``, we never get similacra. The
 precomputed signatures are used for this so that it completes in a
 reasonable time::
@@ -1037,3 +989,89 @@ def lowerbound3b(K):
 
     """
     return 5
+
+
+def test_proposition2():
+    r"""
+    Test the statement of Proposition 2.
+
+    We construct a random cone and checking that its Lorentz rank is
+    exceeded by that of the Lorentz cone of the same dimension.
+
+    Setup
+    -----
+
+    Create some symbols that we'll use in the following examples::
+
+        >>> from sympy import expand, simplify, symbols
+        >>> m,n,k = symbols("m,n,k", integer=True, positive=True)
+
+    Examples
+    --------
+
+    Test the statement with one random cone::
+
+        >>> test_proposition2()
+        True
+
+    Confirm that using two Lorentz cones gives you a smaller Lyapunov
+    rank than one Lorentz cone would, assuming the dimension is
+    fixed::
+
+        >>> K = L(n)
+        >>> J1 = L(k)
+        >>> J2 = L(n-k)
+        >>> J = DirectSum([J1,J2], False)  # can't sort symbolics
+        >>> actual = fix_floor(K.rank - J.rank)
+        >>> expected = (n-k)*k - 1
+        >>> simplify(actual - expected)
+        0
+
+    The rank of ``L(27)`` exceeds that of ``HO(3)``::
+
+        >>> K = L(27)
+        >>> J = HO(3)
+        >>> K.dim == J.dim
+        True
+        >>> K.rank > J.rank
+        True
+
+    The difference between the rank of the Lorentz cone and the rank
+    of the real symmetric PSD cone of equal dimension is the
+    polynomial we expect::
+
+        >>> K = L((m**2 + m)/2)
+        >>> J = HR(m)
+        >>> fix_floor(K.dim - J.dim)
+        0
+        >>> expand(fix_floor(K.rank - J.rank))
+        m**4/8 + m**3/4 - 9*m**2/8 - m/4 + 1
+
+    The difference between the rank of the Lorentz cone and the rank
+    of the complex Hermitian PSD cone of equal dimension is the
+    polynomial we expect::
+
+        >>> K = L(m**2)
+        >>> J = HC(m)
+        >>> fix_floor(K.dim - J.dim)
+        0
+        >>> fix_floor(K.rank - J.rank)
+        m**4/2 - 5*m**2/2 + 2
+
+    The difference between the rank of the Lorentz cone and the rank
+    of the quaternion Hermitian PSD cone of equal dimension is the
+    polynomial we expect::
+
+        >>> K = L(2*m**2 - m)
+        >>> J = HH(m)
+        >>> fix_floor(K.dim - J.dim)
+        0
+        >>> expand(fix_floor(K.rank - J.rank))
+        2*m**4 - 2*m**3 - 9*m**2/2 + m/2 + 1
+
+    """
+    K = random_cone()
+    J = L(K.dim)
+
+    # They could be isomorphic; but if not, it's a strict inequality.
+    return ( J == K or J.rank > K.rank )
