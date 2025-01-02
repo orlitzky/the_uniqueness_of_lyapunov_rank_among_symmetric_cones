@@ -411,48 +411,13 @@
     cone $\Lnplus[3]$ is however isomorphic to $\Hnplus[2]\of{\Rn[1]}$
     and therefore not a similacrum.
 
-    \begin{proposition}\label{prop:uniqueness of h3}
-      $\Hnplus[3]\of{\Cn[1]}$ has no symmetric similacra.
-
-      \begin{proof}
-        Keeping in mind that $n \ge 3$ is required to produce
-        non-isomorphic families, the dimension of this cone rules out
-        $\Hnplus\of{\Cn[1]}$, $\Hnplus\of{\quaternions}$ and
-        $\Hnplus[3]\of{\octonions}$ as factors. By \cref{prop:real psd
-          similacra} we may therefore assume without loss of
-        generality that all factors are Lorentz cones of various
-        sizes. Since $\lyapunovrank{\Lnplus} > 17$ for $n > 6$, we
-        need only consider Lorentz cone factors of dimension six or
-        less. And $\lyapunovrank{\Lnplus[6]} = 16$, so if $\Lnplus[6]$
-        were one factor, then the other factors would have combined
-        signature $\pair{3}{1}$, which is not possible. So, all
-        Lorentz cone factors have dimension five or less.
-
-        If $\Lnplus[5]$ is a factor, then the remaining factors
-        (combined) have signature $\pair{4}{6}$. The Lyapunov ranks of
-        $\Rnplus[4]$ and $\Lnplus[3] \oplus \Roneplus$
-        are too small, and that of $\Lnplus[4]$ is too large. Thus, a
-        similacrum cannot have $\Lnplus[5]$ factors.
-
-        If $\Lnplus[4]$ is a factor, then the other factors have
-        signature $\pair{5}{10}$. $\Lnplus[5]$ has already been ruled
-        out as a factor, and the Lyapunov rank of $\Lnplus[4] \oplus
-        \Roneplus$ is too small. \cref{prop:rank of lorentz is % chktex 12
-          maximal} shows that further splitting of $\Lnplus[4]$ will
-        not help, so $\Lnplus[4]$ cannot be a factor.
-
-        Finally, we note that $\lyapunovrank{\Lnplus[3] \oplus
-          \Lnplus[3] \oplus \Lnplus[3]}$ is too small.
-      \end{proof}
-    \end{proposition}
-
-    \begin{proposition}\label{prop:complex PSD of size four or more has similacra}
-      $\Hnplus\of{\Cn[1]}$ has symmetric similacra for all $n \ge 4$.
+    \begin{proposition}\label{prop:complex psd similacra}
+      $\Hnplus[n]\of{\Cn[1]}$ has symmetric similacra for $n \ge 4$,
+      but not for $n = 3$.
 
       \begin{proof}
         If $n = 4$, then $\Hnplus[4]\of{\Cn[1]} \sim \Lnplus[5] \oplus
         \Lnplus[5] \oplus \Lnplus[4] \oplus \Rnplus[2]$. And if $n \ge 5$,
-        behold:
         %
         \begin{equation*}
           \Hnplus\of{\Cn[1]}
@@ -460,13 +425,49 @@
                \oplus \Lnplus[n+1]
                \oplus \Rnplus[\qty{n^{2} - 5n + 1}]
                \oplus \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n-1 \text{ times}}.
-          \qedhere
         \end{equation*}
         %
+        This shows that $\Hnplus\of{\Cn[1]}$ has similacra for all $n
+        \ge 4$.
+
+        For $n = 3$, we first show that if $\Hnplus[3]\of{\Cn[1]}$ has
+        a similacrum, then it has one with all Lorentz factors. Recall
+        that for $m \le 2$, each of the matrix cones
+        $\Hnplus[m]\of{\Fn[1]}$ with $\Fn[1] \in \set{\Rn[1], \Cn[1],
+          \quaternions, \octonions}$ is isomorphic to a Lorentz cone
+        of an appropriate size. For $m \ge 3$, we saw in
+        \cref{prop:real psd similacra} that any
+        $\Hnplus[m]\of{\Rn[1]}$ factors can be replaced by Lorentz
+        cones, and none of the other options $\Hnplus[m]\of{\Cn[1]}$,
+        $\Hnplus[m]\of{\quaternions}$, or $\Hnplus[3]\of{\octonions}$
+        are small enough to fit (except for $\Hnplus[3]\of{\Cn[1]}$
+        itself, which obviously does not help). We may therefore
+        assume that all factors in any similacrum are Lorentz cones of
+        various sizes.
+
+        Since $\lyapunovrank{\Lnplus[m]} > 17$ for $m > 6$, we need
+        only consider $\Lnplus[m]$ factors with $m \le 6$. And
+        $\lyapunovrank{\Lnplus[6]} = 16$, so if $\Lnplus[6]$ were one
+        factor, then the other factors would have combined signature
+        $\pair{3}{1}$, which is not possible. Thus, $m \le 5$ for all
+        factors.  If $\Lnplus[5]$ is a factor, then the remaining
+        factors (combined) have signature $\pair{4}{6}$. The Lyapunov
+        ranks of $\Rnplus[4]$ and $\Lnplus[3] \oplus \Roneplus$ are
+        too small, and that of $\Lnplus[4]$ is too large. Thus, a
+        similacrum cannot have $\Lnplus[5]$ factors.  If $\Lnplus[4]$
+        is a factor, then the other factors have signature
+        $\pair{5}{10}$. $\Lnplus[5]$ has already been ruled out as a
+        factor, and the Lyapunov rank of $\Lnplus[4] \oplus \Roneplus$
+        is too small. \cref{prop:rank of lorentz is maximal} shows
+        that further splitting of $\Lnplus[4]$ will not help, so
+        $\Lnplus[4]$ cannot be a factor. Finally, we note that
+        $\lyapunovrank{\Lnplus[3] \oplus \Lnplus[3] \oplus
+          \Lnplus[3]}$ is too small.
       \end{proof}
     \end{proposition}
 
-    \begin{proposition}\label{prop:quaternion psd has similacra}
+
+    \begin{proposition}\label{prop:quaternion psd similacra}
       $\Hnplus\of{\quaternions}$ has symmetric similacra for all $n \ge 3$.
 
       \begin{proof}
@@ -502,7 +503,7 @@
     \end{proposition}
 
 
-    \begin{proposition}\label{prop:octonion psd has similacra}
+    \begin{proposition}
       $\Hnplus[3]\of{\octonions}$ has symmetric similacra.
 
       \begin{proof}
@@ -545,10 +546,10 @@
     them, only two or three subproblems are needed to construct the
     similacra in this section.
 
-    The first is straightforward: in \cref{prop:complex PSD of size
-      four or more has similacra}, we used the fact that
-    $\signature{\Lnplus[3]} = \pair{3}{4}$ which leads a solution of
-    the $\pair{3n}{4n}$-subproblem,
+    The first is straightforward: in \cref{prop:complex psd
+      similacra}, we used the fact that $\signature{\Lnplus[3]} =
+    \pair{3}{4}$ which leads a solution of the
+    $\pair{3n}{4n}$-subproblem,
     %
     \begin{equation*}
       \signature{
@@ -592,7 +593,7 @@
     $\qty{m-1}\qty{m-2}/2 = \qty{n^{2} - n}/2$. But this is easy: take
     $m \coloneqq n + 1$. The solution to the subproblem then gives the
     similacra in \cref{prop:real psd similacra}. The second form of
-    this subproblem is used in \cref{prop:quaternion psd has
+    this subproblem is used in \cref{prop:quaternion psd
       similacra} after guessing that one factor is
     $\Hnplus[n+1]\of{\Cn[1]}$.
   \end{section}
