@@ -1102,10 +1102,11 @@ def test_proposition3() -> bool:
     which we have the corresponding sum-of-Lorentz-cone data cached::
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
-        >>> n_max = 0
-        >>> while HR(n_max).dim <= max_lorentz_rank_dim():
-        ...     n_max += 1
-        >>> n_max -= 1
+        >>> n_max = -1
+        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
+        ...     while HR(n_max).dim <= mlrd:
+        ...         n_max += 1
+        ...     n_max -= 1
         >>> all(
         ...   HR(n).rank
         ...   in admissible_lorentz_ranks(HR(n).dim)
@@ -1127,12 +1128,13 @@ def test_proposition3() -> bool:
     """
     from sql import max_cone_dim
 
-    # figure out how big "n" can be if we want to use the database of
-    # cached cones.
+    # Figure out how big "n" can be if we want to use the database of
+    # cached cones (the ``similacra`` method uses it implicitly).
     n_max = 0
-    while HR(n_max).dim <= max_cone_dim():
-        n_max += 1
-    n_max -= 1
+    if (mcd := max_cone_dim()) is not None:
+        while HR(n_max).dim <= mcd:
+            n_max += 1
+        n_max -= 1
 
     n_min = 3
     if n_max <= n_min:
@@ -1170,7 +1172,9 @@ def test_proposition4():
 
         >>> from math import floor, sqrt
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
-        >>> n_max = floor(sqrt(max_lorentz_rank_dim()))
+        >>> n_max = -1
+        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
+        ...     n_max = floor(sqrt(mlrd))
         >>> all(
         ...   HC(n).rank
         ...   in admissible_lorentz_ranks(HC(n).dim)
@@ -1194,13 +1198,17 @@ def test_proposition4():
         ...   and (K := DirectSum(2*[L(n+1)] + [K2] + (n-1)*[L(3)]))
         ... )
         True
-
     """
     from math import floor, sqrt
     from sql import max_cone_dim
 
+    # Figure out how big "n" can be if we want to use the database of
+    # cached cones (the ``similacra`` method uses it implicitly).
+    n_max = 0
+    if (mcd := max_cone_dim()) is not None:
+        n_max = floor(sqrt(mcd))
+
     n_min = 4
-    n_max = floor(sqrt(max_cone_dim()))
     if n_max <= n_min:
         # No cached cones?
         return True
