@@ -482,10 +482,12 @@ class HC(SymmetricCone):
     Do a random check so make sure this works for many copies::
 
         >>> from random import randint
-        >>> from sql import admissible_lorentz_ranks
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> m = randint(2, 12)
         >>> K = DirectSum(m*[H])
-        >>> K.rank in admissible_lorentz_ranks(K.dim)
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> skip = (not mlrd) or (K.dim > mlrd)
+        >>> skip or K.rank in admissible_lorentz_ranks(K.dim)
         True
 
     Test the inverse dimension formula::
