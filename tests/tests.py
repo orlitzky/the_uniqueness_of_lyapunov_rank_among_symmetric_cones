@@ -1198,6 +1198,17 @@ def test_proposition4() -> bool:
         ...   and (K := DirectSum(2*[L(n+1)] + [K2] + (n-1)*[L(3)]))
         ... )
         True
+
+    An example using the :meth:`SymmetricCone.similacra` method for
+    ``n = 4``::
+
+        >>> from sql import max_cone_dim
+        >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
+        >>> mcd = max_cone_dim()
+        >>> skip = (not mcd) or (HC(4).dim > mcd)
+        >>> skip or K in HC(4).similacra()
+        True
+
     """
     from math import floor, sqrt
     from sql import max_cone_dim
@@ -1281,6 +1292,27 @@ def test_proposition5() -> bool:
         ...   if (K3 := RN(n**2 - 5*n - 3))
         ...   and (K := DirectSum([HC(n+1)] + 2*[L(n+1)] + [K3]))
         ... )
+        True
+
+    Further checks of the low-dimensional formulas using the
+    :meth:`SymmetricCone.similacra` method::
+
+        >>> from sql import max_cone_dim
+        >>> mcd = max_cone_dim()
+
+        >>> K = DirectSum([L(8), RN(7)])
+        >>> skip = (not mcd) or (HH(3).dim > mcd)
+        >>> skip or K in HH(3).similacra()
+        True
+
+        >>> K = DirectSum([L(10), RN(18)])
+        >>> skip = (not mcd) or (HH(4).dim > mcd)
+        >>> skip or K in HH(4).similacra()
+        True
+
+        >>> K = DirectSum([L(12), RN(33)])
+        >>> skip = (not mcd) or (HH(5).dim > mcd)
+        >>> skip or K in HH(5).similacra()
         True
 
     """

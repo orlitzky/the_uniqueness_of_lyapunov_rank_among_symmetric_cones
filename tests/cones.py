@@ -311,26 +311,6 @@ class SymmetricCone:
             >>> K3 in DirectSum([HC(3)]*3).similacra()
             True
 
-        Proposition 5::
-
-            >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
-            >>> K in HC(4).similacra()
-            True
-
-        Proposition 6::
-
-            >>> K = DirectSum([L(8), RN(7)])
-            >>> K in HH(3).similacra()
-            True
-
-            >>> K = DirectSum([L(10), RN(18)])
-            >>> K in HH(4).similacra()
-            True
-
-            >>> K = DirectSum([L(12), RN(33)])
-            >>> K in HH(5).similacra()
-            True
-
         Proposition 7::
 
             >>> K = DirectSum([L(11), L(5), L(3), RN(8)])
