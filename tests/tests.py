@@ -1145,7 +1145,7 @@ def test_proposition3() -> bool:
 
 
 
-def test_proposition4():
+def test_proposition4() -> bool:
     r"""
     Test the statement of Proposition 4.
 
@@ -1184,7 +1184,7 @@ def test_proposition4():
         True
 
     We know the similacra for ``n >= 4`` explicitly; they are given in
-    the proof of the Proposition. There's a special case for ``n = 4``
+    the proof of the proposition. There's a special case for ``n = 4``
     and then we handle ``n >= 5`` generically::
 
         >>> K = DirectSum(2*[L(5)] + [L(4), RN(2)])
