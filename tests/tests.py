@@ -1077,9 +1077,14 @@ def test_proposition2():
     return ( J == K or J.rank > K.rank )
 
 
-def test_proposition3():
+def test_proposition3() -> bool:
     r"""
     Test the statement of Proposition 3.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
 
     Examples
     --------
@@ -1142,6 +1147,11 @@ def test_proposition4():
     r"""
     Test the statement of Proposition 4.
 
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
     Examples
     --------
 
@@ -1155,28 +1165,34 @@ def test_proposition4():
     factors. Moreover when ``n < 3``, ``HC(n)`` _is_ a Lorentz
     cone. In either case, ``HC(n)`` should share its signature with a
     sum of Lorentz cones. We begin by computing the largest ``n`` for
-    which we have the corresponding sum-of-Lorentz-cone data cached::
+    which we have the corresponding sum-of-Lorentz-cone data cached
+    (it's easy in this case)::
 
         >>> from math import floor, sqrt
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = floor(sqrt(max_lorentz_rank_dim()))
         >>> all(
         ...   HC(n).rank
-        ...   in admissible_lorentz_ranks(HR(n).dim)
+        ...   in admissible_lorentz_ranks(HC(n).dim)
         ...   for n in range(n_max+1)
         ...   if n != 3
         ... )
         True
 
-    In fact, we know formulas for one such similacrum::
+    We know the similacra for ``n >= 4`` explicitly; they are given in
+    the proof of the Proposition. There's a special case for ``n = 4``
+    and then we handle ``n >= 5`` generically::
 
-        >>> def check(n):
-        ...     K1 = L(n+1)
-        ...     K2 = RN((n**2 - n - 2) // 2)
-        ...     K = DirectSum([K1,K2])
-        ...     return (HR(n).signature() == K.signature())
-        >>>
-        >>> all( check(n) for n in range(2,100) )
+        >>> K = DirectSum(2*[L(5)] + [L(4), RN(2)])
+        >>> K.signature() == HC(4).signature()
+        True
+
+        >>> all(
+        ...   HC(n).signature() == K.signature()
+        ...   for n in range(5,100)
+        ...   if (K2 := RN(n**2 - 5*n + 1))
+        ...   and (K := DirectSum(2*[L(n+1)] + [K2] + (n-1)*[L(3)]))
+        ... )
         True
 
     """
@@ -1189,5 +1205,6 @@ def test_proposition4():
         # No cached cones?
         return True
 
-    return ( not HC(3).similacra() and
-             all( HC(n).similacra() for n in range(n_min, n_max+1) )
+    return ( not HC(3).similacra()
+             and
+             all(HC(n).similacra() for n in range(n_min, n_max+1)) )

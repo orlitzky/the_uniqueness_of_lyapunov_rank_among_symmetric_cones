@@ -476,43 +476,6 @@ class HR(SymmetricCone):
 
 class HC(SymmetricCone):
     r"""
-    This cone has no symmetric similacra for n=3, but it does for
-    all others::
-
-        >>> from sql import admissible_lorentz_ranks
-        >>> K = HC(3)
-        >>> K.rank in admissible_lorentz_ranks(K.dim)
-        False
-        >>> all(
-        ...   HC(n).rank
-        ...   in admissible_lorentz_ranks(HC(n).dim)
-        ...   for n in range(4,16)
-        ... )
-        True
-
-    We know the formula for each similacrum from Proposition 4, first
-    we check ``n == 4``::
-
-        >>> K1 = L(5)
-        >>> K2 = L(5)
-        >>> K3 = L(4)
-        >>> K4 = RN(2)
-        >>> K = DirectSum([K1,K2,K3,K4])
-        >>> K.signature() == HC(4).signature()
-        True
-
-    Now we check ``n >= 5``::
-
-        >>> def check(n):
-        ...     K1 = L(n+1)
-        ...     K2 = L(n+1)
-        ...     K3 = RN(n**2 - 5*n + 1)
-        ...     K = DirectSum([K1,K2,K3] + (n-1)*[L(3)])
-        ...     return (HC(n).signature() == K.signature())
-        >>>
-        >>> all( check(n) for n in range(5,100) )
-        True
-
     The direct sum of ``m >= 2`` copies of the 3-by-3 cone has
     similacra (Lemma 1)::
 
