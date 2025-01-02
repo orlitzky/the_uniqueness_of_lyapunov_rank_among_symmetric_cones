@@ -1103,7 +1103,7 @@ def test_proposition3() -> bool:
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = 0
-        >>> while (n_max**2 + n_max)//2 <= max_lorentz_rank_dim():
+        >>> while HR(n_max).dim <= max_lorentz_rank_dim():
         ...     n_max += 1
         >>> n_max -= 1
         >>> all(
@@ -1130,12 +1130,12 @@ def test_proposition3() -> bool:
     # figure out how big "n" can be if we want to use the database of
     # cached cones.
     n_max = 0
-    while (n_max**2 + n_max)//2 <= max_cone_dim():
+    while HR(n_max).dim <= max_cone_dim():
         n_max += 1
     n_max -= 1
 
     n_min = 3
-    if n_max < n_min:
+    if n_max <= n_min:
         # No cached cones?
         return True
 
@@ -1201,7 +1201,7 @@ def test_proposition4():
 
     n_min = 4
     n_max = floor(sqrt(max_cone_dim()))
-    if n_max < n_min:
+    if n_max <= n_min:
         # No cached cones?
         return True
 
