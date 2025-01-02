@@ -1135,3 +1135,59 @@ def test_proposition3():
         return True
 
     return all( HR(n).similacra() for n in range(n_min, n_max+1) )
+
+
+
+def test_proposition4():
+    r"""
+    Test the statement of Proposition 4.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_proposition4()
+        True
+
+    From the proof of Proposition 4, we know that for ``n >= 4``,
+    ``HC(n)`` has symmetric similacra with only Lorentz
+    factors. Moreover when ``n < 3``, ``HC(n)`` _is_ a Lorentz
+    cone. In either case, ``HC(n)`` should share its signature with a
+    sum of Lorentz cones. We begin by computing the largest ``n`` for
+    which we have the corresponding sum-of-Lorentz-cone data cached::
+
+        >>> from math import floor, sqrt
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> n_max = floor(sqrt(max_lorentz_rank_dim()))
+        >>> all(
+        ...   HC(n).rank
+        ...   in admissible_lorentz_ranks(HR(n).dim)
+        ...   for n in range(n_max+1)
+        ...   if n != 3
+        ... )
+        True
+
+    In fact, we know formulas for one such similacrum::
+
+        >>> def check(n):
+        ...     K1 = L(n+1)
+        ...     K2 = RN((n**2 - n - 2) // 2)
+        ...     K = DirectSum([K1,K2])
+        ...     return (HR(n).signature() == K.signature())
+        >>>
+        >>> all( check(n) for n in range(2,100) )
+        True
+
+    """
+    from math import floor, sqrt
+    from sql import max_cone_dim
+
+    n_min = 4
+    n_max = floor(sqrt(max_cone_dim()))
+    if n_max < n_min:
+        # No cached cones?
+        return True
+
+    return ( not HC(3).similacra() and
+             all( HC(n).similacra() for n in range(n_min, n_max+1) )
