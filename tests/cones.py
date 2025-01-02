@@ -562,29 +562,10 @@ class HC(SymmetricCone):
 
 class HH(SymmetricCone):
     r"""
-    This cone has symmetric similacra for all n >= 3::
-
-        >>> from sql import admissible_lorentz_ranks
-        >>> all(
-        ...   HH(n).rank
-        ...   in admissible_lorentz_ranks(HH(n).dim)
-        ...   for n in range(12)
-        ... )
-        True
 
     We know the formula for each similacrum from Proposition 5. First
     we check ``n == 3``, ``n == 4``, and ``n == 5`` individually::
 
-        >>> K = DirectSum([L(8), RN(7)])
-        >>> K.signature() == HH(3).signature()
-        True
-        >>> K = DirectSum([L(10), RN(18)])
-        >>> K.signature() == HH(4).signature()
-        True
-
-        >>> K = DirectSum([L(12), RN(33)])
-        >>> K.signature() == HH(5).signature()
-        True
 
     Now we check the remaining ``n >= 6`` using the generic formula::
 

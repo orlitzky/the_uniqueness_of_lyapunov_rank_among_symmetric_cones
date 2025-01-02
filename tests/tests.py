@@ -1216,3 +1216,87 @@ def test_proposition4() -> bool:
     return ( not HC(3).similacra()
              and
              all(HC(n).similacra() for n in range(n_min, n_max+1)) )
+
+
+
+def test_proposition5() -> bool:
+    r"""
+    Test the statement of Proposition 5.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_proposition5()
+        True
+
+    From the proof of Proposition 5, we know that for ``n >= 3``,
+    ``HH(n)`` has symmetric similacra with only Lorentz factors (the
+    convenient ``HC(n+1)`` factor can be replaced by Lorentz cones
+    using Proposition 4). Moreover when ``n < 3``, ``HH(n)`` _is_ a
+    Lorentz cone. In either case, ``HH(n)`` should share its signature
+    with a sum of Lorentz cones. We begin by computing the largest
+    ``n`` for which we have the corresponding sum-of-Lorentz-cone data
+    cached::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> n_max = -1
+        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
+        ...     while HH(n_max).dim <= mlrd:
+        ...         n_max += 1
+        ...     n_max -= 1
+        >>>
+        >>> all(
+        ...   HH(n).rank
+        ...   in admissible_lorentz_ranks(HH(n).dim)
+        ...   for n in range(n_max+1)
+        ... )
+        True
+
+    We know the formula for similacra explicitly; they are given in
+    the proof of the proposition. There are special cases for ``n in
+    [3,4,5]`` and then we handle ``n >= 6`` generically::
+
+        >>> K = DirectSum([L(8), RN(7)])
+        >>> K.signature() == HH(3).signature()
+        True
+
+        >>> K = DirectSum([L(10), RN(18)])
+        >>> K.signature() == HH(4).signature()
+        True
+
+        >>> K = DirectSum([L(12), RN(33)])
+        >>> K.signature() == HH(5).signature()
+        True
+
+        >>> all(
+        ...   HH(n).signature() == K.signature()
+        ...   for n in range(6,100)
+        ...   if (K3 := RN(n**2 - 5*n - 3))
+        ...   and (K := DirectSum([HC(n+1)] + 2*[L(n+1)] + [K3]))
+        ... )
+        True
+
+    """
+    from sql import max_cone_dim
+
+    # Figure out how big "n" can be if we want to use the database of
+    # cached cones (the ``similacra`` method uses it implicitly).
+    n_max = 0
+    if (mcd := max_cone_dim()) is not None:
+        while HH(n_max).dim <= mcd:
+            n_max += 1
+        n_max -= 1
+
+    n_min = 3
+    if n_max <= n_min:
+        # No cached cones?
+        return True
+
+    return all( HH(n).similacra() for n in range(n_min, n_max+1) )
