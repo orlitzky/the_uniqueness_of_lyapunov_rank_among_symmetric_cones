@@ -367,12 +367,6 @@ class SymmetricCone:
             >>> K3 in DirectSum([HC(3)]*3).similacra()
             True
 
-        Proposition 7::
-
-            >>> K = DirectSum([L(11), L(5), L(3), RN(8)])
-            >>> K in HO(3).similacra()
-            True
-
         A cone is never its own similacrum::
 
             >>> import sql

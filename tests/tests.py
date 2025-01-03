@@ -1532,3 +1532,47 @@ def test_theorem3() -> bool:
         r |= any( partition_rank(p) == (K.rank - 17)
                   for p in partitions(dim_rest) )
     return r
+
+
+def test_example1() -> bool:
+    r"""
+    Test Example 1.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The relationships in the example should hold::
+
+        >>> test_example1()
+        True
+
+    """
+    result = True
+
+    # The two similacra of HC(3) mentioned in the example
+    K1 = DirectSum([L(11),L(3)] + [L(5),RN(8)])
+    K2 = DirectSum([L(11),L(3)] + [L(4)] + 3*[L(3)])
+
+    # Signature comparison, suffices because they're obviously
+    # not isomorphic
+    result &= ( K1.signature() == K2.signature() )
+    result &= ( K1.signature() == HO(3).signature() )
+
+    # And repeat using cached similacra if possible
+    from sql import have_cone_dim
+    if have_cone_dim(HO(3).dim):
+        result &= K1 in K2.similacra()
+        result &= K2 in K1.similacra()
+
+        result &= K1 in HO(3).similacra()
+        result &= HO(3) in K1.similacra()
+
+        result &= K2 in HO(3).similacra()
+        result &= HO(3) in K2.similacra()
+
+    return result
