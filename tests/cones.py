@@ -790,7 +790,7 @@ class DirectSum(SymmetricCone):
         if canonicalize:
             # we'll get the wrong hash if we don't flatten first!
             factors = tuple(sorted(
-                f for f in DirectSum._flatten_factors(factors)
+                f for f in cls._flatten_factors(factors)
             ))
 
         _serial = tuple( f.serialize() for f in factors )
@@ -815,8 +815,8 @@ class DirectSum(SymmetricCone):
     def __repr__(self):
         return " + ".join(repr(f) for f in self._factors)
 
-    @staticmethod
-    def _flatten_factors(factors):
+    @classmethod
+    def _flatten_factors(cls, factors):
         r"""
         Flatten an iterable of factors by removing all ``DirectSum``
         wrappers. This is analogous to flattening a list like
@@ -825,7 +825,7 @@ class DirectSum(SymmetricCone):
         result = []
         for f in factors:
             if isinstance(f, DirectSum):
-                result += DirectSum._flatten_factors(f._factors)
+                result += f._flatten_factors(f._factors)
             else:
                 result.append(f)
 
