@@ -727,8 +727,8 @@ def fix_floor(s):
 
 def lowerbound1(K):
     r"""
-    The first of the three lower bounds on "n" in Lemma 4, needed
-    for Lemma 5 to hold.
+    The first of the three lower bounds on "n", needed for Lemma
+    3 to hold.
 
     Parameters
     ----------
@@ -745,33 +745,6 @@ def lowerbound1(K):
     Examples
     --------
 
-    Check Lemma 5 using our precomputed dict of admissible Lyapunov
-    ranks. We start with a random cone ``K``, then add a Lorentz cone
-    factor to it whose dimension is bounded below by this
-    function. Then we loop through several values of "k", and check
-    that none of them give rise to similacra: we subtract the
-    signature of the L^{n+k} factor from both sides, and then check
-    the precomputed list of signatures for the signature of what
-    remains; basically, we exhaustively search for ``J`` in the Lemma.
-
-        >>> from sql import (admissible_lorentz_ranks as alr,
-        ...                  max_lorentz_rank_dim )
-        >>> K = random_cone()
-        >>> n_min = lowerbound1(K)
-        >>> n_max = max_lorentz_rank_dim() - K.dim
-        >>> k_max = min(K.dim, 20)
-        >>> results = []
-        >>> for n in range(n_min, n_max+1):
-        ...     Lnplus = L(n)
-        ...     lhs = DirectSum([Lnplus,K])
-        ...     for k in range(1,k_max+1):
-        ...         Lmplus = L(n+k)
-        ...         target_dim = lhs.dim - Lmplus.dim
-        ...         target_rank = lhs.rank - Lmplus.rank
-        ...         results.append(target_rank not in alr(target_dim))
-        >>> all(results)
-        True
-
     This lower bound is tight, regardless of the other two::
 
         >>> K = random_cone()
@@ -783,9 +756,9 @@ def lowerbound1(K):
         >>> J1.signature() == J2.signature()
         True
 
-    But we know some examples where this is the bound that's tight,
-    and where ``K`` is big enough to ensure non-isomorphism (the
-    existence of a real similacrum, not just a matching signature)::
+    We know some examples where this is the bound that's tight, and
+    where ``K`` is big enough to ensure non-isomorphism (the existence
+    of a real similacrum, not just a matching signature)::
 
         >>> m = 5
         >>> K = L(m)
@@ -811,6 +784,7 @@ def lowerbound1(K):
 
     """
     return 2 + K.rank - K.dim
+
 
 def lowerbound2(K):
     r"""
@@ -1605,3 +1579,66 @@ def test_lemma2() -> bool:
                             n < lowerbound3a(K)])
       for (K,n) in K_n_pairs
     )
+
+
+def test_lemma3() -> bool:
+    r"""
+    Test Lemma 3.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_lemma3()
+        True
+
+    """
+    from random import randint
+    from sql import admissible_ranks, max_lorentz_rank_dim
+
+    # Repeat the check 100 times with random values. If any of them
+    # fail, we set the result to False before returning it.
+    result = True
+    Ks = ( random_cone() for _ in range(100) )
+
+    for K in Ks:
+        # The check for a single cone. We start with a random cone
+        # ``K``, then add a Lorentz cone factor to it whose dimension
+        # is bounded below according to the Lemma.
+        n_min = lowerbound1(K)
+
+        # We're going to use sql.admissible_ranks() to find signature
+        # matches for K + L(n), so we have to make sure that we have
+        # rank data cached up to dimension ``K.dim + n`` at least.
+        n_max = max_lorentz_rank_dim() - K.dim
+        if n_min > n_max:
+            continue
+
+        # There's room for an ``L(n)``, so let's add it.
+        n = randint(n_min, n_max)
+        Ln_plus_K = DirectSum([L(n), K])
+
+        # The largest possible value of k is K.dim: if k exceeds
+        # K.dim, then we wind up searching for a J whose dimension is
+        # negative. The Lemma requires k >= 1, though, so we may skip
+        # trivial K.
+        if K.dim == 0:
+            continue
+
+        # Otherwise, pick a k at random.
+        k = randint(1, K.dim)
+
+        # The dimension and rank that J must have in the Lemma.
+        J_dim = Ln_plus_K.dim - L(n+k).dim
+        J_rank = Ln_plus_K.rank - L(n+k).rank
+
+        # Does such a J exist? It should not.
+        result &= J_rank not in admissible_ranks(J_dim)
+
+    return result
