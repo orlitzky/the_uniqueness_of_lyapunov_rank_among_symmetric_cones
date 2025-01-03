@@ -1387,3 +1387,42 @@ def test_proposition6() -> bool:
         return True
 
     return not (not HO(3).similacra())
+
+
+def test_theorem2() -> bool:
+    r"""
+    Test the statement of Theorem 2.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_theorem2()
+        True
+
+    Implicit in the proof of this theorem is the fact that every
+    irreducible symmetric cone other than ``HC(3)`` shares its
+    signature with a sum or Lorentz cones::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> Ks = ( random_irreducible_cone() for _ in range(100) )
+        >>> all ( K.rank in admissible_lorentz_ranks(K.dim)
+        ...       or K == HC(3)
+        ...       for K in Ks
+        ...       if K.dim <= max_lorentz_rank_dim() )
+        True
+
+    """
+    from sql import max_cone_dim
+    Ks = ( random_irreducible_cone() for _ in range(100) )
+    return all ( not (not K.similacra())
+                 or K == HC(3)
+                 or isinstance(K,L)
+                 for K in Ks
+                 if K.dim <= max_cone_dim() )
