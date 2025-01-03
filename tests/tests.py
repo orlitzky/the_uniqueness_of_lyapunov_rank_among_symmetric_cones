@@ -1426,3 +1426,33 @@ def test_theorem2() -> bool:
                  or isinstance(K,L)
                  for K in Ks
                  if K.dim <= max_cone_dim() )
+
+
+def test_lemma1() -> bool:
+    r"""
+    Test the statement of Lemma 1.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_lemma1()
+        True
+
+    """
+    from sql import max_cone_dim
+    Ks = ( random_cone() for _ in range(100) )
+
+    return all(
+      K.similacra()
+      or
+      all(not K_i.similacra() for K_i in K.factors())
+      for K in Ks
+      if K.dim <= max_cone_dim()
+    )
