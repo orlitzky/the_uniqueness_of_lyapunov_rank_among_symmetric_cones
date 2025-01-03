@@ -1332,3 +1332,58 @@ def test_proposition5() -> bool:
         return True
 
     return all( HH(n).similacra() for n in range(n_min, n_max+1) )
+
+
+def test_proposition6() -> bool:
+    r"""
+    Test the statement of Proposition 6.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_proposition6()
+        True
+
+    From the proof of Proposition 6, we know that ``HO(3)`` has a
+    symmetric similacrum with only Lorentz factors. Moreover when ``n
+    < 3``, ``HO(n)`` _is_ a Lorentz cone. In either case, ``HO(n)``
+    should share its signature with a sum of Lorentz cones. We begin
+    by computing the largest ``n`` for which we have the corresponding
+    sum-of-Lorentz-cone data cached::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> n_max = -1
+        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
+        ...     while n_max <= 3 and HO(n_max).dim <= mlrd:
+        ...         n_max += 1
+        ...     n_max -= 1
+        >>>
+        >>> all(
+        ...   HO(n).rank
+        ...   in admissible_lorentz_ranks(HO(n).dim)
+        ...   for n in range(n_max+1)
+        ... )
+        True
+
+    We know the formula for one similacrum explicitly; it is given
+    in the proof of the proposition::
+
+        >>> K = DirectSum([L(11),L(5),L(3),RN(8)])
+        >>> K.signature() == HO(3).signature()
+        True
+
+    """
+    from sql import max_cone_dim
+
+    if HO(3).dim > max_cone_dim():
+        # no data
+        return True
+
+    return not (not HO(3).similacra())

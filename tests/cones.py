@@ -622,14 +622,6 @@ class HO(SymmetricCone):
     There's only one of these (up to isomorphism) and it has a
     similacrum::
 
-        >>> K1 = L(11)
-        >>> K2 = L(5)
-        >>> K3 = L(3)
-        >>> K4 = RN(8)
-        >>> K = DirectSum([K1,K2,K3,K4])
-        >>> K.signature() == HO(3).signature()
-        True
-
     These cones are only symmetric for ``n <= 3``::
 
         >>> HO(7)
