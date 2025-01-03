@@ -261,6 +261,37 @@ class SymmetricCone:
 
         return s < o
 
+
+    def factors(self) -> tuple:
+        r"""
+        Return the factors of this symmetric cone.
+
+        The result should be unique up to the ordering of the factors.
+        This method is suitable for irreducible cones, which have only
+        a single factor. It should be overridden in :class:`DirectSum`.
+
+        To ensure that hashes are unique, we agree once and for all
+        that the trivial cone has no factors.
+
+        Examples
+        --------
+
+            >>> HC(3).factors()
+            (HC(3),)
+
+        We give the canonical answer (no factors) for the trivial
+        cone::
+
+            >>> L(0).factors()
+            ()
+
+        """
+        if self.dim == 0:
+            return ()
+        else:
+            return (self,)
+
+
     def signature(self):
         r"""
         The signature of this cone.
