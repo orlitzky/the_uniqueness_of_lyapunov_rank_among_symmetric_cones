@@ -1519,5 +1519,10 @@ def test_theorem3() -> bool:
 
     r = False
     r |= any( partition_rank(p) == K.rank for p in partitions(K.dim) )
-    r |= any( partition_rank(p) == (K.rank-17) for p in partitions(K.dim-9) )
+
+    dim_rest = K.dim - 9
+    if dim_rest >= 0:
+        # Try with an HC(3) factor
+        r |= any( partition_rank(p) == (K.rank - 17)
+                  for p in partitions(dim_rest) )
     return r
