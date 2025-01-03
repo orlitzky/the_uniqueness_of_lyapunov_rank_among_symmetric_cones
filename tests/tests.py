@@ -1456,3 +1456,32 @@ def test_lemma1() -> bool:
       for K in Ks
       if K.dim <= max_cone_dim()
     )
+
+
+def test_corollary2() -> bool:
+    r"""
+    Test the statement of Corollary 2.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    Test the statement with the available cached cones::
+
+        >>> test_corollary2()
+        True
+
+    """
+    from sql import max_cone_dim
+
+    Ks = ( random_cone() for _ in range(100) )
+    return all(
+      not (not K.similacra())
+      for K in Ks
+      if K.dim <= max_cone_dim()
+      and K.factors().count(HC(3)) > 1
+    )

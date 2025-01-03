@@ -333,7 +333,8 @@ class SymmetricCone:
             >>> HR(3).similacra()
             (L(1) + L(1) + L(4),)
 
-        Lemma 1::
+        Examples from an earlier version of the paper where we computed
+        similacra for multiple copies of ``HC(3)`` explicitly::
 
             >>> K2 = DirectSum([L(7),L(3), RN(8)])
             >>> K2 in DirectSum([HC(3)]*2).similacra()
