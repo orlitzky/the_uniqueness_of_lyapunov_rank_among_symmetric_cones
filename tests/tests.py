@@ -1009,7 +1009,7 @@ def test_proposition2():
     Examples
     --------
 
-    Test the statement with one random cone::
+    The result should hold::
 
         >>> test_proposition2()
         True
@@ -1089,7 +1089,7 @@ def test_proposition3() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_proposition3()
         True
@@ -1157,7 +1157,7 @@ def test_proposition4() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_proposition4()
         True
@@ -1242,7 +1242,7 @@ def test_proposition5() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_proposition5()
         True
@@ -1346,7 +1346,7 @@ def test_proposition6() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_proposition6()
         True
@@ -1401,7 +1401,7 @@ def test_theorem2() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_theorem2()
         True
@@ -1440,7 +1440,7 @@ def test_lemma1() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_lemma1()
         True
@@ -1470,7 +1470,7 @@ def test_corollary2() -> bool:
     Examples
     --------
 
-    Test the statement with the available cached cones::
+    The result should hold::
 
         >>> test_corollary2()
         True
@@ -1485,3 +1485,39 @@ def test_corollary2() -> bool:
       if K.dim <= max_cone_dim()
       and K.factors().count(HC(3)) > 1
     )
+
+
+def test_theorem3() -> bool:
+    r"""
+    Test the statement of Theorem 3.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The result should hold::
+
+        >>> test_theorem3()
+        True
+
+    """
+    from signatures import partitions
+
+    # The fact that every cone shares a signature with a sum of
+    # Lorentz cones and/or HC(3) is the basis for the function
+    # sql.admissible_ranks(), but here we test it directly using
+    # partitions.
+    K = random_cone()
+    while K.dim > 40:
+        # Make sure we don't have to partition anything too big (it
+        # takes a looong time).
+        K = random_cone()
+
+    r = False
+    r |= any( partition_rank(p) == K.rank for p in partitions(K.dim) )
+    r |= any( partition_rank(p) == (K.rank-17) for p in partitions(K.dim-9) )
+    return r
