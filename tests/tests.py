@@ -1379,6 +1379,12 @@ def test_proposition6() -> bool:
         >>> K.signature() == HO(3).signature()
         True
 
+    Repeat with the cached similacra data::
+
+        >>> from sql import have_cone_dim
+        >>> (not have_cone_dim(HO(3).dim)) or K in HO(3).similacra()
+        True
+
     """
     from sql import max_cone_dim
 
