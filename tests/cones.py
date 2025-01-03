@@ -262,6 +262,30 @@ class SymmetricCone:
         return s < o
 
 
+    @classmethod
+    def _flatten_factors(cls, factors):
+        r"""
+        Flatten the given factors, removing all class:`DirectSum`
+        wrappers.
+
+        This is analogous to flattening a list like
+        ``[a,[b,[c,d,e]]]`` down to ``[a,b,c,d,e]``.
+
+        The implementation of method is suitable only for irreducible
+        cones, and must be overridden in the class:`DirectSum` class.
+        In general, this method should be suitable for use on the
+        result of the class's :meth:`factors` method, which,
+        for irreducible cones, will return a singleton list.
+
+        Examples
+        --------
+
+            >>> HC(3)._flatten_factors(HC(3).factors())
+            (HC(3),)
+
+        """
+        return factors
+
     def factors(self) -> tuple:
         r"""
         Return the factors of this symmetric cone.
@@ -818,18 +842,21 @@ class DirectSum(SymmetricCone):
     @classmethod
     def _flatten_factors(cls, factors):
         r"""
-        Flatten an iterable of factors by removing all ``DirectSum``
-        wrappers. This is analogous to flattening a list like
-        ``[a,[b,[c,d,e]]]`` down to ``[a,b,c,d,e]``.
-        """
-        result = []
-        for f in factors:
-            if isinstance(f, DirectSum):
-                result += f._flatten_factors(f._factors)
-            else:
-                result.append(f)
+        Recursively flatten the factors of our factors.
 
-        return result
+        The base case where we do nothing for an irreducible factor
+        is implemented as :meth:`SymmetricCone._flatten_factors`.
+
+        Examples
+        --------
+
+            >>> K = DirectSum([DirectSum([L(3)]*2), HC(3)])
+            >>> K._flatten_factors(K.factors())
+            (L(3), L(3), HC(3))
+
+        """
+        return sum( (f._flatten_factors(f.factors()) for f in factors),
+                    () )
 
     def factors(self):
         return self._factors
