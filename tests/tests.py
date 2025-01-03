@@ -1576,3 +1576,32 @@ def test_example1() -> bool:
         result &= HO(3) in K2.similacra()
 
     return result
+
+
+def test_lemma2() -> bool:
+    r"""
+    Test Lemma 2.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_lemma2()
+        True
+
+    """
+    from random import randint
+    K_n_pairs = ( (random_cone(),randint(0,1000))
+                  for _ in range(100) )
+    return all(
+      (n > 2*K.dim) or any([n < lowerbound1(K),
+                            n < lowerbound2(K),
+                            n < lowerbound3a(K)])
+      for (K,n) in K_n_pairs
+    )
