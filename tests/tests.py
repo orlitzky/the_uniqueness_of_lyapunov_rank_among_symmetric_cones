@@ -1492,9 +1492,10 @@ def test_theorem3() -> bool:
     # sql.admissible_ranks(), but here we test it directly using
     # partitions.
     K = random_cone()
-    while K.dim > 40:
+    while K.dim > 60:
         # Make sure we don't have to partition anything too big (it
-        # takes a looong time).
+        # takes a looong time). Partitioning 60 can be done in a few
+        # seconds, but e.g. 80 may crash the machine.
         K = random_cone()
 
     r = False
