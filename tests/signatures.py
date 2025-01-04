@@ -78,7 +78,8 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
 
         >>> from random import randint
         >>> n = randint(1,20)
-        >>> all( sum(p) == n for p in partitions(n) )
+        >>> m = randint(1,20)
+        >>> all( sum(p) == n for p in partitions(n,m) )
         True
 
     If ``entry_max`` is larger than the integer we're partitioning, it
@@ -114,13 +115,15 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
         while x <= y:
             a[k] = x
             a[l] = y
-            if (entry_max is None) or all(z <= entry_max for z in a[:k + 2]):
+            if (entry_max is None) or a[k+1] <= entry_max:
+                # "a" is sorted with the largest entries at the end
                 yield a[:k + 2]
             x += 1
             y -= 1
         a[k] = x + y
         y = x + y - 1
-        if (entry_max is None) or all(z <= entry_max for z in a[:k + 1]):
+        if (entry_max is None) or a[k] <= entry_max:
+            # "a" is sorted with the largest entries at the end
             yield a[:k + 1]
 
 
