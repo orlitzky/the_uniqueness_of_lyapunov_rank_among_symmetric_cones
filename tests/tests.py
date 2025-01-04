@@ -1643,3 +1643,49 @@ def test_lemma3() -> bool:
         result &= J_rank not in admissible_ranks(J_dim)
 
     return result
+
+
+
+def test_lemma4() -> bool:
+    r"""
+    Test Lemma 4.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_lemma4()
+        True
+
+    """
+    from random import randint
+    from signatures import partitions
+
+    Ks = ( random_cone() for _ in range(10) )
+
+    result = True
+    for K in Ks:
+        # Partitioning 60 can be done in a few seconds, but e.g. 80
+        # may crash the machine. Keep in mind that we're partitioning
+        # n + dim(K), and that this is multiplied (at worst) by the
+        # length of Ks!
+        min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3a(K))
+        max_n = 60 - K.dim
+
+        if min_n > max_n:
+            # This is a pretty tight window. For example we know that
+            # min_n = 31 for K == HC(3), but then K.dim == 9 already.
+            continue
+        n = randint(min_n, max_n)
+
+        J = DirectSum([L(n),K])
+        for p in partitions(n + K.dim, n-1):
+            result &= (partition_rank(p) < J.rank)
+
+    return result
