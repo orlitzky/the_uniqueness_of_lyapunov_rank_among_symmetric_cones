@@ -45,18 +45,24 @@ def f(n : int) -> int:
     return (n**2 - n + 2) // 2
 
 
-def partitions(n : int) -> list[list[int]]:
+def partitions(n : int, entry_max : int = None) -> list[list[int]]:
     r"""
     Return all partitions of the integer ``n`` in ascending order.
 
     This is Jerome Kelleher's ``accel_asc`` function from
-    https://jeromekelleher.net/category/combinatorics.html.
+    https://jeromekelleher.net/category/combinatorics.html, modified
+    to take an ``entry_max`` argument which limits the maximum size of
+    any entry in a partition.
 
     Parameters
     ----------
 
     n : int
       The integer to partition.
+
+    entry_max : int
+      An inclusive upper limit on the size of a partitions entries. If
+      any entry in a partition exceeds this limit, it is omitted.
 
     Returns
     -------
@@ -75,6 +81,24 @@ def partitions(n : int) -> list[list[int]]:
         >>> all( sum(p) == n for p in partitions(n) )
         True
 
+    If ``entry_max`` is larger than the integer we're partitioning, it
+    should have no effect::
+
+        >>> from random import randint
+        >>> n = randint(1,15)
+        >>> tuple(partitions(n)) == tuple(partitions(n,25))
+        True
+
+    Check that the ``entry_max`` is respected::
+
+        >>> from random import randint
+        >>> n = randint(1,15)
+        >>> entry_max = randint(0,n)
+        >>> all( z <= entry_max
+        ...      for p in partitions(n, entry_max)
+        ...      for z in p )
+        True
+
     """
     a = [0 for i in range(n + 1)]
     k = 1
@@ -90,12 +114,14 @@ def partitions(n : int) -> list[list[int]]:
         while x <= y:
             a[k] = x
             a[l] = y
-            yield a[:k + 2]
+            if (entry_max is None) or all(z <= entry_max for z in a[:k + 2]):
+                yield a[:k + 2]
             x += 1
             y -= 1
         a[k] = x + y
         y = x + y - 1
-        yield a[:k + 1]
+        if (entry_max is None) or all(z <= entry_max for z in a[:k + 1]):
+            yield a[:k + 1]
 
 
 def _direct_lorentz_ranks(n : int) -> tuple:
