@@ -699,8 +699,8 @@ def fix_floor(s):
 
 def lowerbound1(K):
     r"""
-    The first of the three lower bounds on "n", needed for Lemma
-    3 to hold.
+    The first of the three lower bounds on "n", used in the
+    proof of Lemma 3 and elsewhere.
 
     Parameters
     ----------
@@ -753,14 +753,14 @@ def lowerbound1(K):
        >>> K = L(m)
        >>> fix_floor(lowerbound1(K)) == (m**2 - 3*m + 6)/2
        True
-
     """
     return 2 + K.rank - K.dim
 
 
 def lowerbound2(K):
     r"""
-    The second lower bound for "n" in Lemma 4.
+    The second lower bound on "n" used in the proof of Lemma 4
+    and elsewhere.
 
     Parameters
     ----------
@@ -802,7 +802,6 @@ def lowerbound2(K):
         True
         >>> J1 == J2
         False
-
     """
     from signatures import f
     return 2 + f(1 + K.dim) - K.rank
@@ -810,7 +809,8 @@ def lowerbound2(K):
 
 def lowerbound3a(K : SymmetricCone) -> int:
     r"""
-    The third precondition on ``n`` in Lemma 4.
+    The third lower bound on "n", used in the proof of Lemma 2
+    and elsewhere (and later loosened to :func:`lowerbound3b`).
 
     Parameters
     ----------
@@ -828,39 +828,10 @@ def lowerbound3a(K : SymmetricCone) -> int:
     Examples
     --------
 
-    Along with with the other two, this one implies a strict lower
-    bound of ``2*K.dim``. If ``n`` satisfies the other two, we can add
-    them up and divide by two to get another lower bound on ``n`` in
-    terms of ``K.dim``. The assumption that ``n >= 15`` takes care of
-    cones of dimension seven or less, and then the newly-derived
-    inequality can be set greater than ``2*K.dim`` and solved to
-    obtain a quadratic inequality that will be true for ``K.dim() >=
-    8``.  Below we let the symbols ``d`` and ``r`` stand for ``K.dim``
-    and ``K.rank``::
+    Yup::
 
-        >>> from sympy import expand, floor, symbols
-        >>> d,r = symbols("d,r", integer=True, positive=True)
-        >>> K = SymmetricCone(0)
-        >>> K.dim = d
-        >>> K.rank = r
-        >>> implied_bound = 2*d
-        >>> g = (lowerbound1(K) + lowerbound2(K))/2 - implied_bound
-
-    We want ``g`` to be positive, but we can multiply it by ``4``
-    without changing when it is positive. Again we have to strip
-    the symbolic `floor` ourselves because sympy doesn't know that
-    ``d**2 + d`` is even::
-
-        >>> g = 4*g
-        >>> fix_floor(expand(g))
-        d**2 - 9*d + 10
-
-    Since ``g`` is an upwards-facing parabola, it will be nonpositive
-    on an interval, and positive everywhere else. We see that for ``d
-    >= 8``, g will be positive::
-
-        >>> [ g.subs({d:i}) for i in range(10) ]
-        [10, 2, -4, -8, -10, -10, -8, -4, 2, 10]
+        >>> lowerbound3a(random_cone())
+        15
 
     """
     return 15
@@ -1541,6 +1512,54 @@ def test_lemma2() -> bool:
 
         >>> test_lemma2()
         True
+
+    In the proof of this lemma, we average :func:`lowerbound1` and
+    :func:`lowerbound2` to obtain a new lower bound on ``n``, and then
+    set that new lower bound greater than ``2*K.dim``. This leads to a
+    quadratic inequality (which we call ``g`` below) that can easily
+    be solved, and will hold for ``K.dim >= 8``. The ``K.dim < 7``
+    cases follow trivially from :func:`lowerbound3a`. Below we let the
+    symbols ``d`` and ``r`` stand for ``K.dim`` and ``K.rank``::
+
+        >>> from sympy import expand, floor, symbols
+        >>> d,r = symbols("d,r", integer=True, positive=True)
+        >>> K = SymmetricCone(0)
+        >>> K.dim = d
+        >>> K.rank = r
+        >>> g = (lowerbound1(K) + lowerbound2(K))/2 - 2*d
+
+    We want ``g`` to be positive, i.e. for the new average bound to be
+    strictly greater than ``2*d``. We can multiply it by ``4`` without
+    changing when it is positive. Again we have to strip the symbolic
+    ``floor`` ourselves because sympy doesn't know that ``d**2 + d``
+    is even::
+
+        >>> g = 4*g
+        >>> fix_floor(expand(g))
+        d**2 - 9*d + 10
+
+    Since ``g`` is an upwards-facing parabola, it will be nonpositive
+    on an interval, and positive everywhere else. We see that for ``d
+    >= 8``, ``g`` will be positive::
+
+        >>> def sgn(x):
+        ...     if x < 0: return -1
+        ...     elif x == 0: return  0
+        ...     else: return  1
+        >>> for i in range(12):
+        ...     print(f"d = {i : >2}, sgn(g(d)) = {sgn(g.subs({d:i})) : >2}")
+        d =  0, sgn(g(d)) =  1
+        d =  1, sgn(g(d)) =  1
+        d =  2, sgn(g(d)) = -1
+        d =  3, sgn(g(d)) = -1
+        d =  4, sgn(g(d)) = -1
+        d =  5, sgn(g(d)) = -1
+        d =  6, sgn(g(d)) = -1
+        d =  7, sgn(g(d)) = -1
+        d =  8, sgn(g(d)) =  1
+        d =  9, sgn(g(d)) =  1
+        d = 10, sgn(g(d)) =  1
+        d = 11, sgn(g(d)) =  1
 
     """
     from random import randint
