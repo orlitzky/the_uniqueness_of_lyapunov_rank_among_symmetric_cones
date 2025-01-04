@@ -100,6 +100,27 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
         ...      for z in p )
         True
 
+    If ``entry_max`` is one less than ``n``, that should only
+    eliminate one partition (namely, ``[n]``)::
+
+        >>> from random import randint
+        >>> n = randint(1,20)
+        >>> actual = len(tuple(partitions(n, n-1)))
+        >>> expected = len(tuple(partitions(n))) - 1
+        >>> actual == expected
+        True
+
+    Similarly, there's only one partition with all entries less than
+    or equal to (i.e. equal to) one::
+
+        >>> from random import randint
+        >>> n = randint(1,20)
+        >>> ps = tuple(partitions(n, 1))
+        >>> len(ps)
+        1
+        >>> len(ps[0]) == n
+        True
+
     """
     a = [0 for i in range(n + 1)]
     k = 1
