@@ -60,34 +60,6 @@ similacra method as well::
     >>> n_with_similacra
     [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
 
-Check the symbolic identity in Lemma 5 for the derivative of the
-g-delta function::
-
-    >>> from sympy import diff, symbols
-    >>> x,d = symbols("x,d", integer=True, positive=True)
-    >>> g = fix_floor(L(x).rank - L(x-d).rank)
-    >>> diff(g, x)
-    d
-
-Check the symbolic identity in Lemma 5 for the Lyapunov rank of
-``L(n-1)`` in terms of that of ``L(n)``::
-
-    >>> from sympy import simplify, symbols
-    >>> n = symbols("n", integer=True, positive=True)
-    >>> lhs = L(n-1).rank
-    >>> rhs = L(n).rank - (n-1)
-    >>> simplify(fix_floor(lhs - rhs))
-    0
-
-Check implication (3) in Lemma 5::
-
-    >>> f = lambda x: L(x).rank
-    >>> all( f(n-1) + f(1+dimK) >= f(n-1-d) + f(1+dimK+d)
-    ...      for d in range(100)
-    ...      for dimK in range(100)
-    ...      for n in range(2 + dimK + d, 100) )
-    True
-
 Check the relationships between the lower bounds on ``n``. This isn't
 stated anywhere in the paper, but it shows that no bound is implied by
 the other (each bound can be strictly the largest)::
@@ -1661,6 +1633,43 @@ def test_lemma4() -> bool:
     The implication in the result should hold::
 
         >>> test_lemma4()
+        True
+
+    Check the symbolic identity for the derivative of the g-delta
+    function in this Lemma::
+
+        >>> from sympy import diff, symbols
+        >>> x,d = symbols("x,d", integer=True, positive=True)
+        >>> g = fix_floor(L(x).rank - L(x-d).rank)
+        >>> diff(g, x)
+        d
+
+    Check inequality (1) with a few concrete examples::
+
+        >>> from random import randint
+        >>> from signatures import f
+        >>> x = randint(0,30)
+        >>> y = randint(0,30)
+        >>> f(x+y) >= f(x) + f(y)
+        True
+
+    Check the symbolic identity (2) for the Lyapunov rank of
+    ``L(n-1)`` in terms of that of ``L(n)`` in this Lemma::
+
+        >>> from sympy import simplify, symbols
+        >>> n = symbols("n", integer=True, positive=True)
+        >>> lhs = L(n-1).rank
+        >>> rhs = L(n).rank - (n-1)
+        >>> simplify(fix_floor(lhs - rhs))
+        0
+
+    Check implication (3)::
+
+        >>> f = lambda x: L(x).rank
+        >>> all( f(n-1) + f(1+dimK) >= f(n-1-d) + f(1+dimK+d)
+        ...      for d in range(100)
+        ...      for dimK in range(100)
+        ...      for n in range(2 + dimK + d, 100) )
         True
 
     """
