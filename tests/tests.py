@@ -159,264 +159,6 @@ Check Giovanni's Theorem 4, as far as we can::
     >>> n_without_similacra
     [1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
 
-
-In Theorem 4, we "replace" the non-Lorentz irreducible factors with
-sums of Lorentz cones. Here we confirm that those sums have the
-correct dimensions, and Lyapunov ranks that dominates the Lyapunov
-ranks of the things they replace. The first example we give is for the
-complex PSD cones::
-
-    >>> from sympy import symbols
-    >>> m = symbols("m", integer=True, positive=True)
-    >>> I_even = DirectSum(2*[L(m**2/2)], False)
-    >>> I_even.dim == HC(m).dim
-    True
-    >>> [(I_even.rank - HC(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-    [3, -3, 27, 237, 867, 2253]
-    >>> I_odd  = DirectSum(2*[L((m**2 - 1)/2)] + [L(1)], False)
-    >>> I_odd.dim == HC(m).dim
-    True
-    >>> [(I_odd.rank - HC(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-    [2, -2, 86, 458, 1402, 3302]
-    >>> I_three = L(9)
-    >>> I_three.dim == HC(3).dim
-    True
-    >>> I_three.rank > HC(3).rank
-    True
-
-We can do the same for the real PSD cones, based on whether or not
-``(m**2 + m) / 2`` is even or odd, again with a special case for ``m
-== 3``::
-
-    >>> I_even = DirectSum(2*[L((m**2 + m)/4)], False)
-    >>> I_even.dim == fix_floor(HR(m).dim)
-    True
-    >>> [(I_even.rank - HR(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-    [2, -2, 6, 64, 244, 630]
-    >>> I_odd = DirectSum(2*[L( ((m**2 + m)/2 - 1)/2 )] + [L(1)], False)
-    >>> I_odd.dim == fix_floor(HR(m).dim)
-    True
-    >>> [(I_odd.rank - HR(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-    [2, -4, 20, 122, 384, 904]
-    >>> I_three = L(6)
-    >>> I_three.dim == HR(3).dim
-    True
-    >>> I_three.rank > HR(3).rank
-    True
-
-And the quaternion PSD cones::
-
-    >>> I_even = DirectSum(2*[L((2*m**2 - m)/2)], False)
-    >>> I_even.dim == fix_floor(HH(m).dim)
-    True
-    >>> [(I_even.rank - HH(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-    [2, -8, 120, 914, 3286, 8532]
-    >>> I_odd = DirectSum(2*[L((2*m**2 - m - 1)/2)] + [L(1)], False)
-    >>> I_odd.dim == fix_floor(HH(m).dim)
-    True
-    >>> [(I_odd.rank - HH(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-    [-1, 9, 365, 1787, 5379, 12629]
-
-Finally, the 3x3 octonion cone::
-
-   >>> I = DirectSum(3*[L(9)], False)
-   >>> I.dim == HO(3).dim
-   True
-   >>> I.rank > HO(3).rank
-   True
-
-
-A systematic check of Theorem 5. For a given ``K.dim``,
-``lowerbound3b`` is constant, ``lowerbound1`` is minimized by the
-nonnegative orthant (with value ``n >= 2``), and ``lowerbound2`` is
-minimized by the Lorentz cone with value ``K.dim + 2`` (proof: we are
-either maximizing beta(K) or minimizing the Lyapunov rank in fixed
-dimensions)::
-
-   >>> from sympy import symbols, expand
-   >>> d = symbols("d", integer=True, positive=True)
-   >>> expand(fix_floor(lowerbound2(L(d))))
-   d + 2
-
-The second bound is increasing with ``K.dim`` and dominates the
-first. As a result, we can use ``lowerbound2`` to determine the first
-potentially valid ``n`` corresponding to any ``K.dim``. Moreover we
-can easily compute the first ``K.dim`` where ``n + K.dim`` is
-guaranteed to exceed the largest dimension we have cached by adding
-``K.dim`` to the bound and setting it greater than that cached
-dimension, i.e. by solving ``K.dim + 2 + K.dim > max_cone_dim()``::
-
-    >>> from sql import all_cones_of_dim
-    >>> result = True
-    >>> max_d = (max_cone_dim() - 2) // 2
-    >>> for d in range(1, max_d+1):
-    ...     min_n = max(lowerbound1(RN(d)),
-    ...                 lowerbound2(L(d)),
-    ...                 lowerbound3b(L(d)))
-    ...     max_n = max_cone_dim() - d
-    ...     for n in range(min_n, max_n+1):
-    ...         for K in all_cones_of_dim(d):
-    ...             if n < lowerbound1(K): continue
-    ...             if n < lowerbound2(K): continue
-    ...             if n < lowerbound3b(K): continue
-    ...             lhs = DirectSum([L(n),K])
-    ...             for J in lhs.similacra():
-    ...                 fs = list(J.factors())
-    ...                 # remove() raises an error if L(n) isn't a factor!
-    ...                 fs.remove(L(n))
-    ...                 J_prime = DirectSum(fs)
-    ...                 result &= J_prime in K.similacra()
-    >>> result
-    True
-
-This is the function we'll use to check that most non-Lorentz factors
-have a Lypaunov rank too small to be considered in Theorem 5. We need
-to be careful that ``n + K.dim`` is at least large enough to hold the
-cone, otherwise we might get false positives::
-
-    >>> n,d = symbols("n,d", integer=True, positive=True)
-    >>> f = lambda x: (x**2 - x + 2)/2   # no integer division... sympy
-    >>> def rank_too_small(X):
-    ...     g = f(n) + d - X.rank - f(n+d-X.dim)
-    ...     return all( g.subs({n:i,d:j}) > 0
-    ...                 for i in range(5,15)
-    ...                 for j in range(1, max_dimK(i)+1)
-    ...                 if i+j-X.dim >= 0 )
-
-The argument to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``, and
-``HH(3)`` factors::
-
-    >>> X = HC(3)
-    >>> rank_too_small(X)
-    True
-
-    >>> X = HR(4)
-    >>> rank_too_small(X)
-    True
-
-    >>> X = HC(4)
-    >>> rank_too_small(X)
-    True
-
-    >>> X = HH(3)
-    >>> rank_too_small(X)
-    True
-
-Also check the two cases that we argue via similacra::
-
-    >>> DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra()
-    True
-    >>> DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra()
-    True
-
-Rule out multiple ``HR(3)`` factors to simplify the argument::
-
-    >>> X = DirectSum(2*[HR(3)])
-    >>> rank_too_small(X)
-    True
-
-And check that a single ``HR(3)`` is only viable as a factor of ``J``
-when ``n >= 10`` and ``K.dim >= 6``::
-
-    >>> X = HR(3)
-    >>> g = f(n) + d - X.rank - f(n+d-X.dim)
-    >>> all( g.subs({n:i,d:j}) > 0
-    ...      for i in range(5,15)
-    ...      for j in range(1, max_dimK(i)+1)
-    ...      if (i < 10 or j < 6) )
-    True
-
-Check Theorem 5 directly by confirming that there simply aren't any
-similacra for any of the valid cases::
-
-    >>> from sql import all_cones_of_dim
-    >>> all( not DirectSum([L(n),K]).similacra()
-    ...      for n in range(5,15)
-    ...      for d in range(1,max_dimK(n)+1)
-    ...      for K in all_cones_of_dim(d)
-    ...      if n >= max(lowerbound1(K),lowerbound2(K)) )
-    True
-
-Oh, and ensure we have enough cones computed for this to actually be
-reliable::
-
-    >>> from sql import max_cone_dim
-    >>> 14 + max_dimK(14) <= max_cone_dim()
-    True
-
-Finally, we check the argument in Theorem 5 using the method that we
-have described (partitions, possibly offset by one ``HR(3)``
-factor). First, the small ``n`` where there are no ``HR(3)`` factors
-to worry about. There are many matching signatures, but they're all
-from isomorphic cones once you consider that ``L(2) == RN(2)``::
-
-    >>> from signatures import partitions, f
-    >>>
-    >>> # We'll collect the matching signatures in a list
-    >>> matches = []
-    >>>
-    >>> # reimplement the lower bounds in terms of partitions
-    >>> lb1 = lambda p: 2 + partition_rank(p) - sum(p)
-    >>> lb2 = lambda p: 2 + f(1+sum(p)) - partition_rank(p)
-    >>> lb3 = lambda p: 5
-    >>>
-    >>> for n in range(5,10):
-    ...     for d in range(1,max_dimK(n)+1):
-    ...         for K in partitions(d):
-    ...             if n < lb1(K): continue
-    ...             if n < lb2(K): continue
-    ...             if n < lb3(K): continue
-    ...             Ln_K_rank = f(n) + partition_rank(K)
-    ...             for J in partitions(d+n):
-    ...                 if (partition_rank(J) == Ln_K_rank):
-    ...                         Ln_K = [n] + K
-    ...                         if not partitions_equivalent(J,Ln_K):
-    ...                             matches.append( (Ln_K, J) )
-    >>> matches
-    []
-
-Now things get a bit ugly, since we have to (potentially) include
-``HR(3)`` in ``J``, which is always big enough to hold one. Whereas
-before we represented a cone as a partition, we now represent it as an
-``(j, p)`` pair, where ``j`` is either zero or one, indicating the
-presence of an ``HR(3)`` factor, and ``p`` is a partition representing
-its Lorentz factors::
-
-    >>> matches = []
-    >>> for n in range(10,15):
-    ...     for d in range(1,max_dimK(n)+1):
-    ...         Ks = []
-    ...         for p in partitions(d):
-    ...             # K is pure Lorentz, per the theorem
-    ...             if n < lb1(p): continue
-    ...             if n < lb2(p): continue
-    ...             if n < lb3(p): continue
-    ...             Ks.append( (0,p) )
-    ...
-    ...         # Always include pure-Lorentz J
-    ...         Js = [ (0,p) for p in partitions(d+n) ]
-    ...
-    ...         # And since d+n is always >= 6, always include HR(3)
-    ...         # with a partition of whatever's left.
-    ...         for q in partitions(d + n - HR(3).dim):
-    ...             Js.append( (1,q) )
-    ...
-    ...         for K in Ks:
-    ...             Ln_K = (K[0], [n] + K[1])
-    ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3)s here
-    ...
-    ...             for J in Js:
-    ...                 J_rank = partition_rank(J[1]) + HR(3).rank*J[0]
-    ...                 if J_rank == Ln_K_rank:
-    ...                     # These two conditions aren't perfect, but
-    ...                     # they're enough to eliminate all matches.
-    ...                     if J[0] != Ln_K[0]:
-    ...                         matches.append( (Ln_K,J) )
-    ...                     if not partitions_equivalent(Ln_K[1],J[1]):
-    ...                         matches.append( (Ln_K,J) )
-    >>> matches
-    []
-
 """
 
 from signatures import *
@@ -1715,5 +1457,325 @@ def test_lemma4() -> bool:
         J = DirectSum([L(n),K])
         for p in partitions(n + K.dim, n-1):
             result &= (partition_rank(p) < J.rank)
+
+    return result
+
+
+
+def test_theorem4() -> bool:
+    r"""
+    Do nothing and return ``True``.
+
+    Theorem 5 is a stronger version of Theorem 4, so there is no point
+    in testing Theorem 4, on its own, directly. There are however some
+    doctests for the proof strategy below.
+
+    Examples
+    --------
+
+        >>> test_theorem4()
+        True
+
+    In the proof of this theorem, we "replace" the non-Lorentz
+    irreducible factors with sums of Lorentz cones. Here we confirm
+    that those sums have the correct dimensions, and Lyapunov ranks
+    that dominates the Lyapunov ranks of the things they replace. The
+    first example we give is for the complex PSD cones::
+
+        >>> from sympy import symbols
+        >>> m = symbols("m", integer=True, positive=True)
+        >>> I_even = DirectSum(2*[L(m**2/2)], False)
+        >>> I_even.dim == HC(m).dim
+        True
+        >>> [(I_even.rank - HC(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+        [3, -3, 27, 237, 867, 2253]
+        >>> I_odd  = DirectSum(2*[L((m**2 - 1)/2)] + [L(1)], False)
+        >>> I_odd.dim == HC(m).dim
+        True
+        >>> [(I_odd.rank - HC(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+        [2, -2, 86, 458, 1402, 3302]
+        >>> I_three = L(9)
+        >>> I_three.dim == HC(3).dim
+        True
+        >>> I_three.rank > HC(3).rank
+        True
+
+    We can do the same for the real PSD cones, based on whether or not
+    ``(m**2 + m) / 2`` is even or odd, again with a special case for
+    ``m == 3``::
+
+        >>> I_even = DirectSum(2*[L((m**2 + m)/4)], False)
+        >>> I_even.dim == fix_floor(HR(m).dim)
+        True
+        >>> [(I_even.rank - HR(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+        [2, -2, 6, 64, 244, 630]
+        >>> I_odd = DirectSum(2*[L( ((m**2 + m)/2 - 1)/2 )] + [L(1)], False)
+        >>> I_odd.dim == fix_floor(HR(m).dim)
+        True
+        >>> [(I_odd.rank - HR(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+        [2, -4, 20, 122, 384, 904]
+        >>> I_three = L(6)
+        >>> I_three.dim == HR(3).dim
+        True
+        >>> I_three.rank > HR(3).rank
+        True
+
+    And the quaternion PSD cones::
+
+        >>> I_even = DirectSum(2*[L((2*m**2 - m)/2)], False)
+        >>> I_even.dim == fix_floor(HH(m).dim)
+        True
+        >>> [(I_even.rank - HH(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
+        [2, -8, 120, 914, 3286, 8532]
+        >>> I_odd = DirectSum(2*[L((2*m**2 - m - 1)/2)] + [L(1)], False)
+        >>> I_odd.dim == fix_floor(HH(m).dim)
+        True
+        >>> [(I_odd.rank - HH(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
+        [-1, 9, 365, 1787, 5379, 12629]
+
+    Finally, the 3x3 octonion cone::
+
+       >>> I = DirectSum(3*[L(9)], False)
+       >>> I.dim == HO(3).dim
+       True
+       >>> I.rank > HO(3).rank
+       True
+
+    """
+    return True
+
+
+def test_theorem5() -> bool:
+    r"""
+    Test Theorem 5.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_theorem5()
+        True
+
+    For a given ``K.dim``, :func:`lowerbound3b` is constant,
+    :func:`lowerbound1` is minimized by the nonnegative orthant (with
+    value ``n >= 2``), and :func:`lowerbound2` is minimized by the
+    Lorentz cone with value ``K.dim + 2`` (proof: we are either
+    maximizing beta(K) or minimizing the Lyapunov rank in fixed
+    dimensions). The second bound is therefore increasing with
+    ``K.dim`` and obviously dominates the first. As a result, we can
+    use :func:`lowerbound2` to determine the first potentially valid
+    ``n`` corresponding to any ``K.dim``. Moreover we can use this to
+    compute the first ``K.dim`` such that ``n + K.dim`` will exceed
+    the largest dimension we have cached: basically we just add
+    ``K.dim`` to the bound and set it greater than the largest
+    dimension we have cached, i.e. we solve ``K.dim + 2 + K.dim >
+    max_cone_dim()``::
+
+        >>> lowerbound1(RN(3))
+        2
+        >>> lowerbound1(RN(8))
+        2
+        >>> lowerbound1(RN(22))
+        2
+        >>> lowerbound1(RN(57))
+        2
+        >>> from sympy import symbols, expand
+        >>> d = symbols("d", integer=True, positive=True)
+        >>> expand(fix_floor(lowerbound2(L(d))))
+        d + 2
+
+    Now we begin to verify the techniques used in the proof. First we
+    define the function that we'll use to confirm that most
+    non-Lorentz factors have a Lypaunov rank too small to be
+    considered in the theorem. We need to be careful that ``n +
+    K.dim`` is at least large enough to hold a particular factor,
+    otherwise we might get false positives::
+
+        >>> from sympy import symbols
+        >>> n,d = symbols("n,d", integer=True, positive=True)
+        >>> f = lambda x: (x**2 - x + 2)/2   # no integer division... sympy
+        >>> def rank_too_small(X):
+        ...     g = f(n) + d - X.rank - f(n+d-X.dim)
+        ...     return all( g.subs({n:i,d:j}) > 0
+        ...                 for i in range(5,15)
+        ...                 for j in range(1, max_dimK(i)+1)
+        ...                 if i+j-X.dim >= 0 )
+
+    The argument we use to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``,
+    and ``HH(3)`` factors::
+
+        >>> X = HC(3)
+        >>> rank_too_small(X)
+        True
+
+        >>> X = HR(4)
+        >>> rank_too_small(X)
+        True
+
+        >>> X = HC(4)
+        >>> rank_too_small(X)
+        True
+
+        >>> X = HH(3)
+        >>> rank_too_small(X)
+        True
+
+    The two cases that we argue via similacra::
+
+        >>> from sql import max_cone_dim
+        >>> ( HR(5).dim > max_cone_dim()
+        ...   or
+        ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra() )
+        True
+        >>> ( HR(6).dim > max_cone_dim()
+        ...   or
+        ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra() )
+        True
+
+    Rule out multiple ``HR(3)`` factors to simplify the argument::
+
+        >>> X = DirectSum(2*[HR(3)])
+        >>> rank_too_small(X)
+        True
+
+    A single ``HR(3)`` is only viable as a factor of ``J`` when ``n >=
+    10`` and ``K.dim >= 6`` (to check this, we partially reimplement
+    ``rank_too_small`` to restrict ``n`` and ``K.dim`` accordingly)::
+
+        >>> X = HR(3)
+        >>> g = f(n) + d - X.rank - f(n+d-X.dim)
+        >>> all( g.subs({n:i,d:j}) > 0
+        ...      for i in range(5,15)
+        ...      for j in range(1, max_dimK(i)+1)
+        ...      if (i < 10 or j < 6) )
+        True
+
+    One of the last statements in the proof is that the conclusion is
+    easy to verify for the "new" cases because there simply aren't any
+    new similacra (so we don't even have to worry about whether or not
+    "J" has the stated form). We're checking that a list of similacra
+    is empty, so there is no need to check the dimension of our cone
+    against :func:`sql.max_cone_dim`; if we exceed it, we'll get back
+    empty lists of similacra anyway::
+
+        >>> from sql import all_cones_of_dim
+        >>> all( not DirectSum([L(n),K]).similacra()
+        ...      for n in range(5,15)
+        ...      for d in range(1,max_dimK(n)+1)
+        ...      for K in all_cones_of_dim(d)
+        ...      if  n >= max(lowerbound1(K),lowerbound2(K)) )
+        True
+
+    Finally, we check the proof using the low-tech method that we have
+    described: partitions, possibly offset by one ``HR(3)``
+    factor. First, the small ``n`` where there are no ``HR(3)``
+    factors to worry about. There are many matching signatures, but
+    they're all from isomorphic cones once you consider that ``L(2) ==
+    RN(2)``::
+
+        >>> from signatures import partitions, f
+        >>>
+        >>> # We'll collect the matching signatures in a list
+        >>> matches = []
+        >>>
+        >>> # reimplement the lower bounds in terms of partitions
+        >>> lb1 = lambda p: 2 + partition_rank(p) - sum(p)
+        >>> lb2 = lambda p: 2 + f(1+sum(p)) - partition_rank(p)
+        >>> lb3 = lambda p: 5
+        >>>
+        >>> for n in range(5,10):
+        ...     for d in range(1,max_dimK(n)+1):
+        ...         for K in partitions(d):
+        ...             if n < lb1(K): continue
+        ...             if n < lb2(K): continue
+        ...             if n < lb3(K): continue
+        ...             Ln_K_rank = f(n) + partition_rank(K)
+        ...             for J in partitions(d+n):
+        ...                 if (partition_rank(J) == Ln_K_rank):
+        ...                         Ln_K = [n] + K
+        ...                         if not partitions_equivalent(J,Ln_K):
+        ...                             matches.append( (Ln_K, J) )
+        >>> matches
+        []
+
+    Now things get a bit ugly, since we have to (potentially) include
+    ``HR(3)`` in ``J``, which is always big enough to hold
+    one. Whereas before we represented a cone as a partition, we now
+    represent it as an ``(j, p)`` pair, where ``j`` is either zero or
+    one, indicating the presence of an ``HR(3)`` factor, and ``p`` is
+    a partition representing its Lorentz factors::
+
+        >>> matches = []
+        >>> for n in range(10,15):
+        ...     for d in range(1,max_dimK(n)+1):
+        ...         Ks = []
+        ...         for p in partitions(d):
+        ...             # K is pure Lorentz, per the theorem
+        ...             if n < lb1(p): continue
+        ...             if n < lb2(p): continue
+        ...             if n < lb3(p): continue
+        ...             Ks.append( (0,p) )
+        ...
+        ...         # Always include pure-Lorentz J
+        ...         Js = [ (0,p) for p in partitions(d+n) ]
+        ...
+        ...         # And since d+n is always >= 6, always include HR(3)
+        ...         # with a partition of whatever's left.
+        ...         for q in partitions(d + n - HR(3).dim):
+        ...             Js.append( (1,q) )
+        ...
+        ...         for K in Ks:
+        ...             Ln_K = (K[0], [n] + K[1])
+        ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3) here
+        ...
+        ...             for J in Js:
+        ...                 J_rank = partition_rank(J[1]) + HR(3).rank*J[0]
+        ...                 if J_rank == Ln_K_rank:
+        ...                     # These two conditions aren't perfect, but
+        ...                     # they're enough to eliminate all matches.
+        ...                     if J[0] != Ln_K[0]:
+        ...                         matches.append( (Ln_K,J) )
+        ...                     if not partitions_equivalent(Ln_K[1],J[1]):
+        ...                         matches.append( (Ln_K,J) )
+        >>> matches
+        []
+
+    """
+    # Use cached data so that we can go beyond the n=15 case
+    # and check the result for Theorem 4, too.
+    from sql import all_cones_of_dim, max_cone_dim
+    result = True
+
+    # Explained in the docstring. We don't _really_ have to stop where
+    # L(n)+K will have the max cached dim, because anything larger
+    # will appear to have no similacra, and (for the sake of the
+    # theorem) that's fine. But we do have to stop _somewhere_, so we
+    # might as well stop here?
+    max_d = (max_cone_dim() - 2) // 2
+
+    for d in range(1, max_d+1):
+        min_n = max(lowerbound1(RN(d)),
+                    lowerbound2(L(d)),
+                    lowerbound3b(L(d)))
+        max_n = max_cone_dim() - d
+        for n in range(min_n, max_n+1):
+            for K in all_cones_of_dim(d):
+                if n < lowerbound1(K): continue
+                if n < lowerbound2(K): continue
+                if n < lowerbound3b(K): continue
+                lhs = DirectSum([L(n),K])
+                for J in lhs.similacra():
+                    fs = list(J.factors())
+                    # remove() raises an error if L(n) isn't a factor,
+                    # so this guarantees that L(n) is one.
+                    fs.remove(L(n))
+                    J_prime = DirectSum(fs)
+                    result &= J_prime in K.similacra()
 
     return result
