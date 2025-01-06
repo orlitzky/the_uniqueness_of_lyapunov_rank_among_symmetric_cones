@@ -702,9 +702,9 @@
     $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors for large $n$. But
     to prove that result it is easier to consider the general problem,
     and ask when we can reduce the problem for
-    $\directsum{\Lnplus}{K}$ to that for $K$.
+    $\directsum{K}{\Lnplus}$ to that for $K$.
 
-    When the problem is to find similacra of $\directsum{\Lnplus}{K}$,
+    When the problem is to find similacra of $\directsum{K}{\Lnplus}$,
     we will impose three conditions on $n$ relative to $K$:
     %
     \begin{enumerate}
@@ -741,7 +741,7 @@
     \end{lemma}
 
     We next use \cref{itm:condition1} to rule out the possibility that
-    $\directsum{\Lnplus}{K}$ shares its signature with some other cone
+    $\directsum{K}{\Lnplus}$ shares its signature with some other cone
     having a larger Lorentz cone factor than $\Lnplus$.
 
     \begin{lemma}\label{lem:no bigger factors}
@@ -781,7 +781,7 @@
       \begin{equation*}
         \lyapunovrank{\directsummany{i=1}{k}{\Lnplus[n_{i}]}}
         <
-        \lyapunovrank{\directsum{\Lnplus}{K}}
+        \lyapunovrank{\directsum{K}{\Lnplus}}
       \end{equation*}
       %
       for any $k \in \Nn[1]$ and any $n_{1},n_{2},\ldots,n_{k} < n$
@@ -918,22 +918,22 @@
     \begin{theorem}\label{thm:subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \in \Nn[1]$
       satisfies \cref{itm:condition1,itm:condition2,itm:condition3}.
-      Then $J \sim \directsum{\Lnplus}{K}$ if and only if there exists
-      a symmetric $J'$ such that $J \cong \directsum{\Lnplus}{J'}$ and
+      Then $J \sim \directsum{K}{\Lnplus}$ if and only if there exists
+      a symmetric $J'$ such that $J \cong \directsum{J'}{\Lnplus}$ and
       $J' \sim K$.
 
       \begin{proof}
         The ``if'' case is obvious and doesn't require any conditions
         on $n$. Likewise when $K = \set{0}$. In the other direction,
         and with $\dim\of{K} \ge 1$, we will show that if $J \sim
-        \directsum{\Lnplus}{K}$ does not have an $\Lnplus$ factor,
+        \directsum{K}{\Lnplus}$ does not have an $\Lnplus$ factor,
         then there exists some symmetric cone $H$ having $\dim\of{H} =
         \dim\of{J}$ but $\lyapunovrank{J} \le \lyapunovrank{H} <
-        \lyapunovrank{\directsum{\Lnplus}{K}}$. This of course would
-        be a contradiction, because $J$ and $\directsum{\Lnplus}{K}$
+        \lyapunovrank{\directsum{K}{\Lnplus}}$. This of course would
+        be a contradiction, because $J$ and $\directsum{K}{\Lnplus}$
         share a signature.
 
-        Suppose, for example, that $J \sim \directsum{\Lnplus}{K}$ and
+        Suppose, for example, that $J \sim \directsum{K}{\Lnplus}$ and
         that $J$ has an $\Hnplus[m]\of{\Cn[1]}$ factor with $m \ge
         3$. We will ``replace'' this factor with a sum of Lorentz
         cones. With \cref{lem:not all smaller factors} in mind, what
@@ -1014,17 +1014,17 @@
         all smaller than $\Lnplus$, then every factor of $H$ would be
         smaller than $\Lnplus$, and \cref{lem:not all smaller factors}
         would show that $\lyapunovrank{H} <
-        \directsum{\Lnplus}{K}$. But that of course would be a
+        \directsum{K}{\Lnplus}$. But that of course would be a
         contradiction, since $\lyapunovrank{J} \le
         \lyapunovrank{H}$. As a result, at least one of the Lorentz
         factors remaining in $\bar{J}$ is $\Lnplus$, and it originated
         from $J$.
 
         Take one of those $\Lnplus$ factors from within $J$, and write
-        $J \cong \directsum{\Lnplus}{J'}$. It should be clear that if
-        $J \sim \directsum{\Lnplus}{K}$, then the signatures of $J'$
+        $J \cong \directsum{J'}{\Lnplus}$. It should be clear that if
+        $J \sim \directsum{K}{\Lnplus}$, then the signatures of $J'$
         and $K$ agree. Moreover, $J'$ and $K$ cannot be isomorphic;
-        for if they were, then $J$ and $\directsum{\Lnplus}{K}$ would
+        for if they were, then $J$ and $\directsum{K}{\Lnplus}$ would
         be isomorphic, and they are not.
       \end{proof}
     \end{theorem}
@@ -1044,8 +1044,8 @@
     \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \ge 5$
       satisfies \cref{itm:condition1,itm:condition2}. Then $J \sim
-      \directsum{\Lnplus}{K}$ if and only if there exists a symmetric
-      $J'$ such that $J \cong \directsum{\Lnplus}{J'}$ and $J' \sim
+      \directsum{K}{\Lnplus}$ if and only if there exists a symmetric
+      $J'$ such that $J \cong \directsum{J'}{\Lnplus}$ and $J' \sim
       K$.
 
       \begin{proof}
@@ -1089,7 +1089,7 @@
         $\Hnplus[3]\of{\quaternions}$. However, each of these can be
         ruled out.
 
-        Recall that $\lyapunovrank{\directsum{\Lnplus}{K}} \ge
+        Recall that $\lyapunovrank{\directsum{K}{\Lnplus}} \ge
         \lyapunovrank{\Lnplus} + \dim\of{K}$. If $J$ has an
         $\Hnplus[3]\of{\Cn[1]}$ factor, then $\lyapunovrank{J} = 17 +
         \lyapunovrank{J'} \le 17 + \lyapunovrank{\Lnplus[n + \dim\of{K}
@@ -1181,7 +1181,7 @@
         and $2$ are the same ($\Rnplus[2] \cong \Lnplus[2]$) and that
         \cref{itm:condition1,itm:condition2} must hold, it easy to see
         that the theorem holds because $J \nsim
-        \directsum{\Lnplus}{K}$ for all generated $K$ and $J$.
+        \directsum{K}{\Lnplus}$ for all generated $K$ and $J$.
       \end{proof}
     \end{theorem}
 
@@ -1194,7 +1194,7 @@
     \begin{equation*}
       \directsum{K}{\Lnplus}
       \sim
-      \directsum{\Lnplus[n+1]}{\Rnplus[\dim\of{K}-1]}.
+      \directsum{\Rnplus[\dim\of{K}-1]}{\Lnplus[n+1]}.
     \end{equation*}
     %
     By taking $K \coloneqq \Lnplus[m]$ for $m \ge 5$, we can be sure
@@ -1217,7 +1217,7 @@
     \begin{corollary}\label{cor:HC(3)+L(n)}
       If $K$ is a symmetric cone having no symmetric similacra and if
       $n \ge 5$ satisfies \cref{itm:condition1,itm:condition2}, then
-      $\directsum{\Lnplus}{K}$ has no symmetric similacra. In
+      $\directsum{K}{\Lnplus}$ has no symmetric similacra. In
       particular, $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$ has no
       symmetric similacra for $n \ge 31$.
     \end{corollary}
