@@ -318,8 +318,8 @@ def lowerbound1(K):
         >>> while K.dim == 0:
         ...     K = random_cone()
         >>> n = lowerbound1(K) - 1
-        >>> J1 = DirectSum([L(n), K])
-        >>> J2 = DirectSum([L(n+1), RN(K.dim - 1)])
+        >>> J1 = DirectSum([K, L(n)])
+        >>> J2 = DirectSum([RN(K.dim - 1), L(n+1)])
         >>> J1.signature() == J2.signature()
         True
 
@@ -334,8 +334,8 @@ def lowerbound1(K):
         True
         >>> n >= lowerbound3b(K)
         True
-        >>> J1 = DirectSum([L(n), K])
-        >>> J2 = DirectSum([L(n+1), RN(K.dim - 1)])
+        >>> J1 = DirectSum([K, L(n)])
+        >>> J2 = DirectSum([RN(K.dim - 1), L(n+1)])
         >>> J1.signature() == J2.signature()
         True
         >>> J1 == J2
@@ -464,7 +464,7 @@ def lowerbound3b(K):
         ...             for K in all_cones_of_dim(d):
         ...                 if n < lowerbound1(K) or n < lowerbound2(K):
         ...                     continue
-        ...                 C = DirectSum([L(n), K])
+        ...                 C = DirectSum([K, L(n)])
         ...                 for s in C.similacra():
         ...                     factors = [s]
         ...                     if isinstance(s,DirectSum):
@@ -1202,7 +1202,7 @@ def test_lemma3() -> bool:
 
         # There's room for an ``L(n)``, so let's add it.
         n = randint(n_min, n_max)
-        Ln_plus_K = DirectSum([L(n), K])
+        Ln_plus_K = DirectSum([K, L(n)])
 
         # The largest possible value of k is K.dim: if k exceeds
         # K.dim, then we wind up searching for a J whose dimension is
@@ -1300,7 +1300,7 @@ def test_lemma4() -> bool:
             continue
         n = randint(min_n, max_n)
 
-        J = DirectSum([L(n),K])
+        J = DirectSum([K,L(n)])
         for p in partitions(n + K.dim, n-1):
             result &= (partition_rank(p) < J.rank)
 
@@ -1511,7 +1511,7 @@ def test_theorem5() -> bool:
     empty lists of similacra anyway::
 
         >>> from sql import all_cones_of_dim
-        >>> all( not DirectSum([L(n),K]).similacra()
+        >>> all( not DirectSum([K,L(n)]).similacra()
         ...      for n in range(5,15)
         ...      for d in range(1,max_dimK(n)+1)
         ...      for K in all_cones_of_dim(d)
@@ -1605,9 +1605,9 @@ def test_theorem5() -> bool:
         >>> n = lowerbound1(K) - 1
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (False, True, True)
-        >>> ( DirectSum([L(n),L(m)]).signature()
+        >>> ( DirectSum([L(m), L(n)]).signature()
         ...   ==
-        ...   DirectSum([L(n+1),RN(m-1)]).signature() )
+        ...   DirectSum([RN(m-1), L(n+1)]).signature() )
         True
 
         >>> K = RN(2)
@@ -1616,7 +1616,7 @@ def test_theorem5() -> bool:
         True
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, True, False)
-        >>> DirectSum([L(n),K]).signature() == HR(3).signature()
+        >>> DirectSum([K,L(n)]).signature() == HR(3).signature()
         True
 
         >>> K = HC(3)
@@ -1625,7 +1625,7 @@ def test_theorem5() -> bool:
         >>> n = 30
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, True)
-        >>> ( DirectSum([L(n),K]).signature()
+        >>> ( DirectSum([K,L(n)]).signature()
         ...   ==
         ...   DirectSum([L(29),L(10)]).signature() )
         True
@@ -1653,7 +1653,7 @@ def test_theorem5() -> bool:
                 if n < lowerbound1(K): continue
                 if n < lowerbound2(K): continue
                 if n < lowerbound3b(K): continue
-                lhs = DirectSum([L(n),K])
+                lhs = DirectSum([K,L(n)])
                 for J in lhs.similacra():
                     fs = list(J.factors())
                     # remove() raises an error if L(n) isn't a factor,
@@ -1688,7 +1688,7 @@ def test_corollary3() -> bool:
         >>> from sql import max_cone_dim
         >>> n_min = 31
         >>> n_max = max_cone_dim() - 9
-        >>> all( not DirectSum([L(n),HC(3)]).similacra()
+        >>> all( not DirectSum([HC(3),L(n)]).similacra()
         ...      for n in range(n_min, n_max+1) )
         True
 
@@ -1733,7 +1733,7 @@ def test_corollary3() -> bool:
                 # the corollary says that L(n)+K should have no
                 # similacra
                 n = randint(min_n, max_n)
-                result &= not DirectSum([L(n), K]).similacra()
+                result &= not DirectSum([K,L(n)]).similacra()
 
     return result
 
