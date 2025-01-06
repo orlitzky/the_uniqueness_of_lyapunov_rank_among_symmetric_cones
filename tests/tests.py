@@ -1,20 +1,4 @@
 r"""
-Check the relationships between the lower bounds on ``n``. This isn't
-stated anywhere in the paper, but it shows that no bound is implied by
-the other (each bound can be strictly the largest)::
-
-    >>> K = L(2)
-    >>> lowerbound1(K) < lowerbound2(K) < lowerbound3b(K)
-    True
-
-    >>> K = RN(5)
-    >>> lowerbound1(K) < lowerbound3b(K) < lowerbound2(K)
-    True
-
-    >>> K = L(5)
-    >>> lowerbound3b(K) < lowerbound2(K) < lowerbound1(K)
-    True
-
 Verify the cases mentioned explicitly in Proposition 11. First, the
 ``m != 2`` cases where there are no similacra::
 
@@ -97,7 +81,6 @@ Check Giovanni's Theorem 4, as far as we can::
     ...         n_without_similacra.append(n)
     >>> n_without_similacra
     [1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
-
 """
 
 from signatures import *
@@ -1684,6 +1667,44 @@ def test_theorem5() -> bool:
         ...                         matches.append( (Ln_K,J) )
         >>> matches
         []
+
+    Check the relationships between the lower bounds on ``n``. Each
+    can be violated while the others are satisfied, and in each case,
+    Theorem 5 fails. This is discussed subsequent to Theorem 5 in the
+    paper::
+
+        >>> from random import randint
+        >>> m = randint(5,20)
+        >>> K = L(m)
+        >>> lowerbound3b(K) < lowerbound2(K) < lowerbound1(K)
+        True
+        >>> n = lowerbound1(K) - 1
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (False, True, True)
+        >>> ( DirectSum([L(n),L(m)]).signature()
+        ...   ==
+        ...   DirectSum([L(n+1),RN(m-1)]).signature() )
+        True
+
+        >>> K = RN(2)
+        >>> n = 4
+        >>> lowerbound1(K) < lowerbound2(K) < lowerbound3b(K)
+        True
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, True, False)
+        >>> DirectSum([L(n),K]).signature() == HR(3).signature()
+        True
+
+        >>> K = HC(3)
+        >>> lowerbound3b(K) < lowerbound1(K) < lowerbound2(K)
+        True
+        >>> n = 30
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, False, True)
+        >>> ( DirectSum([L(n),K]).signature()
+        ...   ==
+        ...   DirectSum([L(29),L(10)]).signature() )
+        True
 
     """
     # Use cached data so that we can go beyond the n=15 case
