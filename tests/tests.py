@@ -1,73 +1,4 @@
 r"""
-Verify the cases mentioned explicitly in Proposition 11. First, the
-``m != 2`` cases where there are no similacra::
-
-    >>> m = 4
-    >>> K = L(m)
-    >>> n = 5
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, False, True)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-
-    >>> m = 3
-    >>> K = L(m)
-    >>> n = 4
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, False, False)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-    >>> n = 3
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, False, False)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-
-    >>> m = 1
-    >>> K = L(m)
-    >>> n = 2
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, False, False)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-    >>> n = 3
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, True, False)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-    >>> n = 4
-    >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-    (True, True, False)
-    >>> DirectSum([K,L(n)]).similacra()
-    ()
-
-And now the ``m == 2`` case where there is exactly one counterexample::
-
-    >>> m = 2
-    >>> K = L(m)
-    >>> lowerbound1(K)
-    2
-    >>> DirectSum([K,L(2)]).similacra()
-    ()
-    >>> DirectSum([K,L(3)]).similacra()
-    ()
-    >>> DirectSum([K,L(4)]).similacra()
-    (HR(3),)
-
-Check Proposition 11 directly::
-
-    >>> def check(m,n):
-    ...     K = DirectSum([L(m),L(n)])
-    ...     return not K.similacra()
-    >>> from sql import max_cone_dim
-    >>> # need m+n <= max_cone_dim()
-    >>> m_max = max_cone_dim() // 2
-    >>> all( check(m,n)
-    ...      for m in range(1, m_max)
-    ...      for n in range(lowerbound1(L(m)), max_cone_dim() - m)
-    ...      if m != 2 )
-    True
-
 Check Giovanni's Theorem 4, as far as we can::
 
     >>> from cones import DirectSum, L
@@ -410,13 +341,6 @@ def lowerbound1(K):
         >>> J1 == J2
         False
 
-    We compute this lower bound in Proposition 11::
-
-       >>> from sympy import symbols
-       >>> m = symbols("m", integer=True, positive=True)
-       >>> K = L(m)
-       >>> fix_floor(lowerbound1(K)) == (m**2 - 3*m + 6)/2
-       True
     """
     return 2 + K.rank - K.dim
 
@@ -1884,4 +1808,100 @@ def test_proposition7() -> bool:
       or
       (n in expected_n)
       for n in range(n_max+1)
+    )
+
+
+def test_proposition8() -> bool:
+    r"""
+    Test Proposition 8.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_proposition8()
+        True
+
+    Verify the cases mentioned explicitly in the proof. First, the
+    ``m != 2`` cases where there are no similacra::
+
+        >>> m = 4
+        >>> K = L(m)
+        >>> n = 5
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, False, True)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+
+        >>> m = 3
+        >>> K = L(m)
+        >>> n = 4
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, False, False)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+        >>> n = 3
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, False, False)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+
+        >>> m = 1
+        >>> K = L(m)
+        >>> n = 2
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, False, False)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+        >>> n = 3
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, True, False)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+        >>> n = 4
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        (True, True, False)
+        >>> DirectSum([K,L(n)]).similacra()
+        ()
+
+    And now the ``m == 2`` case where there is exactly one
+    counterexample::
+
+        >>> m = 2
+        >>> K = L(m)
+        >>> lowerbound1(K)
+        2
+        >>> DirectSum([K,L(2)]).similacra()
+        ()
+        >>> DirectSum([K,L(3)]).similacra()
+        ()
+        >>> from sql import max_cone_dim
+        >>> expected = (HR(3),)
+        >>> J = DirectSum([K,L(4)])
+        >>> (J.dim > max_cone_dim()) or (J.similacra() == expected)
+        True
+
+   Confirm that the stated bound actually comes from
+   :func:`lowerbound1`::
+
+       >>> from sympy import symbols
+       >>> m = symbols("m", integer=True, positive=True)
+       >>> fix_floor(lowerbound1(L(m))) == (m**2 - 3*m + 6)/2
+       True
+
+    """
+    from sql import max_cone_dim
+    mcd = max_cone_dim()
+
+    return all(
+      not DirectSum([L(m),L(n)]).similacra()
+      for m in range(1, mcd + 1)
+      for n in range(lowerbound1(L(m)), mcd - m)
+      if m != 2
     )
