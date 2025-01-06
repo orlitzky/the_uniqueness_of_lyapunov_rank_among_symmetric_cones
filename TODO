@@ -7,3 +7,5 @@
    but in general that's not true. When we say e.g. "up to
    isomorphism" we probably don't mean up to arbitrary cone
    isomorphism.
+
+4. HC(3) + L(n) should be L(n) + HC(3) now, for consistency.
