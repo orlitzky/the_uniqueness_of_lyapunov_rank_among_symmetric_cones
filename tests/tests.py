@@ -1,65 +1,4 @@
 r"""
-We verify Proposition 8: if ``n > 30``, we never get similacra. The
-precomputed signatures are used for this so that it completes in a
-reasonable time::
-
-    >>> from sql import admissible_lorentz_ranks
-    >>> nmax = 241
-    >>> nmin = 31
-    >>>
-    >>> all(
-    ...   (17+L(n).rank)
-    ...   not in admissible_lorentz_ranks(9+n)
-    ...   for n in range(nmin,nmax+1)
-    ... )
-    True
-
-Confirm the table for ``n <= 30``::
-
-    >>> d = {
-    ...   2:  [5,3,3],
-    ...   3:  [4,4,4],
-    ...   4:  [6,3,1,1,1,1],
-    ...   5:  [6,4,3,1],
-    ...   6:  [7,4,1,1,1,1],
-    ...   7:  [8,3,3,1,1],
-    ...   8:  [9,3,1,1,1,1,1],
-    ...   9:  [10,1,1,1,1,1,1,1,1],
-    ...   10: [9,7,3],
-    ...   15: [14,8,1,1],
-    ...   18: [14,13],
-    ...   21: [19,11],
-    ...   22: [21,9,1],
-    ...   30: [29,10] }
-    >>>
-    >>> def check(n):
-    ...     J = DirectSum([ HC(3), L(n) ])
-    ...     if n in d:
-    ...         K = DirectSum(tuple( L(i) for i in d[n] ))
-    ...         return(
-    ...           J.rank in admissible_lorentz_ranks(J.dim)
-    ...           and
-    ...           K.signature() == J.signature()
-    ...         )
-    ...     else:
-    ...         return J.rank not in admissible_lorentz_ranks(J.dim)
-    >>>
-    >>> all( check(n) for n in range(31) )
-    True
-
-To be extra sure, we check the table for Proposition 8 using the
-similacra method as well::
-
-    >>> n_with_similacra = []
-    >>>
-    >>> for n in range(31):
-    ...     K = DirectSum([HC(3),L(n)])
-    ...     if len(K.similacra()) != 0:
-    ...         n_with_similacra.append(n)
-    >>>
-    >>> n_with_similacra
-    [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
-
 Check the relationships between the lower bounds on ``n``. This isn't
 stated anywhere in the paper, but it shows that no bound is implied by
 the other (each bound can be strictly the largest)::
@@ -1779,3 +1718,149 @@ def test_theorem5() -> bool:
                     result &= J_prime in K.similacra()
 
     return result
+
+
+def test_corollary3() -> bool:
+    r"""
+    Test Corollary 3.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_corollary3()
+        True
+
+    Check the claim for ``HC(3)`` directly, using whatever cached
+    cones are available::
+
+        >>> from sql import max_cone_dim
+        >>> n_min = 31
+        >>> n_max = max_cone_dim() - 9
+        >>> all( not DirectSum([L(n),HC(3)]).similacra()
+        ...      for n in range(n_min, n_max+1) )
+        True
+
+    If you think hard about it, or consult an earlier version of the
+    paper, you will conclude that only sums of Lorentz cones need to
+    be checked for similacra of ``HC(3) + L(n)``. Here we repeat the
+    check above using our cached Lorentz ranks (which are easier to
+    compute)::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>> n_min = 31
+        >>> n_max = max_lorentz_rank_dim() - 9
+        >>>
+        >>> all(
+        ...   (17+L(n).rank)
+        ...   not in admissible_lorentz_ranks(9+n)
+        ...   for n in range(n_min, n_max+1)
+        ... )
+        True
+
+    """
+    from random import randint
+    from sql import all_cones_of_dim, max_cone_dim
+
+    # We'll logical-and this with the result from each test case.
+    result = True
+
+    # Use the same trick we used in test_theorem5() to decide where to
+    # stop.
+    max_d = (max_cone_dim() - 2) // 2
+
+    for d in range(1, max_d+1):
+        max_n = max_cone_dim() - d  # leave room for K
+        for K in all_cones_of_dim(d):
+            min_n = max(lowerbound1(K),lowerbound2(K),lowerbound3b(K))
+            if min_n > max_n:
+                # The dimension of L(n)+K is guaranteed to exceed the
+                # dimensions we have cached, so skip this cone.
+                continue
+
+            if not K.similacra():
+                # the corollary says that L(n)+K should have no
+                # similacra
+                n = randint(min_n, max_n)
+                result &= not DirectSum([L(n), K]).similacra()
+
+    return result
+
+
+def test_proposition7() -> bool:
+    r"""
+    Test Proposition 7.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_proposition7()
+        True
+
+    Confirm the table for ``n <= 30`` using sums of Lorentz cones. If
+    you think hard enough about it (or read an earlier version of the
+    paper), this suffices::
+
+        >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
+        >>>
+        >>> d = {
+        ...   2:  [5,3,3],
+        ...   3:  [4,4,4],
+        ...   4:  [6,3,1,1,1,1],
+        ...   5:  [6,4,3,1],
+        ...   6:  [7,4,1,1,1,1],
+        ...   7:  [8,3,3,1,1],
+        ...   8:  [9,3,1,1,1,1,1],
+        ...   9:  [10,1,1,1,1,1,1,1,1],
+        ...   10: [9,7,3],
+        ...   15: [14,8,1,1],
+        ...   18: [14,13],
+        ...   21: [19,11],
+        ...   22: [21,9,1],
+        ...   30: [29,10] }
+        >>>
+        >>> def check(n):
+        ...     J = DirectSum([ HC(3), L(n) ])
+        ...     if n in d:
+        ...         K = DirectSum([ L(i) for i in d[n] ])
+        ...         return(
+        ...           J.rank in admissible_lorentz_ranks(J.dim)
+        ...           and
+        ...           K.signature() == J.signature()
+        ...         )
+        ...     else:
+        ...         return J.rank not in admissible_lorentz_ranks(J.dim)
+        >>>
+        >>> n_max = max_lorentz_rank_dim() - 9
+        >>> all( check(n) for n in range(n_max+1) )
+        True
+
+    """
+    from sql import max_cone_dim
+
+    # the list of "n" where we expect to find similacra
+    expected_n = [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
+
+    # We're going to be calling similacra() on L(n)+HC(3), so make
+    # sure we don't make "n" so large that we exceed what is cached.
+    n_max = max_cone_dim() - 9
+
+    return all(
+      (not DirectSum([HC(3),L(n)]).similacra())
+      or
+      (n in expected_n)
+      for n in range(n_max+1)
+    )
