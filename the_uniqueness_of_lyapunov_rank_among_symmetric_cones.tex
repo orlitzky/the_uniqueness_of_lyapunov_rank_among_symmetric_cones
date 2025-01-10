@@ -647,7 +647,7 @@
       \end{proof}
     \end{corollary}
 
-    \begin{theorem}\label{thm:two unique families}
+    \begin{theorem}\label{thm:two sufficient families}
       Up to isomorphism, every symmetric cone $K$ is either of, or has
       similacra of the form
       %
@@ -1343,7 +1343,7 @@
       %
       \begin{proof}
         With \cref{lem:subcone similacra} in mind, start from
-        \cref{thm:two unique families} and remove the known similacra
+        \cref{thm:two sufficient families} and remove the known similacra
         from the table.
       \end{proof}
     \end{proposition}
@@ -1398,6 +1398,49 @@
         would fit, and can be enumerated.
       \end{proof}
     \end{proposition}
+
+    The last case that we will single out is
+    $\directsum{\Lnplus}{\Lnplus}$, which typically will have
+    similacra except for a few ``small'' values of $n$.
+
+    \begin{lemma}
+      If $\directsum{\Lnplus}{\Lnplus}$ has similacra, then it has
+      similacra of the form
+      %
+      \begin{equation*}
+        \qty{\Hnplus[3]\of{\Cn[1]}}^{j}
+        \oplus
+        \Lnplus[n_{1}]
+        \oplus
+        \Lnplus[n_{2}]
+        \oplus
+        \cdots
+        \oplus
+        \Lnplus[n_{k}]
+      \end{equation*}
+      %
+      where $j \in \set{0,1}$ and $k, n_{i} \in \Nn[1]$ (as in
+      \cref{thm:two sufficient families}).
+
+      \begin{proof}
+        For $n \le 2$, the result holds vacuously because
+        $\directsum{\Lnplus[2]}{\Lnplus[2]} \cong \Rnplus[4]$ has no
+        similacra.
+
+        So suppose $J \sim \directsum{\Lnplus}{\Lnplus}$ with $n \ge
+        3$. If $J$ has any irreducible factors other than
+        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, then the results
+        in \cref{sec:irreducible cones} can be used to find another
+        symmetric cone of the desired form having the same signature
+        as $J$. We need only convince ourselves that this new cone is
+        not isomorphic to $\directsum{\Lnplus}{\Lnplus}$. For that, we
+        note that the similacra constructed in \cref{sec:irreducible
+          cones} all have more than two Lorentz
+        factors. $\directsum{\Lnplus}{\Lnplus}$ cannot be isomorphic
+        to a direct sum of three or more factors when $n \ge 3$, so we
+        are done.
+      \end{proof}
+    \end{lemma}
   \end{section}
 
   \section*{Acknowledgments}{
