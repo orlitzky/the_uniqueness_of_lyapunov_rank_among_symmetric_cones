@@ -1905,3 +1905,46 @@ def test_proposition8() -> bool:
       for n in range(lowerbound1(L(m)), mcd - m)
       if m != 2
     )
+
+
+def test_lemma5() -> bool:
+    r"""
+    Test Lemma 5.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The implication in the result should hold::
+
+        >>> test_lemma5()
+        True
+
+    For ``n <= 2``, there shouldn't be any similacra in the first
+    place::
+
+        >>> [ K.similacra()
+        ...   for n in range(3)
+        ...   if (K := DirectSum(2*[L(n)])) ]
+        [(), (), ()]
+
+    """
+    from sql import all_cones_of_dim, max_cone_dim
+
+    # For ALL cones with similacra, there EXISTS a similacrum, such
+    # that ALL of its factors are HC(3) or Lorentz cones.
+    n_max = max_cone_dim() // 2
+    return all(
+      not K.similacra()
+      or
+      any(
+        all( f == HC(3) or isinstance(f,L) for f in J.factors() )
+        for J in K.similacra()
+      )
+      for n in range(n_max+1)
+      if (K := DirectSum(2*[L(n)]))
+    )
