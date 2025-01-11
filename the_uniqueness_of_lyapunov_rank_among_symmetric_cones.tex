@@ -1403,7 +1403,7 @@
     $\directsum{\Lnplus}{\Lnplus}$, which typically will have
     similacra except for a few ``small'' values of $n$.
 
-    \begin{lemma}
+    \begin{lemma}\label{lem:Ln-squared is easy to brute force}
       If $\directsum{\Lnplus}{\Lnplus}$ has similacra, then it has
       similacra of the form
       %
@@ -1441,6 +1441,98 @@
         are done.
       \end{proof}
     \end{lemma}
+
+    \begin{proposition}
+      Suppose $n \in \Nn[1]$. Then $\directsum{\Lnplus}{\Lnplus}$ has
+      similacra if and only if $n \notin
+      \set{0,1,2,3,5,6,7,11,12,13,18}$.
+
+      \begin{proof}
+        Suppose that $n \ge 100$, and use the division algorithm to
+        define $m$ and $k$ by $5m + k \coloneqq n$. It follows that $m
+        \ge 20$ and $k \le 4$. Using the division algorithm once again
+        we may define $r \in \set{0,1,2}$ to be the remainder upon
+        dividing $m - k^{2} + 1$ by $3$. Next, define
+        %
+        \begin{align*}
+          \alpha &\coloneqq \frac{m - 4k^{2} + 15k - 14 - r}{3},\\
+          \gamma &\coloneqq 2m - 22k - \frac{4m - 16k^{2} - 68 + 5r}{3}.
+        \end{align*}
+        %
+        Having assumed that $n \ge 100$, it is straightforward to see
+        that $\alpha, \gamma \ge 0$. Both are integers as
+        well. Rewriting a bit,
+        %
+        \begin{equation*}
+          \alpha
+          =
+          \frac{m - k^{2} + 1 - r}{3} + \frac{15k - 3k^{2} - 15}{3},
+        \end{equation*}
+        %
+        which is clearly integral considering how $r$ is defined. And
+        likewise,
+        %
+        \begin{equation*}
+          \gamma
+          =
+          2m - 22k - \frac{4m - 16k^{2} + 4 - 4r}{3} - \frac{72 - 9r}{3}.
+        \end{equation*}
+        %
+        All that remains for the $n \ge 100$ case is to define
+        %
+        \begin{equation*}
+          J
+          \coloneqq
+          \Lnplus[7m+k]
+          \oplus
+          \Lnplus[m+3k-4]
+          %
+          \oplus
+          %
+          \underbrace{
+            \Lnplus[4]
+            \oplus
+            \cdots
+            \oplus
+            \Lnplus[4]
+          }_{\alpha \text{ times }}
+          %
+          \oplus
+          %
+          \underbrace{
+            \Lnplus[3] % r times
+            \oplus
+            \cdots
+            \oplus
+            \Lnplus[3]
+          }_{r \text{ times}}
+          %
+          \oplus
+          \Rnplus[\gamma].
+        \end{equation*}
+        %
+        This cone shares its signature with
+        $\directsum{\Lnplus}{\Lnplus}$, and its first factor is
+        $\Lnplus[7m+k] = \Lnplus[n+2m]$, so the two are not
+        isomorphic.
+
+        For $n < 100$, we must once again resort to brute-force
+        enumeration. From \cref{lem:Ln-squared is easy to brute
+          force}, we know however that this can be done (relatively)
+        easily using the same strategy we used in \cref{thm:improved
+          subproblem reduction}, namely by partitioning the desired
+        dimension and computing the resulting Lyapunov ranks. One
+        would first partition $n-9$ assuming that
+        $\Hnplus[3]\of{\Cn[1]}$ is present in the similacra, searching
+        for a Lyapunov rank of
+        $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}} -
+        \lyapunovrank{\Hnplus[3]\of{\Cn[1]}} = n^{2} - n - 15$. Should
+        that fail\footnote{Partitioning $n-9$ is a subproblem of
+        partitioning $n$, if you care to save the result.}, $n$ itself
+        can be partitioned in hopes of finding
+        $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}}$.
+      \end{proof}
+    \end{proposition}
   \end{section}
 
   \section*{Acknowledgments}{
