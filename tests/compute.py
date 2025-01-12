@@ -588,7 +588,7 @@ def compute_partitions():
     Beware, this data occupies about 80GiB.
 
     """
-    from sql import insert_partitions
+    from sql import insert_partitions, LIVE_DATABASE
     from signatures import partitions
 
     for n in range(101):
