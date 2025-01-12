@@ -182,6 +182,23 @@ class SymmetricCone:
         :meth:`serialize` method already returns a unique integer or
         tuple of integers corresponding to this cone, so we can simply
         hash that.
+
+        WARNING: hashes in python can collide! The only guarantee
+        is that equal objects must have equal hashes. If you don't
+        believe this::
+
+            >>> hash(-1) == hash(-2)
+            True
+
+        We're using hashes as the lookup keys in our instance
+        caches. This should generally be safe for nonnegative integers
+        (what we get when we serialize our cones), but I can't promise
+        that two different tuples will never have the same hash, even
+        if their components do not. So there is a small chance that we
+        load the wrong :class:`DirectSum` from the instance
+        cache. This would be a fun experiment to run on the cones
+        database at some point: there should be no duplicate cones in
+        the database, so there should be no duplicate hashes.
         """
         if self._hash is None:
             self._hash = hash(self.serialize())
