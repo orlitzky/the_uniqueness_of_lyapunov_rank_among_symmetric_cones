@@ -36,6 +36,7 @@ Ensure that the trivial cone is in the database::
     ...     conn.execute(stmt, ()).fetchone()[0] == 0
     True
     >>> conn.close()
+
 """
 import sqlite3
 import msgpack
@@ -99,16 +100,18 @@ def new_database(db : str = TEST_DATABASE):
         # one partition (msgpack'd list) per row
         conn.execute("""CREATE TABLE partitions (
           n INTEGER NOT NULL,
-          partition BLOB NOT NULL
+          partition BLOB NOT NULL,
+          rank INTEGER NOT NULL
         );""")
-        conn.execute("CREATE INDEX n_idx ON partitions (n);")
+        conn.execute("CREATE INDEX n_rank_idx ON partitions (n,rank);")
 
     conn.close()
 
 
-def partitions_of(n : int, db : str = LIVE_DATABASE) -> list[list[int]]:
+def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> list[list[int]]:
     r"""
-    Return all partitions of the integer ``n``.
+    Return all partitions of the integer ``n`` having Lyapunov
+    rank ``r`` (if the entries were dimensions of Lorentz factors).
 
     Since this does not modify the database, we use the live database
     by default.
@@ -117,7 +120,10 @@ def partitions_of(n : int, db : str = LIVE_DATABASE) -> list[list[int]]:
     ----------
 
     n : int
-      The integer you want to partition.
+      The integer whose partitions you want.
+
+    r : int
+      The Lypaunov rank of the partitions to select.
 
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.
@@ -129,21 +135,21 @@ def partitions_of(n : int, db : str = LIVE_DATABASE) -> list[list[int]]:
         >>> insert_partitions(0, [[0]])
         >>> insert_partitions(1, [[1]])
         >>> insert_partitions(2, [[1,1], [2]])
-        >>> partitions_of(0, db=TEST_DATABASE)
+        >>> partitions_of_rank(0, 0, db=TEST_DATABASE)
         [[0]]
-        >>> partitions_of(1, db=TEST_DATABASE)
+        >>> partitions_of_rank(1, 1, db=TEST_DATABASE)
         [[1]]
-        >>> partitions_of(2, db=TEST_DATABASE)
+        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
         [[1, 1], [2]]
 
     """
     conn = sqlite3.connect(db)
-    stmt = "SELECT partition FROM partitions WHERE n=?"
+    stmt = "SELECT partition FROM partitions WHERE n=? and rank=?"
     result = []
     with conn:
         result = [
             msgpack.unpackb(t[0])
-            for t in conn.execute(stmt, (n,)).fetchall()
+            for t in conn.execute(stmt, (n,r)).fetchall()
         ]
     conn.close()
     return result
@@ -153,7 +159,9 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
     r"""
     Insert one or more partitions of ``n`` into the database.
 
-    This is destructive, so we use the test database as the default.
+    The Lyapunov rank of each partition is computed prior to
+    insertion. This is destructive, so we use the test database as
+    the default.
 
     Parameters
     ----------
@@ -180,14 +188,18 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
 
         >>> new_database(db=TEST_DATABASE)
         >>> insert_partitions(2, [[3], [4,5]])
-        >>> partitions_of(2, db=TEST_DATABASE)
-        [[3], [4, 5]]
+        partitions_of_rank(2, 2, db=TEST_DATABASE)
+        []
+        >>> partitions_of_rank(2, 4, db=TEST_DATABASE)
+        [[3]]
 
     """
+    from signatures import partition_rank
     conn = sqlite3.connect(db)
-    stmt = "INSERT INTO partitions (n,partition) VALUES (?,?)"
+    stmt = "INSERT INTO partitions (n,partition,rank) VALUES (?,?,?)"
     with conn:
-        conn.executemany(stmt, ((n, msgpack.packb(p)) for p in ps) )
+        rows = ( (n, msgpack.packb(p), partition_rank(p)) for p in ps )
+        conn.executemany(stmt, rows)
     conn.close()
 
 
