@@ -70,7 +70,7 @@ def new_database(db : str = TEST_DATABASE):
         >>> stmt = "SELECT name FROM sqlite_master WHERE type='table';"
         >>> with conn:
         ...     print(conn.execute(stmt).fetchall())
-        [('cones',), ('lorentz_ranks',)]
+        [('cones',), ('lorentz_ranks',), ('partitions',)]
         >>> conn.close()
 
     """
@@ -96,6 +96,98 @@ def new_database(db : str = TEST_DATABASE):
         );""")
         conn.execute("CREATE INDEX dim_idx ON lorentz_ranks (dim);")
 
+        # one partition (msgpack'd list) per row
+        conn.execute("""CREATE TABLE partitions (
+          n INTEGER NOT NULL,
+          partition BLOB NOT NULL
+        );""")
+        conn.execute("CREATE INDEX n_idx ON partitions (n);")
+
+    conn.close()
+
+
+def partitions_of(n : int, db : str = LIVE_DATABASE) -> list[list[int]]:
+    r"""
+    Return all partitions of the integer ``n``.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    n : int
+      The integer you want to partition.
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
+
+        >>> new_database(db=TEST_DATABASE)
+        >>> insert_partitions(0, [[0]])
+        >>> insert_partitions(1, [[1]])
+        >>> insert_partitions(2, [[1,1], [2]])
+        >>> partitions_of(0, db=TEST_DATABASE)
+        [[0]]
+        >>> partitions_of(1, db=TEST_DATABASE)
+        [[1]]
+        >>> partitions_of(2, db=TEST_DATABASE)
+        [[1, 1], [2]]
+
+    """
+    conn = sqlite3.connect(db)
+    stmt = "SELECT partition FROM partitions WHERE n=?"
+    result = []
+    with conn:
+        result = [
+            msgpack.unpackb(t[0])
+            for t in conn.execute(stmt, (n,)).fetchall()
+        ]
+    conn.close()
+    return result
+
+
+def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
+    r"""
+    Insert one or more partitions of ``n`` into the database.
+
+    This is destructive, so we use the test database as the default.
+
+    Parameters
+    ----------
+
+    n : int
+      The integer that has been partitioned.
+
+    ps : list[list[int]]
+      A list of partitions, where each partition consists of a list of
+      integers that sum to ``n``.
+
+    db : str, default=TEST_DATABASE
+      The name of the SQLite database to use.
+
+    Returns
+    -------
+
+    Nothing.
+
+    Examples
+    --------
+
+    A simple example::
+
+        >>> new_database(db=TEST_DATABASE)
+        >>> insert_partitions(2, [[3], [4,5]])
+        >>> partitions_of(2, db=TEST_DATABASE)
+        [[3], [4, 5]]
+
+    """
+    conn = sqlite3.connect(db)
+    stmt = "INSERT INTO partitions (n,partition) VALUES (?,?)"
+    with conn:
+        conn.executemany(stmt, ((n, msgpack.packb(p)) for p in ps) )
     conn.close()
 
 
