@@ -578,6 +578,26 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
 
 
+def compute_partitions():
+    r"""
+    Naive (slow) function to compute and store all partitions of
+    ``n`` between zero and one hundred. This could be much faster if
+    it made use of earlier partitions to compute later ones, but since
+    we are only going to 100, it goes rather fast anyway.
+
+    Beware, this data occupies about 80GiB.
+
+    """
+    from sql import insert_partitions
+    from signatures import partitions
+
+    for n in range(101):
+        print(f"computing partitions of n={n}...", end="", flush=True)
+        ps = partitions(n)
+        insert_partitions(n, ps, db=LIVE_DATABASE)
+        print(" done.")
+
+
 if __name__ == "__main__":
     # if executed, we start computing more cones
     mcd = sql.max_cone_dim()
