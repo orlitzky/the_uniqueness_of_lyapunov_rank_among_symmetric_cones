@@ -100,8 +100,8 @@ def new_database(db : str = TEST_DATABASE):
         # one partition (msgpack'd list) per row
         conn.execute("""CREATE TABLE partitions (
           n INTEGER NOT NULL,
-          partition BLOB NOT NULL,
-          rank INTEGER NOT NULL
+          rank INTEGER NOT NULL,
+          partition BLOB NOT NULL
         );""")
         conn.execute("CREATE INDEX n_rank_idx ON partitions (n,rank);")
 
@@ -196,9 +196,9 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
     """
     from signatures import partition_rank
     conn = sqlite3.connect(db)
-    stmt = "INSERT INTO partitions (n,partition,rank) VALUES (?,?,?)"
+    stmt = "INSERT INTO partitions (n,rank,partition) VALUES (?,?,?)"
     with conn:
-        rows = ( (n, msgpack.packb(p), partition_rank(p)) for p in ps )
+        rows = ( (n, partition_rank(p), msgpack.packb(p)) for p in ps )
         conn.executemany(stmt, rows)
     conn.close()
 
