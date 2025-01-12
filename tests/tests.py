@@ -2,129 +2,6 @@ from signatures import *
 from cones import *
 
 
-def partitions_equivalent(p,q):
-    r"""
-    Determine whether two partitions represent the same
-    sum-of-Lorentz cones.
-
-    The order of factors in a direct sum does not matter, so one thing
-    this function does is sort the elements of each partition. But we
-    also must take care that ``RN(2)`` and ``L(2)`` are the same cone.
-
-    Parameters
-    ----------
-
-    p,q : [int]
-      Integer partitions representing sums of Lorentz cones.
-
-    Returns
-    -------
-
-    ``True`` if ``p`` and ``q`` represent the same sum-of-Lorentz
-    cone, and ``False`` otherwise.
-
-    Examples
-    --------
-
-    Small batch, hand-crafted examples::
-
-        >>> partitions_equivalent([], [0])
-        True
-        >>> partitions_equivalent([1], [2])
-        False
-        >>> partitions_equivalent([0,0], [])
-        True
-        >>> partitions_equivalent([1,2,3], [1,2,2,1])
-        False
-        >>> partitions_equivalent([1,1,2], [1,1,1,1])
-        True
-        >>> partitions_equivalent([2,1,2], [1,1,1,1,1])
-        True
-        >>> partitions_equivalent([1,1,3], [2,3])
-        True
-        >>> partitions_equivalent([1,1,3], [3,2])
-        True
-        >>> partitions_equivalent([1,3,3], [2,2,3])
-        False
-
-    Being equivalent is a symmetric relationship::
-
-        >>> from random import randint
-        >>> from signatures import partitions
-        >>> n = randint(1,10)
-        >>> ps = list(partitions(n))
-        >>> all(
-        ...   partitions_equivalent(p,q)
-        ...   ==
-        ...   partitions_equivalent(q,p)
-        ...   for p in ps
-        ...   for q in ps
-        ... )
-        True
-
-    """
-    if (sum(p) != sum(q)):
-        return False
-
-    # sort and remove zeros (which shouldn't be there in the first
-    # place)
-    p = sorted(i for i in p if not i == 0)
-    q = sorted(j for j in q if not j == 0)
-
-    # Remove all factors of size >= 3 in p from both p and q. Use
-    # indices instead of a "for foo in bar" loop because we're going
-    # to be deleting items from the list we're iterating over.
-    idx = 0
-    len_p = len(p)
-    while idx < len_p:
-        if p[idx] <= 2:
-            # skip it
-            idx += 1
-        elif p[idx] not in q:
-            # Since p[idx] >= 3, if it's missing from q, they're not
-            # isomorphic. (Without p[idx] >= 3 this doesn't work,
-            # because for example [1,1] and [2] have no elements in
-            # common.)
-            return False
-        else:
-            # Otherwise, remove this element from both p and q, but
-            # don't increment idx, because they'll all shift down by
-            # one.
-            q.remove(p[idx])
-            del(p[idx])
-            len_p -= 1
-
-    # Now what's left in p is its 1,2 elements; and what's left in q
-    # is whatever 1,2 elements it had plus any elements >= 3 that
-    # were not in p. We can repeat in the opposite direction.
-    idx = 0
-    len_q = len(q)
-    while idx < len_q:
-        if q[idx] <= 2:
-            # skip it
-            idx += 1
-        elif q[idx] not in p:
-            return False
-        else:
-            p.remove(q[idx])
-            del(q[idx])
-            len_q -= 1
-
-    # Now both p and q should have only 1s and 2s in them. They should
-    # still sum to the same value if they are isomorphic.
-    if (not p) or (not q):
-        # one of them's empty, they both had better be
-        return (p == q)
-
-    # Both nonempty, this is safe
-    if max(p) > 2 or max(q) > 2:
-        raise ValueError("elements of size >= 2 left in partition")
-
-    # Otherwise, so long as they still add up to the same size, the
-    # 1-dim and 2-dim factors can all be grouped.
-    return sum(p) == sum(q)
-
-
 def max_dimK(n):
     r"""
     The largest possible dimension for ``K`` when ``n`` is fixed
@@ -193,48 +70,6 @@ def max_dimK(n):
     while d*(d-1) <= (4*n - 10):
         d += 1
     return d-1
-
-
-def partition_rank(p):
-    r"""
-    Return the Lyapunov rank of a sum of Lorentz factors whose
-    dimensions are given by an integer partition.
-
-    A direct sum of Lorentz cones is determined (almost) uniquely by
-    the dimensions of its factors. The "almost" is because ``L(2)``
-    and ``L(1) + L(1)`` are equal, but ``[1,1]`` and ``[2]`` are not.
-    In any case, if we are given an integer partition that is intended
-    to identify a direct sum of Lorentz cone (for example, computed by
-    the :func:`signatures.partitions` function), then this function
-    computes the Lyapunov rank of that direct sum.
-
-    Parameters
-    ----------
-
-    p : [int]
-      A partition of some integer, represented as a list
-      of integers (whose sum if the one being partitioned).
-
-    Returns
-    -------
-
-    An integer: the Lypaunov rank of the direct sum of Lorentz cones
-    where the superscripts (i.e. the dimensions of the factors) are
-    given by this partition.
-
-    Examples
-    --------
-
-        >>> partition_rank([])
-        0
-        >>> partition_rank([0])
-        0
-        >>> partition_rank([1,2,3])
-        7
-
-    """
-    from signatures import f
-    return sum( map(f,p) )
 
 
 def fix_floor(s):
@@ -1000,8 +835,6 @@ def test_theorem3() -> bool:
         True
 
     """
-    from signatures import partitions
-
     # The fact that every cone shares a signature with a sum of
     # Lorentz cones and/or HC(3) is the basis for the function
     # sql.admissible_ranks(), but here we test it directly using
@@ -1265,7 +1098,6 @@ def test_lemma4() -> bool:
 
     """
     from random import randint
-    from signatures import partitions
 
     Ks = ( random_cone() for _ in range(10) )
 
