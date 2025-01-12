@@ -1,19 +1,3 @@
-r"""
-Check Giovanni's Theorem 4, as far as we can::
-
-    >>> from cones import DirectSum, L
-    >>> from sql import max_cone_dim
-    >>> n_max = max_cone_dim() // 2
-    >>> n_min = 1
-    >>> n_without_similacra = []
-    >>> for n in range(n_min, n_max+1):
-    ...     K = DirectSum([L(n)]*2)
-    ...     if not K.similacra():
-    ...         n_without_similacra.append(n)
-    >>> n_without_similacra
-    [1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
-"""
-
 from signatures import *
 from cones import *
 
@@ -1948,3 +1932,77 @@ def test_lemma5() -> bool:
       for n in range(n_max+1)
       if (K := DirectSum(2*[L(n)]))
     )
+
+
+def test_proposition9() -> bool:
+    r"""
+    Test Proposition 9.
+
+    Returns
+    -------
+
+    ``True`` if the test passed, and ``False`` otherwise.
+
+    Examples
+    --------
+
+    The characterization in the result should hold::
+
+        >>> test_proposition9()
+        True
+
+    In addition to the ``similacra`` check, we can also use our cached
+    partitions thanks to Lemma 5. This allows us to test all the way
+    up to ``n == 100``.....
+
+
+    Define the "constants" we use in the proof::
+
+        >>> m = lambda n: (n // 5)
+        >>> k = lambda n: n - 5*m(n)
+        >>> r = lambda n: m(n) - k(n)**2 + 1 - 3*((m(n) - k(n)**2 + 1) // 3)
+        >>> alpha = lambda n: (m(n) - 4*k(n)**2 + 15*k(n) - 14 - r(n)) / 3
+        >>> gamma = lambda n: 2*m(n) - 22*k(n) - (4*m(n) - 16*k(n)**2 - 68 + 5*r(n))/3
+
+    And check some of their properties::
+
+        >>> n_max = 200
+        >>> all( n == 5*m(n) + k(n) for n in range(n_max+1) )
+        True
+        >>> all( alpha(n).is_integer() for n in range(n_max+1) )
+        True
+        >>> all( gamma(n).is_integer() for n in range(n_max+1) )
+        True
+        >>> all( alpha(n) >= 0 for n in range(100, n_max+1) )
+        True
+        >>> all( gamma(n) >= 0 for n in range(100, n_max+1) )
+        True
+
+    Finally, we check the dimension and Lypaunov rank of our
+    similacrum symbolically::
+
+        >>> from sympy import expand, symbols
+        >>> from signatures import f
+        >>> n,m = symbols("n,m", integer=True, positive=True)
+        >>> k,r = symbols("k,r", integer=True, nonnegative=True)
+        >>> alpha = (m - 4*k**2 + 15*k - 14 - r) / 3
+        >>> gamma = 2*m - 22*k - (4*m - 16*k**2 - 68 + 5*r)/3
+        >>> J_dim = (7*m + k) + (m + 3*k - 4) + 4*alpha + 3*r + gamma
+        >>> J_rank = fix_floor(f(7*m + k)) + fix_floor(f(m + 3*k - 4)) + alpha*f(4) + r*f(3) + gamma
+        >>> K_dim = 2*n
+        >>> K_rank = 2*fix_floor(f(n))
+        >>> (K_dim - J_dim).subs({n: 5*m + k})
+        0
+        >>> expand((K_rank - J_rank).subs({n: 5*m + k}))
+        0
+
+    """
+    from sql import max_cone_dim
+    n_max = max_cone_dim() // 2
+    n_without_similacra = [
+      n for n in range(n_max+1)
+      if (K := DirectSum([L(n)]*2))
+      and not K.similacra()
+    ]
+    expected = [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
+    return (n_without_similacra == expected)
