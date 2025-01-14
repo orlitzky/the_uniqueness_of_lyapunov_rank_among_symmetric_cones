@@ -21,3 +21,5 @@
       for the theorems that need those things
    b) no two cones should have the same hash
    c) the trivial cases should be in there
+
+7. Partitions should suffice for Ln + Lm, too?
