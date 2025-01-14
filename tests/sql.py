@@ -203,6 +203,45 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
     conn.close()
 
 
+def max_partition_size(db : str = LIVE_DATABASE) -> int:
+    r"""
+    Return the maximum integer for which we have partitions in the database.
+
+    Since this does not modify the database, we use the live database
+    by default.
+
+    Parameters
+    ----------
+
+    db : str, default=LIVE_DATABASE
+      The name of the SQLite database to use.
+
+    Examples
+    --------
+
+    The right answer depends on how long you're willing to wait (and
+    whether or not the data exist)::
+
+        >>> mps = max_cone_dim()
+        >>> mps is None or isinstance(mps, int)
+        True
+
+    In a new database, there won't be a maximum::
+
+       >>> new_database(db=TEST_DATABASE)
+       >>> print(max_partition_size(db=TEST_DATABASE))
+       None
+
+    """
+    conn = sqlite3.connect(db)
+    stmt = "SELECT MAX(n) FROM partitions"
+    result = 0
+    with conn:
+        result = conn.execute(stmt).fetchone()[0]
+    conn.close()
+    return result
+
+
 def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
     r"""
     Return all symmetric cones having dimension ``n``.
