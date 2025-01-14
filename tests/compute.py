@@ -583,7 +583,7 @@ def compute_partitions():
     Naive (slow) function to compute and store all partitions of
     ``n`` between zero and one hundred. This could be much faster if
     it made use of earlier partitions to compute later ones, but since
-    we are only going to 100, it goes rather fast anyway.
+    we are only going to 2*100, it goes rather fast anyway.
 
     Beware, this data occupies about 80GiB.
 
@@ -591,9 +591,9 @@ def compute_partitions():
     from sql import insert_partitions, LIVE_DATABASE
     from partitions import partitions
 
-    for n in range(101):
-        print(f"computing partitions of n={n}...", end="", flush=True)
-        ps = partitions(n)
+    for n in range(201):
+        print(f"computing partitions of n={n} that exclude 2...", end="", flush=True)
+        ps = partitions(n, include_two=False)
         insert_partitions(n, ps, db=LIVE_DATABASE)
         print(" done.")
 
