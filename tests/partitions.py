@@ -42,14 +42,66 @@ def f(n : int) -> int:
     return (n**2 - n + 2) // 2
 
 
-def partitions(n : int, entry_max : int = None) -> list[list[int]]:
+from typing import Iterator
+def _partition_contains_two(p : Iterator[int]) -> bool:
+    r"""
+    Return ``True`` if a _sorted_ partition (arising from
+    the :func:`partitions` function) contains a ``2``.
+
+    Parameters
+    ----------
+
+    p : Iterator[int]
+      The partition to check. Must be sorted least-to-greatest.
+
+    Returns
+    -------
+
+    True if the given partition contains ``2``, and ``False`` otherwise.
+
+    Examples
+    --------
+
+        >>> _partition_contains_two([1,1,1,1,3])
+        False
+
+        >>> _partition_contains_two([1,1,1,1,2,3])
+        True
+
+    If the partition isn't sorted, all bets are off::
+
+        >>> _partition_contains_two([1,1,5,1,2])
+        False
+
+    """
+    for z in p:
+        if z == 2:
+            return True
+        if z >= 3:
+            # Early return assuming the list is sorted
+            return False
+    return False
+
+
+def partitions(n : int, entry_max : int = None, include_two : bool = True) -> list[list[int]]:
     r"""
     Return all partitions of the integer ``n`` in ascending order.
 
     This is Jerome Kelleher's ``accel_asc`` function from
     https://jeromekelleher.net/category/combinatorics.html, modified
-    to take an ``entry_max`` argument which limits the maximum size of
-    any entry in a partition.
+    in two ways:
+
+      1. It takes an ``entry_max`` argument which limits the maximum size of
+         any entry in a partition. Since the partitions are sorted, this is
+         very easy to check before returning one of them.
+
+      2. We can exclude partitions containing twos. One easy way to
+         decrease the number of partitions under consideration is to
+         normalize ``[2]`` to ``[1,1]``. Since a partition containing
+         ``[1,1]`` in place of that ``[2]`` will be returned _anyway_,
+         the easy way to do this is to drop all partitions containing
+         a ``2``. We'll waste a tiny bit of space this way, but checking
+         for ``2`` is a lot simpler than checking for ``1,1``.
 
     Parameters
     ----------
@@ -60,6 +112,11 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
     entry_max : int
       An inclusive upper limit on the size of a partitions entries. If
       any entry in a partition exceeds this limit, it is omitted.
+
+    include_two : bool
+      Whether or not to return partitions containing twos. (These are
+      all equivalent to partitions containing ``1,1`` for the purposes
+      of Lyapunov rank).
 
     Returns
     -------
@@ -118,6 +175,12 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
         >>> len(ps[0]) == n
         True
 
+    We can exclude ``2`` from the results entirely as a cheap form of
+    normalization::
+
+        >>> list(partitions(2, include_two=False))
+        [[1, 1]]
+
     """
     a = [0 for i in range(n + 1)]
     k = 1
@@ -135,14 +198,16 @@ def partitions(n : int, entry_max : int = None) -> list[list[int]]:
             a[l] = y
             if (entry_max is None) or a[k+1] <= entry_max:
                 # "a" is sorted with the largest entries at the end
-                yield a[:k + 2]
+                if include_two or not _partition_contains_two(a[:k + 2]):
+                    yield a[:k + 2]
             x += 1
             y -= 1
         a[k] = x + y
         y = x + y - 1
         if (entry_max is None) or a[k] <= entry_max:
             # "a" is sorted with the largest entries at the end
-            yield a[:k + 1]
+            if include_two or not _partition_contains_two(a[:k + 1]):
+                yield a[:k + 1]
 
 
 def _direct_lorentz_ranks(n : int) -> tuple:
