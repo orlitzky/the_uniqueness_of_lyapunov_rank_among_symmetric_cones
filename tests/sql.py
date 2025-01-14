@@ -188,7 +188,7 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
 
         >>> new_database(db=TEST_DATABASE)
         >>> insert_partitions(2, [[3], [4,5]])
-        partitions_of_rank(2, 2, db=TEST_DATABASE)
+        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
         []
         >>> partitions_of_rank(2, 4, db=TEST_DATABASE)
         [[3]]
