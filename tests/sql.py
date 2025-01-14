@@ -200,7 +200,7 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
         [[3]]
 
     """
-    from signatures import partition_rank
+    from partitions import partition_rank
     conn = sqlite3.connect(db)
     stmt = "INSERT INTO partitions (n,rank,partition) VALUES (?,?,?)"
     with conn:

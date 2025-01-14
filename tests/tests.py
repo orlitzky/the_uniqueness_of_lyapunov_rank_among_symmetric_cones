@@ -1,4 +1,4 @@
-from signatures import *
+from partitions import *
 from cones import *
 
 
@@ -210,7 +210,6 @@ def lowerbound2(K):
         >>> J1 == J2
         False
     """
-    from signatures import f
     return 2 + f(1 + K.dim) - K.rank
 
 
@@ -1071,7 +1070,7 @@ def test_lemma4() -> bool:
     Check inequality (1) with a few concrete examples::
 
         >>> from random import randint
-        >>> from signatures import f
+        >>> from partitions import f
         >>> x = randint(0,30)
         >>> y = randint(0,30)
         >>> f(x+y) >= f(x) + f(y)
@@ -1341,7 +1340,7 @@ def test_theorem5() -> bool:
     they're all from isomorphic cones once you consider that ``L(2) ==
     RN(2)``::
 
-        >>> from signatures import partitions, f
+        >>> from partitions import partitions, f
         >>>
         >>> # We'll collect the matching signatures in a list
         >>> matches = []
@@ -1814,7 +1813,7 @@ def test_proposition9() -> bool:
     similacrum symbolically::
 
         >>> from sympy import expand, symbols
-        >>> from signatures import f
+        >>> from partitions import f
         >>> n,m = symbols("n,m", integer=True, positive=True)
         >>> k,r = symbols("k,r", integer=True, nonnegative=True)
         >>> alpha = (m - 4*k**2 + 15*k - 14 - r) / 3

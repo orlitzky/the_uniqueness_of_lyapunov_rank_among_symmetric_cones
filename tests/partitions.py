@@ -1,8 +1,5 @@
 r"""
-Compute possible signatures for symmetric cones.
-
-This module is mostly obsolete, but it can still be used as a sanity
-check for the recursive/cached implementations of the same procedure.
+Partition-related stuff.
 """
 
 def f(n : int) -> int:
@@ -209,7 +206,7 @@ def partition_rank(p):
     and ``L(1) + L(1)`` are equal, but ``[1,1]`` and ``[2]`` are not.
     In any case, if we are given an integer partition that is intended
     to identify a direct sum of Lorentz cone (for example, computed by
-    the :func:`signatures.partitions` function), then this function
+    the :func:`partitions` function), then this function
     computes the Lyapunov rank of that direct sum.
 
     Parameters
@@ -288,7 +285,6 @@ def partitions_equivalent(p,q):
     Being equivalent is a symmetric relationship::
 
         >>> from random import randint
-        >>> from signatures import partitions
         >>> n = randint(1,10)
         >>> ps = list(partitions(n))
         >>> all(

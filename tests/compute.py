@@ -23,7 +23,7 @@ duplicates (specifically, serializations of isomorphic cones).
 import sqlite3
 
 from cones import L,HR,HC,HH,HO
-import signatures
+import partitions
 import sql
 
 def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
@@ -130,7 +130,7 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
         # n=2 is the one case where f(n) = 1 + 1 + ... + 1 (n times)
         # and the cone is reducible, so f(n) would wind up in the list
         # twice, once for L(n) and once for L(1) + L(1).
-        this_fn = (signatures.f(n),)
+        this_fn = (partitions.f(n),)
     result = tuple(s) + this_fn
 
     if d is None:
@@ -589,7 +589,7 @@ def compute_partitions():
 
     """
     from sql import insert_partitions, LIVE_DATABASE
-    from signatures import partitions
+    from partitions import partitions
 
     for n in range(101):
         print(f"computing partitions of n={n}...", end="", flush=True)
