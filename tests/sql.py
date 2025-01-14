@@ -108,7 +108,7 @@ def new_database(db : str = TEST_DATABASE):
     conn.close()
 
 
-def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> list[list[int]]:
+def partitions_of_rank(n : int, r: int | None = None, db : str = LIVE_DATABASE) -> list[list[int]]:
     r"""
     Return all partitions of the integer ``n`` having Lyapunov
     rank ``r`` (if the entries were dimensions of Lorentz factors).
@@ -122,8 +122,9 @@ def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> list[list[i
     n : int
       The integer whose partitions you want.
 
-    r : int
-      The Lypaunov rank of the partitions to select.
+    r : int | None, default=None
+      The Lypaunov rank of the partitions to select, or ``None`` if
+      you want them all.
 
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.
@@ -135,24 +136,29 @@ def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> list[list[i
         >>> insert_partitions(0, [[0]])
         >>> insert_partitions(1, [[1]])
         >>> insert_partitions(2, [[1,1], [2]])
-        >>> partitions_of_rank(0, 0, db=TEST_DATABASE)
+        >>> list(partitions_of_rank(0, 0, db=TEST_DATABASE))
         [[0]]
-        >>> partitions_of_rank(1, 1, db=TEST_DATABASE)
+        >>> list(partitions_of_rank(1, 1, db=TEST_DATABASE))
         [[1]]
-        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
+        >>> list(partitions_of_rank(2, 2, db=TEST_DATABASE))
+        [[1, 1], [2]]
+        >>> list(partitions_of_rank(2, db=TEST_DATABASE))
         [[1, 1], [2]]
 
     """
     conn = sqlite3.connect(db)
     stmt = "SELECT partition FROM partitions WHERE n=? and rank=?"
-    result = []
+    if r is None:
+        stmt = "SELECT partition FROM partitions WHERE n=?"
+
     with conn:
-        result = [
-            msgpack.unpackb(t[0])
-            for t in conn.execute(stmt, (n,r)).fetchall()
-        ]
+        if r is None:
+            rows = conn.execute(stmt, (n,)).fetchall()
+        else:
+            rows = conn.execute(stmt, (n,r)).fetchall()
     conn.close()
-    return result
+
+    return ( msgpack.unpackb(t[0])for t in rows )
 
 
 def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
@@ -188,9 +194,9 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
 
         >>> new_database(db=TEST_DATABASE)
         >>> insert_partitions(2, [[3], [4,5]])
-        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
+        >>> list(partitions_of_rank(2, 2, db=TEST_DATABASE))
         []
-        >>> partitions_of_rank(2, 4, db=TEST_DATABASE)
+        >>> list(partitions_of_rank(2, 4, db=TEST_DATABASE))
         [[3]]
 
     """
