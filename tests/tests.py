@@ -1828,6 +1828,22 @@ def test_proposition9() -> bool:
         >>> expand((K_rank - J_rank).subs({n: 5*m + k}))
         0
 
+    Since the target cone has exactly two factors, it suffices (per
+    the proof) to check partitions with/without an ``HC(3)`` offset::
+
+        >>> from sql import partitions_of_rank, max_partition_size
+        >>> n_max = max_partition_size() // 2
+        >>> n_without_similacra = []
+        >>> for n in range(n_max+1):
+        ...     K = DirectSum([L(n)]*2)
+        ...     ps = [ p for p in partitions_of_rank(K.dim, K.rank)
+        ...            if not partitions_equivalent(p,[n,n]) ]
+        ...     ps += partitions_of_rank(K.dim - 9, K.rank - 17)
+        ...     if not ps:
+        ...         n_without_similacra.append(n)
+        >>> n_without_similacra
+        [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
+
     """
     from sql import max_cone_dim
     n_max = max_cone_dim() // 2
