@@ -132,7 +132,11 @@ def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> int:
     -------
 
     An integer, the number of partitions of ``n`` having a
-    :func:`partitions.partition_rank` of ``r``.
+    :func:`partitions.partition_rank` of ``r``. A return value of
+    ``0`` indicates_either_ that there are no partitions with that
+    rank, _or_ that we just have not computed them yet -- there is no
+    way to know the difference without adding a bunch of junk rows to
+    the database.
 
     Examples
     --------
