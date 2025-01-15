@@ -221,6 +221,14 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
         ... )
         7
 
+    If we eliminate partitions with a "2" in them, then, for example,
+    ``[1,1]`` is the only partition of ``2``::
+
+        >>> from partitions import partitions
+        >>> insert_partitions(2, partitions(2, include_two=False))
+        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
+        1
+
     """
     from partitions import partition_rank
     conn = sqlite3.connect(db)
