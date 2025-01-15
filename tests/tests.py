@@ -1835,10 +1835,9 @@ def test_proposition9() -> bool:
         >>> n_without_similacra = []
         >>> for n in range(n_max+1):
         ...     K = DirectSum([L(n)]*2)
-        ...     ps = [ p for p in partitions_of_rank(K.dim, K.rank)
-        ...            if not partitions_equivalent(p,[n,n]) ]
+        ...     ps = partitions_of_rank(K.dim, K.rank)
         ...     ps += partitions_of_rank(K.dim - 9, K.rank - 17)
-        ...     if not ps:
+        ...     if ps == 1:  # Ln + Ln itself should be in there
         ...         n_without_similacra.append(n)
         >>> n_without_similacra
         [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]

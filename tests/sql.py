@@ -101,16 +101,16 @@ def new_database(db : str = TEST_DATABASE):
         conn.execute("""CREATE TABLE partitions (
           n INTEGER NOT NULL,
           rank INTEGER NOT NULL,
-          partition BLOB NOT NULL
+          partition_count INTEGER NOT NULL
         );""")
-        conn.execute("CREATE INDEX n_rank_idx ON partitions (n,rank);")
+        conn.execute("CREATE UNIQUE INDEX n_rank_idx ON partitions (n,rank);")
 
     conn.close()
 
 
-def partitions_of_rank(n : int, r: int | None = None, db : str = LIVE_DATABASE) -> list[list[int]]:
+def partitions_of_rank(n : int, r: int, db : str = LIVE_DATABASE) -> int:
     r"""
-    Return all partitions of the integer ``n`` having Lyapunov
+    Count all partitions of the integer ``n`` having Lyapunov
     rank ``r`` (if the entries were dimensions of Lorentz factors).
 
     Since this does not modify the database, we use the live database
@@ -122,43 +122,49 @@ def partitions_of_rank(n : int, r: int | None = None, db : str = LIVE_DATABASE) 
     n : int
       The integer whose partitions you want.
 
-    r : int | None, default=None
-      The Lypaunov rank of the partitions to select, or ``None`` if
-      you want them all.
+    r : int
+      The Lypaunov rank of the partitions to count,.
 
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.
+
+    Returns
+    -------
+
+    An integer, the number of partitions of ``n`` having a
+    :func:`partitions.partition_rank` of ``r``.
 
     Examples
     --------
 
         >>> new_database(db=TEST_DATABASE)
+        >>> partitions_of_rank(4, 12, db=TEST_DATABASE)
+        0
         >>> insert_partitions(0, [[0]])
+        >>> partitions_of_rank(0, 0, db=TEST_DATABASE)
+        1
         >>> insert_partitions(1, [[1]])
+        >>> partitions_of_rank(1, 1, db=TEST_DATABASE)
+        1
         >>> insert_partitions(2, [[1,1], [2]])
-        >>> list(partitions_of_rank(0, 0, db=TEST_DATABASE))
-        [[0]]
-        >>> list(partitions_of_rank(1, 1, db=TEST_DATABASE))
-        [[1]]
-        >>> list(partitions_of_rank(2, 2, db=TEST_DATABASE))
-        [[1, 1], [2]]
-        >>> list(partitions_of_rank(2, db=TEST_DATABASE))
-        [[1, 1], [2]]
+        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
+        2
 
     """
     conn = sqlite3.connect(db)
-    stmt = "SELECT partition FROM partitions WHERE n=? and rank=?"
-    if r is None:
-        stmt = "SELECT partition FROM partitions WHERE n=?"
+
+    # note: the pair (n,rank) is unique in the DB
+    stmt = "SELECT partition_count FROM partitions WHERE n=? and rank=?"
 
     with conn:
-        if r is None:
-            rows = conn.execute(stmt, (n,)).fetchall()
-        else:
-            rows = conn.execute(stmt, (n,r)).fetchall()
+        row = conn.execute(stmt, (n,r)).fetchone()
     conn.close()
 
-    return ( msgpack.unpackb(t[0])for t in rows )
+    if row:
+        return row[0]
+    else:
+        return 0
+
 
 
 def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
@@ -166,8 +172,10 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
     Insert one or more partitions of ``n`` into the database.
 
     The Lyapunov rank of each partition is computed prior to
-    insertion. This is destructive, so we use the test database as
-    the default.
+    insertion. We don't actually insert the partition itself; instead,
+    we just update the running tally of how many partitions of a given
+    integer have a particular rank. This is destructive, so we use the
+    test database as the default.
 
     Parameters
     ----------
@@ -194,17 +202,37 @@ def insert_partitions(n : int, ps : list[list[int]], db : str = TEST_DATABASE):
 
         >>> new_database(db=TEST_DATABASE)
         >>> insert_partitions(2, [[3], [4,5]])
-        >>> list(partitions_of_rank(2, 2, db=TEST_DATABASE))
-        []
-        >>> list(partitions_of_rank(2, 4, db=TEST_DATABASE))
-        [[3]]
+        >>> partitions_of_rank(2, 2, db=TEST_DATABASE)
+        0
+        >>> partitions_of_rank(2, 4, db=TEST_DATABASE)
+        1
+
+    All partitions of ``5`` get inserted::
+
+        >>> from partitions import f, partitions
+        >>> ps = list(partitions(5))
+        >>> len(ps)
+        7
+        >>> new_database(db=TEST_DATABASE)
+        >>> insert_partitions(5, ps)
+        >>> sum(
+        ...   partitions_of_rank(5, k, db=TEST_DATABASE)
+        ...   for k in range(f(5)+1)
+        ... )
+        7
 
     """
     from partitions import partition_rank
     conn = sqlite3.connect(db)
-    stmt = "INSERT INTO partitions (n,rank,partition) VALUES (?,?,?)"
+    stmt = r"""
+    INSERT INTO partitions (n, rank, partition_count)
+                VALUES     (?,    ?,               ?)
+    ON CONFLICT (n, rank) DO UPDATE
+    SET partition_count=partition_count+1;
+    """
+
     with conn:
-        rows = ( (n, partition_rank(p), msgpack.packb(p)) for p in ps )
+        rows = ( (n, partition_rank(p), 1) for p in ps )
         conn.executemany(stmt, rows)
     conn.close()
 
