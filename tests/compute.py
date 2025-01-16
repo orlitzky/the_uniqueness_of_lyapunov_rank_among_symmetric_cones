@@ -22,11 +22,11 @@ duplicates (specifically, serializations of isomorphic cones).
 """
 import sqlite3
 
-from cones import L,HR,HC,HH,HO
+from cones import L,HR,HC,HH,HO, SerialCone
 import partitions
 import sql
 
-def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
+def _admissible_lorentz_ranks(n : int, d : dict[int, tuple[int,...]] | None, db : str) -> tuple[int, ...]:
     r"""
     Recursive implementation underlying :func:`admissible_lorentz_ranks`.
 
@@ -113,6 +113,7 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
         if n in d:
             return d[n]
 
+    s: set[int]
     s = set()
     for i in range(1,(n//2)+1):
         # We can stop at (n//2)+1 because afterwards, i passes n-i.
@@ -125,6 +126,7 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
         s2 = _admissible_lorentz_ranks(n-i, d, db)
         s.update( b1 + b2 for b1 in s1 for b2 in s2 )
 
+    this_fn: tuple[int,...]
     this_fn = ()
     if n != 2:
         # n=2 is the one case where f(n) = 1 + 1 + ... + 1 (n times)
@@ -140,7 +142,7 @@ def _admissible_lorentz_ranks(n : int, d : dict|None, db : str) -> tuple[int]:
     return result
 
 
-def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> tuple[int]:
+def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DATABASE) -> tuple[int, ...]:
     r"""
     Compute admissible Lyapunov ranks for sums of Lorentz cones
     of total dimension ``n``.
@@ -225,6 +227,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     # the only question is, whether or not the cache will be
     # a python dict that gets passed around, or an implicit
     # SQL database.
+    d: dict[ int, tuple[int,...] ] | None
     d = {}
     if sql:
         d = None
@@ -304,7 +307,7 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
     return tuple(s)
 
 
-def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
+def _merge_factors(a, b) -> tuple:
     r"""
     Merged two serialized cones into a third.
 
@@ -358,8 +361,8 @@ def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
         True
 
     """
-    # computing/comparing the type to int is actually
-    # a bit faster on average than isinstance
+    # Computing/comparing the type to int is actually a bit faster on
+    # average than isinstance.
     if type(a) == int:
         a = (a,)
     if type(b) == int:
@@ -372,7 +375,7 @@ def _merge_factors(a : int|tuple[int], b : int|tuple[int]) -> tuple[int]:
     return tuple(sorted(a+b))
 
 
-def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
+def _dim_ranks_cones(n : int, d : dict[int, dict[int,tuple[SerialCone,...]]] | None, db : str, progress : bool) -> dict[int,tuple[SerialCone,...]]:
     r"""
     Recursive implementation underlying :func:`dim_ranks_cones`.
 
@@ -390,7 +393,7 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
     n : int
       The dimension for which you want the rank => cones map.
 
-    d : dict|None
+    d : dict[ int, dict[ int, tuple[tuple[int,...],...] ] ] | None
       Either a dict to cache the results in, or ``None`` if you want
       to use the SQL database ``db`` as a cache instead.
 
@@ -406,10 +409,10 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
     Returns
     -------
 
-    dict
-      A dictionary whose keys are all possible Lyapunov ranks in
-      dimension ``n``, and whose values are tuples of (serialized)
-      cones in dimension ``n`` having that Lyapunov rank.
+    dict[ int, tuple[tuple[int,...],...] ]
+      A dictionary whose keys are the possible Lyapunov ranks in
+      dimension ``n`` and whose values are tuples of serialized cones
+      in dimension ``n`` having a Lyapunov rank equal to the key.
 
     Examples
     --------
@@ -445,7 +448,6 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
         >>> _ = _dim_ranks_cones(2, None, sql.TEST_DATABASE, False)
         >>> sql.dim_ranks_cones(0, sql.TEST_DATABASE)
         {0: (1,)}
-
     """
     if n == 1:
         # This function has side effects (updating the dictionary or
@@ -463,7 +465,9 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
             return d[n]
 
     # The dict for this n. It will either be inserted as d[n],
-    # or put into the SQL database instead.
+    # or put into the SQL database instead. (We'll convert the
+    # set to a tuple before doing so.)
+    d_n : dict[int, set[tuple[int,...]] ]
     d_n = {}
 
     # We partition "n" ourselves here. Basically, we split n into (i,
@@ -484,6 +488,7 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
         # in dim=i and dim=(n-i)
         for r1 in s1:
             for r2 in s2:
+                s : set[ tuple[int,...] ]
                 s = set( _merge_factors(b1,b2)
                          for b1 in s1[r1]
                          for b2 in s2[r2] )
@@ -500,18 +505,18 @@ def _dim_ranks_cones(n : int, d : dict|None, db : str, progress : bool) -> dict:
         else:
             d_n[c.rank] = {c.serialize()}
 
-    for r in d_n:
-        # for serialization we want tuples, not sets
-        d_n[r] = tuple(d_n[r])
+    # for serialization we want tuples, not sets
+    ret = { r: tuple(d_n[r]) for r in d_n }
+    del d_n
 
     if d is None:
-        sql.insert_cones(n, d_n, db=db)
+        sql.insert_cones(n, ret, db=db)
     else:
-        d[n] = d_n
-    return d_n
+        d[n] = ret
+    return ret
 
 
-def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, progress : bool = False) -> dict:
+def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, progress : bool = False) -> dict[int,tuple[SerialCone,...]]:
     r"""
     Compute a rank => cones map for all cones of dimension ``n``.
 
@@ -570,6 +575,7 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
     # The implementation of this function _always_ uses a cache, the
     # only question is, whether or not the cache will be a python dict
     # that gets passed around, or an implicit SQL database.
+    d : dict[int, dict[int,tuple[SerialCone,...]]] | None
     d = {}
     if sql:
         d = None

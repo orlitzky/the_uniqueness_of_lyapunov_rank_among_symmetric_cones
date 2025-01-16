@@ -40,7 +40,7 @@ Ensure that the trivial cone is in the database::
 """
 import sqlite3
 import msgpack
-from cones import SymmetricCone
+from cones import SymmetricCone, SerialCone
 
 # The default "live" database.
 LIVE_DATABASE = "cones.db"
@@ -100,7 +100,7 @@ def new_database(db : str = TEST_DATABASE):
     conn.close()
 
 
-def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
+def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, ...]:
     r"""
     Return all symmetric cones having dimension ``n``.
 
@@ -185,7 +185,7 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
     return result
 
 
-def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCone]:
+def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, ...]:
     r"""
     Return all similacra of the given cone.
 
@@ -310,7 +310,7 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int:
 
 
 
-def admissible_lorentz_ranks(n : int, db : str = LIVE_DATABASE) -> tuple[int]:
+def admissible_lorentz_ranks(n : int, db : str = LIVE_DATABASE) -> tuple[int, ...]:
     r"""
     Return the admissible Lyapunov ranks for sums of Lorentz cones
     of total dimension ``n``.
@@ -360,7 +360,7 @@ def admissible_lorentz_ranks(n : int, db : str = LIVE_DATABASE) -> tuple[int]:
     return result
 
 
-def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int]:
+def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int, ...]:
     r"""
     Compute all admissible Lyapunov ranks for cones of total
     dimension ``n``.
@@ -518,7 +518,7 @@ def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     return result
 
 
-def insert_lorentz_ranks(n : int, ranks : list[int], db : str = TEST_DATABASE):
+def insert_lorentz_ranks(n : int, ranks : tuple[int,...], db : str = TEST_DATABASE):
     r"""
     Insert one dimension's worth of admissible Lorentz ranks into
     the database.
@@ -617,7 +617,7 @@ def insert_cones(n : int, d : dict, db : str = TEST_DATABASE):
     conn.close()
 
 
-def dim_ranks_cones(n : int, db : str = LIVE_DATABASE):
+def dim_ranks_cones(n : int, db : str = LIVE_DATABASE) -> dict[ int, tuple[SerialCone,...] ]:
     r"""
     Return all cones of dimension ``n`` as a rank => cones map.
 
@@ -662,11 +662,11 @@ def dim_ranks_cones(n : int, db : str = LIVE_DATABASE):
     conn.close()
 
     # Convert the paired results to a dict
+    d_n: dict[ int, list[SerialCone] ]
     d_n = {}
+
     for r,s in result_pairs:
         d_n.setdefault(r, []).append(msgpack.unpackb(s, use_list=False))
 
-    for r in d_n:
-        d_n[r] = tuple(d_n[r])
-
-    return d_n
+    # Now convert the lists in the dict to tuples before returning.
+    return { k: tuple(d_n[k]) for k in d_n }

@@ -2,6 +2,9 @@ r"""
 Partition-related stuff.
 """
 
+from typing import Generator
+
+
 def f(n : int) -> int:
     r"""
     Compure the Lyapunov rank of the Lorentz cone in ``n``
@@ -42,8 +45,7 @@ def f(n : int) -> int:
     return (n**2 - n + 2) // 2
 
 
-from typing import Iterator
-def _partition_contains_two(p : Iterator[int]) -> bool:
+def _partition_contains_two(p : list[int]) -> bool:
     r"""
     Return ``True`` if a _sorted_ partition (arising from
     the :func:`partitions` function) contains a ``2``.
@@ -51,7 +53,7 @@ def _partition_contains_two(p : Iterator[int]) -> bool:
     Parameters
     ----------
 
-    p : Iterator[int]
+    p : list[int]
       The partition to check. Must be sorted least-to-greatest.
 
     Returns
@@ -83,7 +85,7 @@ def _partition_contains_two(p : Iterator[int]) -> bool:
     return False
 
 
-def partitions(n : int, entry_max : int = None, include_two : bool = True) -> list[list[int]]:
+def partitions(n : int, entry_max : int | None = None, include_two : bool = True) -> Generator[list[int], None, None]:
     r"""
     Return all partitions of the integer ``n`` in ascending order.
 
@@ -109,9 +111,10 @@ def partitions(n : int, entry_max : int = None, include_two : bool = True) -> li
     n : int
       The integer to partition.
 
-    entry_max : int
+    entry_max : int | None
       An inclusive upper limit on the size of a partitions entries. If
-      any entry in a partition exceeds this limit, it is omitted.
+      any entry in a partition exceeds this limit, it is
+      omitted. Defaults to ``None`` (no limit).
 
     include_two : bool
       Whether or not to return partitions containing twos. (These are
@@ -198,7 +201,6 @@ def partitions(n : int, entry_max : int = None, include_two : bool = True) -> li
         627
         >>> len(ps2)
         242
-
     """
     a = [0 for i in range(n + 1)]
     k = 1
@@ -442,7 +444,7 @@ def partitions_equivalent(p,q):
     return sum(p) == sum(q)
 
 
-def partition_similacra(p : list[int]) -> Iterator[list[int]]:
+def partition_similacra(p : list[int]) -> Generator[list[int], None, None]:
     r"""
     Find all partitions of the same integer as the given
     partition that have the same :func:`partitions.partition_rank` but

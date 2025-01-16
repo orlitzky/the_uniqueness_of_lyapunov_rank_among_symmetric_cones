@@ -5,6 +5,8 @@ Cone classes used in our test suite.
 from itertools import chain
 from math import sqrt
 
+type SerialCone = tuple[int,...]
+
 # Lyapunov rank and dimension calculations
 class SymmetricCone:
     r"""
@@ -67,6 +69,15 @@ class SymmetricCone:
         True
 
     """
+    # Declare attributes for the "size" n, dimension, and Lyapunov
+    # rank in the superclass.
+    n: int
+    dim: int
+    rank: int
+
+    # All subclasses have an instance cache as well.
+    _instance_cache: dict
+
     @staticmethod
     def irreducible_classes():
         return (L,HR,HC,HH,HO)
@@ -785,6 +796,7 @@ class DirectSum(SymmetricCone):
         0
 
     """
+    _factors: list[SymmetricCone]
 
     # instance cache
     _instance_cache = {}
@@ -932,6 +944,7 @@ def random_cone() -> SymmetricCone:
     # Produce at most 10 factors...
     num_factors = randint(1, 10)
 
+    factors: list[SymmetricCone]
     factors = []
 
     # All of the others share signatures with Lorentz cones, so we
