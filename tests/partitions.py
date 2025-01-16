@@ -440,3 +440,92 @@ def partitions_equivalent(p,q):
     # Otherwise, so long as they still add up to the same size, the
     # 1-dim and 2-dim factors can all be grouped.
     return sum(p) == sum(q)
+
+
+def partition_similacra(p : list[int]) -> Iterator[list[int]]:
+    r"""
+    Find all partitions of the same integer as the given
+    partition that have the same :func:`partitions.partition_rank` but
+    are not equivalent.
+
+    WARNING: the input partition should be sorted least to greatest,
+    and should not contain ``2``. In other words, it should match the
+    format returned by :func:`partitions`.
+
+    We infer the integer from the given partition, and then compute
+    the other partitions of it one-at-a-time. We skip partitions all
+    of whose entries are less than the smallest entry in the given
+    partition, since by Proposition 2, the Lyapunov rank associated
+    with any such partition will be too small. We also skip partitions
+    whose largest entry is equal to the smallest entry in the target
+    partition, since the best we could hope for in that case is that
+    all entries of both partitions are equal, and in that case the
+    partitions are equal -- we want to toss those out regardless,
+    because they are equivalent.
+
+    After eliminating as many partitions as possible, we return
+    the first with a rank that matches the given one.
+
+    Parameters
+    ----------
+
+    p : list[int]
+      The partition whose similacra you want. It should be SORTED,
+      and should NOT CONTAIN ``2``.
+
+    Returns
+    -------
+
+    Yields partitions of ``sum(p)`` that have the same
+    :func:`partitions.partition_rank` as ``p``, but are not equivalent
+    to it.
+
+    Examples
+    --------
+
+    The nonnegative orthant will never have similacra::
+
+        >>> list(partition_similacra([0]))
+        []
+        >>> list(partition_similacra([1]))
+        []
+        >>> list(partition_similacra([1,1,1,1,1]))
+        []
+
+    All other partitions of ``4`` have ranks that are too small (you
+    can just try them all in your head)::
+
+        >>> list(partition_similacra([4]))
+        []
+
+    The two similacra from Example 1::
+
+        >>> next(partition_similacra([3,3,3,4]))
+        [1, 1, 1, 1, 1, 1, 1, 1, 5]
+        >>> sims = partition_similacra([1, 1, 1, 1, 1, 1, 1, 1, 5])
+        >>> _ = next(sims); next(sims)
+        [3, 3, 3, 4]
+
+    If you ignore the warning and provide an unsorted partition or a
+    partition containing ``2``, you may get wrong answers. Lack of
+    sorting can eliminate valid similacra::
+
+        >>> len(list(partition_similacra([3,3,3,4])))
+        2
+        >>> len(list(partition_similacra([4,3,3,3])))
+        1
+
+    And including ``2`` can produce equivalent partitions::
+
+        >>> list(partition_similacra([2,5,13]))
+        [[1, 1, 5, 13], [10, 10]]
+
+    """
+    target_rank = partition_rank(p)
+    for q in partitions(sum(p), include_two=False):
+        # The largest entry of q is its last, and the smallest entry
+        # of p is its first.
+        if q[-1] <= p[0]:
+            continue
+        if (partition_rank(q) == target_rank) and (not q == p):
+            yield q
