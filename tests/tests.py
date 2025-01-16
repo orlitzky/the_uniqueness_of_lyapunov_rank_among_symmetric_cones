@@ -1809,7 +1809,7 @@ def test_proposition9() -> bool:
         >>> all( gamma(n) >= 0 for n in range(100, n_max+1) )
         True
 
-    Finally, we check the dimension and Lypaunov rank of our
+    Finally, we check the dimension and Lyapunov rank of our
     similacrum symbolically::
 
         >>> from sympy import expand, symbols
@@ -1828,16 +1828,21 @@ def test_proposition9() -> bool:
         0
 
     Since the target cone has exactly two factors, it suffices (per
-    the proof) to check partitions with/without an ``HC(3)`` offset::
+    the proof) to check partitions with/without an ``HC(3)`` offset.
+    We do this only up to ``n == 18`` because all greater ``n`` lead
+    to similacra, and the existence of a similacra is much easier to
+    verify by just writing down its factors::
 
-        >>> from sql import partitions_of_rank, max_partition_size
-        >>> n_max = max_partition_size() // 2
+        >>> from partitions import partition_rank, partition_similacra
+        >>> n_max = 18
         >>> n_without_similacra = []
         >>> for n in range(n_max+1):
-        ...     K = DirectSum([L(n)]*2)
-        ...     ps = partitions_of_rank(K.dim, K.rank)
-        ...     ps += partitions_of_rank(K.dim - 9, K.rank - 17)
-        ...     if ps == 1:  # Ln + Ln itself should be in there
+        ...     p = [n,n]
+        ...     simcount = len(list(partition_similacra(p)))
+        ...     f = lambda q: partition_rank(q) == (partition_rank(p) - 17)
+        ...     if n >= 5:
+        ...         simcount += len(list(filter(f, partitions(2*n - 9))))
+        ...     if simcount == 0:
         ...         n_without_similacra.append(n)
         >>> n_without_similacra
         [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
