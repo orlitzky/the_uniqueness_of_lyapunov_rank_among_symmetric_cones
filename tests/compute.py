@@ -579,11 +579,42 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
 def _one_partition_similacra(p : list[int]) -> list[int] | None:
     r"""
-    Get the first similacra computed by :func:`partition_similacra`.
-    We map this in parallel in :func:`compute_Ln_Ln_similacra`, and
-    it needs to be a global function for us to do that.
+    Get the first similacra we can find for ``p``. This is
+    similar to :func:`partitions.partition_similacra`, but it can make
+    an optimization that destroys the uniqueness of the partitions
+    because we are only returning one of them anyway.
     """
-    return next(partitions.partition_similacra(p), None)
+    from partitions import partitions, partition_rank
+    target_rank = partition_rank(p)
+
+    # All factors in a similacrum can't be less than or equal to the
+    # smallest factor in the target. So if p[0] is the smallest factor
+    # in the target, we might as well start partitioning assuming that
+    # there's a p[0]+1 factor, then a p[0]+2 factor, then...
+    #
+    # This destroys the uniqueness of the partitions, but we're only
+    # going to return one of them from this function!
+    psize = sum(p)
+
+    k_start = p[0]+1
+    if k_start == 2:
+        # Oh, we should exclude 2...
+        k_start = 3
+
+    # Not a typo: psize+1 would have us checking for a similacra
+    # of [psize], which is not possible.
+    k_end = psize
+    for k in range(k_start, k_end):
+        k_rank = partition_rank([k])
+        for q in partitions(psize-k, include_two=False):
+            if (partition_rank(q) == (target_rank - k_rank)):
+                # Sorting slows us down, but returning a value
+                # isn't the slow part, and these lists are tiny
+                # anyway.
+                res = sorted(q + [k])
+                if not res == p:
+                    return res
+    return None
 
 
 def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int):
