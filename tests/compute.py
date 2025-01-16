@@ -577,25 +577,23 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
     return _dim_ranks_cones(n, d, db, progress)
 
 
-
-def compute_partitions():
+def _one_partition_similacra(p : list[int]) -> list[int] | None:
     r"""
-    Naive (slow) function to compute and store all partitions of
-    ``n`` between zero and one hundred. This could be much faster if
-    it made use of earlier partitions to compute later ones, but since
-    we are only going to 2*100, it goes rather fast anyway.
-
-    Beware, this data occupies about 80GiB.
-
+    Get the first similacra computed by :func:`partition_similacra`.
+    We map this in parallel in :func:`compute_Ln_Ln_similacra`, and
+    it needs to be a global function for us to do that.
     """
-    from sql import insert_partitions, LIVE_DATABASE
-    from partitions import partitions
+    return next(partitions.partition_similacra(p), None)
 
-    for n in range(201):
-        print(f"computing partitions of n={n} that exclude 2...", end="", flush=True)
-        ps = partitions(n, include_two=False)
-        insert_partitions(n, ps, db=LIVE_DATABASE)
-        print(" done.")
+
+def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int):
+    ns = list(range(start, end+1))  # we consume this twice!
+    args = ( 2*[n] for n in ns )
+
+    from multiprocessing import Pool
+    results = Pool(processes=nprocs).map(_one_partition_similacra, args)
+    for (x,y) in zip(ns, results):
+        print(f"{x}: {y}")
 
 
 if __name__ == "__main__":
