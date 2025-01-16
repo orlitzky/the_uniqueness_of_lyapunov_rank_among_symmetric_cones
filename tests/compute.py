@@ -579,13 +579,41 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
 def _one_partition_similacra(p : list[int]) -> list[int] | None:
     r"""
-    Get the first similacra we can find for ``p``. This is
-    similar to :func:`partitions.partition_similacra`, but it can make
-    an optimization that destroys the uniqueness of the partitions
-    because we are only returning one of them anyway.
+    Get the first similacra we can find for ``p``.
+
+    This is similar to :func:`partitions.partition_similacra`, but it
+    can make an optimization that destroys the uniqueness of the
+    partitions because we are only returning one of them anyway.
+
+    Parameters
+    ----------
+
+    p : list[int]
+      The partition you want to find a similacra for.
+
+    Returns
+    -------
+
+    Either a partition of the same sum/rank as ``p``, or ``None`` if
+    there are none.
+
+    Examples
+    --------
+
+    The partition found by this function may not be the first
+    partition found by :func:`partitions.partition_similacra`, but it
+    should _eventually_ be found by that function::
+
+        >>> from random import choice, randint
+        >>> from partitions import partitions, partition_similacra
+        >>> n = randint(0,30)
+        >>> p = choice(tuple(partitions(n, include_two=False)))
+        >>> s = _one_partition_similacra(p)
+        >>> s is None or s in partition_similacra(p)
+        True
+
     """
     from partitions import partitions, partition_rank
-    print(f"finding a similacra for {p}...")
     target_rank = partition_rank(p)
 
     # All factors in a similacrum can't be less than or equal to the
@@ -618,7 +646,43 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
     return None
 
 
-def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int):
+def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
+    r"""
+    Compute similacra of ``L(n) + L(n)`` for all ``n`` between
+    ``start`` and ``end``, possibly in parallel, and then print the
+    result.
+
+    This is a fairly trivial wrapper around
+    :func:`_one_partition_similacra` and the
+    :class:`multiprocessing.Pool` class.
+
+    Parameters
+    ----------
+
+    start : int
+      The first value of ``n``.
+    end : int
+      The last value of ``n``.
+    nprocs : int, default=1
+      The number of simultaneous processes to launch
+
+    Examples
+    --------
+
+        >>> compute_Ln_Ln_similacra(0,10,4)
+        0: None
+        1: None
+        2: None
+        3: None
+        4: [1, 1, 1, 5]
+        5: None
+        6: None
+        7: None
+        8: [1, 5, 10]
+        9: [1, 1, 1, 3, 12]
+        10: [1, 1, 5, 13]
+
+    """
     ns = list(range(start, end+1))  # we consume this twice!
     args = ( 2*[n] for n in ns )
 
