@@ -585,6 +585,7 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
     because we are only returning one of them anyway.
     """
     from partitions import partitions, partition_rank
+    print(f"finding a similacra for {p}...")
     target_rank = partition_rank(p)
 
     # All factors in a similacrum can't be less than or equal to the
