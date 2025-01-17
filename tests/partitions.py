@@ -287,16 +287,17 @@ def _direct_lorentz_ranks(n : int) -> tuple:
         >>> _direct_lorentz_ranks(2)
         (2,)
 
-    Some comparisons with the recursive algorithm / database::
+    Some comparisons with the recursive algorithm. The
+    magic numbers below are not important, they were chosen "randomly"
+    but small enough that this doesn't take forever::
 
         >>> import compute
-        >>> import sql
-        >>> all( _direct_lorentz_ranks(k)
-        ...      ==
-        ...      sql.admissible_lorentz_ranks(k)
-        ...      ==
-        ...      compute.admissible_lorentz_ranks(k)
-        ...      for k in [7,12,15,19,23] )
+        >>> all(
+        ...   _direct_lorentz_ranks(k)
+        ...   ==
+        ...   compute.admissible_lorentz_ranks(k)
+        ...   for k in [0,1,7,12,15,19,23]
+        ... )
         True
 
     """
