@@ -120,29 +120,31 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, 
 
         >>> from cones import *
 
-    Base cases::
+    Low-dimensional examples, computed from scratch::
 
-        >>> all_cones_of_dim(0)
+        >>> import compute
+        >>> new_database(db=TEST_DATABASE)
+        >>> drc = compute.dim_ranks_cones(6, sql=True)
+
+        >>> all_cones_of_dim(0, db=TEST_DATABASE)
         (L(0),)
-        >>> all_cones_of_dim(1)
+        >>> all_cones_of_dim(1, db=TEST_DATABASE)
         (L(1),)
-        >>> all_cones_of_dim(2)
+        >>> all_cones_of_dim(2, db=TEST_DATABASE)
         (L(1) + L(1),)
 
-    Real examples::
-
-        >>> sorted(all_cones_of_dim(3))
+        >>> sorted(all_cones_of_dim(3, db=TEST_DATABASE))
         [L(1) + L(1) + L(1), L(3)]
 
-        >>> sorted(all_cones_of_dim(4))
+        >>> sorted(all_cones_of_dim(4, db=TEST_DATABASE))
         [L(1) + L(1) + L(1) + L(1), L(1) + L(3), L(4)]
 
-        >>> sorted(all_cones_of_dim(5))
+        >>> sorted(all_cones_of_dim(5, db=TEST_DATABASE))
         [L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(3), L(1) + L(4), L(5)]
 
     Finally at dim 6, the 3x3 real PSD cone makes an entrance::
 
-        >>> sorted(all_cones_of_dim(6))
+        >>> sorted(all_cones_of_dim(6, db=TEST_DATABASE))
         [L(1) + L(1) + L(1) + L(1) + L(1) + L(1), L(1) + L(1) + L(1) + L(3), L(1) + L(1) + L(4), L(1) + L(5), L(3) + L(3), HR(3), L(6)]
 
     Sets of cones in different dimensions should never intersect::
@@ -161,13 +163,13 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, 
 
     Check for the existence of some expected cones::
 
-        >>> HR(3) in all_cones_of_dim(6)
+        >>> not have_cone_dim(6) or HR(3) in all_cones_of_dim(6)
         True
-        >>> HC(3) in all_cones_of_dim(9)
+        >>> not have_cone_dim(9) or HC(3) in all_cones_of_dim(9)
         True
-        >>> HH(3) in all_cones_of_dim(15)
+        >>> not have_cone_dim(15) or HH(3) in all_cones_of_dim(15)
         True
-        >>> HO(3) in all_cones_of_dim(27)
+        >>> not have_cone_dim(27) or HO(3) in all_cones_of_dim(27)
         True
 
     """
@@ -253,7 +255,7 @@ def have_cone_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     ...until we add it::
 
        >>> import compute
-       >>> _ = compute.dim_ranks_cones(5, True)
+       >>> _ = compute.dim_ranks_cones(5, sql=True)
        >>> have_cone_dim(5, db=TEST_DATABASE)
        True
 
@@ -336,15 +338,20 @@ def admissible_lorentz_ranks(n : int, db : str = LIVE_DATABASE) -> tuple[int, ..
     Examples
     --------
 
-    Low-dimensional examples::
+    Low-dimensional examples that we compute from scratch::
 
-        >>> admissible_lorentz_ranks(0)
+        >>> import compute
+        >>> new_database(db=TEST_DATABASE)
+        >>> alrs = compute.admissible_lorentz_ranks(3, sql=True)
+        >>> sorted(alrs)
+        [3, 4]
+        >>> admissible_lorentz_ranks(0, db=TEST_DATABASE)
         (0,)
-        >>> admissible_lorentz_ranks(1)
+        >>> admissible_lorentz_ranks(1, db=TEST_DATABASE)
         (1,)
-        >>> admissible_lorentz_ranks(2)
+        >>> admissible_lorentz_ranks(2, db=TEST_DATABASE)
         (2,)
-        >>> sorted(admissible_lorentz_ranks(3))
+        >>> sorted(admissible_lorentz_ranks(3, db=TEST_DATABASE))
         [3, 4]
 
     """
@@ -399,20 +406,32 @@ def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int, ...]:
         >>> all( admissible_ranks(k)
         ...      ==
         ...      admissible_lorentz_ranks(k)
-        ...      for k in range(9) )
+        ...      for k in range(9)
+        ...      if have_lorentz_rank_dim(k) )
         True
-        >>> ( admissible_ranks(9)
-        ...   ==
-        ...   admissible_lorentz_ranks(9) )
-        False
+        >>> (
+        ...   not have_lorentz_rank_dim(9)
+        ...   or
+        ...   not (
+        ...     admissible_ranks(9)
+        ...     ==
+        ...     admissible_lorentz_ranks(9)
+        ...   )
+        ... )
+        True
 
     All cones share a signature with a cone of this form::
 
         >>> from cones import random_cone
-        >>> K = random_cone()
-        >>> while K.dim > max_lorentz_rank_dim():
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> if not mlrd or mlrd < 3:
+        ...     # not enough data, just return the right answer
+        ...     True
+        ... else:
         ...     K = random_cone()
-        >>> K.rank in admissible_ranks(K.dim)
+        ...     while K.dim > mlrd:
+        ...         K = random_cone()
+        ...     K.rank in admissible_ranks(K.dim)
         True
 
     """
@@ -462,7 +481,7 @@ def have_lorentz_rank_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     ...until we add it::
 
        >>> import compute
-       >>> _ = compute.admissible_lorentz_ranks(10, True)
+       >>> _ = compute.admissible_lorentz_ranks(10, sql=True)
        >>> have_lorentz_rank_dim(10, db=TEST_DATABASE)
        True
     """
@@ -641,15 +660,19 @@ def dim_ranks_cones(n : int, db : str = LIVE_DATABASE) -> dict[ int, tuple[Seria
     Examples
     --------
 
-    Base cases that should agree with :func:`compute.dim_ranks_cones` when NOT
-    using the SQL database::
+    Low-dimensional examples that we compute from scratch::
 
-        >>> dim_ranks_cones(0)
+        >>> import compute
+        >>> new_database(db=TEST_DATABASE)
+        >>> _ = compute.dim_ranks_cones(3, sql=True)
+        >>> dim_ranks_cones(0, db=TEST_DATABASE)
         {0: (1,)}
-        >>> dim_ranks_cones(1)
+        >>> dim_ranks_cones(1, db=TEST_DATABASE)
         {1: (11,)}
-        >>> dim_ranks_cones(2)
+        >>> dim_ranks_cones(2, db=TEST_DATABASE)
         {2: ((11, 11),)}
+        >>> dim_ranks_cones(3, db=TEST_DATABASE)
+        {3: ((11, 11, 11),), 4: (31,)}
 
     """
     conn = sqlite3.connect(db)
