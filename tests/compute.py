@@ -236,6 +236,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     sort the results before comparing them because, despite our use of
     tuples, the order that they wind up in is not meaningful::
 
+        >>> import sql
         >>> def check(n):
         ...     if not sql.have_lorentz_rank_dim(n):
         ...         # don't fail if we're just missing the data
@@ -243,16 +244,13 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
         ...     actual = sorted(sql.admissible_lorentz_ranks(n))
         ...     expected = sorted(admissible_lorentz_ranks(n))
         ...     return (actual == expected)
-        >>> check(0)
-        True
-        >>> check(1)
-        True
-        >>> check(2)
-        True
-        >>> check(3)
+        >>>
+        >>> # these magic numbers have no particular meaning
+        >>> random_ns = [0,1,7,12,15,19,23]
+        >>> all( check(n) for n in random_ns )
         True
         >>> from random import randint
-        >>> n = randint(1,76)
+        >>> n = randint(0,76)
         >>> check(n)
         True
 
