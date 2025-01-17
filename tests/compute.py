@@ -22,7 +22,7 @@ duplicates (specifically, serializations of isomorphic cones).
 """
 import sqlite3
 
-from cones import L,HR,HC,HH,HO, SerialCone, SerialSum
+from cones import L,HR,HC,HH,HO, SerialCone, SerialSum, SymmetricCone
 import partitions
 import sql
 
@@ -236,7 +236,7 @@ def admissible_lorentz_ranks(n : int, sql : bool = False, db : str = sql.TEST_DA
     return _admissible_lorentz_ranks(n, d, db)
 
 
-def _irreducible_cones_of_dim(n : int) -> tuple:
+def _irreducible_cones_of_dim(n : int) -> tuple[SymmetricCone, ...]:
     r"""
     Return a tuple of irreducible cones in dimension ``n``.
 
@@ -283,26 +283,23 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
         True
 
     """
+    s : list[SymmetricCone]
     s = []
     if n != 2:
         s.append(L(n))
 
     if n >= 27:    # HO(3).dim
-        c = HO.in_dim(n)
-        if c:
-            s.append(c)
+        if (a := HO.in_dim(n)):
+            s.append(a)
     elif n >= 15:  # HH(3).dim
-        c = HH.in_dim(n)
-        if c:
-            s.append(c)
+        if (b := HH.in_dim(n)):
+            s.append(b)
     elif n >= 9:   # HC(3).dim
-        c = HC.in_dim(n)
-        if c:
+        if (c := HC.in_dim(n)):
             s.append(c)
     elif n >= 6:   # HR(3).dim
-        c = HR.in_dim(n)
-        if c:
-            s.append(c)
+        if (d := HR.in_dim(n)):
+            s.append(d)
 
     return tuple(s)
 

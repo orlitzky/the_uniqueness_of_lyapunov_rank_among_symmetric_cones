@@ -173,7 +173,6 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, 
     """
     conn = sqlite3.connect(db)
     stmt = "SELECT data FROM cones WHERE dim=?"
-    result = ()
     with conn:
         result = tuple(
             SymmetricCone.deserialize(
@@ -205,7 +204,6 @@ def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCon
     conn = sqlite3.connect(db)
     stmt = "SELECT data FROM cones WHERE dim=? AND rank=? AND data<>?"
     args = ( K.dim, K.rank, msgpack.packb(K.serialize()) )
-    result = ()
     with conn:
         result = tuple(
             SymmetricCone.deserialize(
