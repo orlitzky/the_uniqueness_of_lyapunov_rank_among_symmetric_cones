@@ -1,5 +1,39 @@
 r"""
-Partition-related stuff.
+Functions for working with partitions.
+
+In a few places in the paper, it suffices to consider only sums of
+Lorentz cones, or maybe sums of Lorentz cones with exactly one
+non-Lorentz factor. Sums of Lorentz cones are particularly nice
+because they can be represented by partitions of the dimension you're
+working in. For example, in dimension four, you can have ``L(4)``, or
+``L(1)+L(3)``, or ``L(2)+L(2)``, or... you get the idea. Each possibility
+is associated with a partition of ``4``, and vice-versa.
+
+Eliminating isomorphic cones is also a bit easier when they are
+represented by partitions. To eliminate any ambiguity arising from the
+order of the factors, all one must do is sort the elements of the
+corresponding partition; in fact, the :func:`partitions` function of
+Kelleher and O'Sullivan does this already. There is only one more way
+that ambiguity can arise, and that is from the equivalence of
+``L(1)+L(1) == L(2)``. However this can be avoided quite easily by
+ignoring any partitions that contain a ``2`` (which is fast, because
+they are sorted).
+
+For these reasons, we use partitions to test some of our
+results. Here's a quick summary of this module's functions:
+
+  * :func:`f` is the function from the paper that takes ``n`` and
+    returns the Lyapunov rank of ``L(n)``.
+
+  * :func:`partitions` is a slightly-modified version of the fast
+    integer partitioning function of Kelleher and O'Sullivan.
+
+  * :func:`partition_rank` computes the Lyapunov rank of the cone
+    associated with a given partition.
+
+  * :func:`partition_similacra` computes all similacra (represented as
+    partitions) of the given cone (represented as a partition).
+
 """
 
 from typing import Generator
