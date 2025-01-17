@@ -1,16 +1,59 @@
 r"""
-Recursive functions to compute the admissible Lorentz ranks of a
-given dimension, or to compute all symmetric cones (up to isomorphism)
-in a given dimension.
+Compute results used in the paper. There are three main functions:
 
-These functions take both a ``db`` argument, and a ``sql`` toggle. If
-you really want to affect the live database, you have to set ``sql``
-to ``True``, and ``db`` to ``sql.LIVE_DATABASE``. These are not
-default because we don't want to modify the live database by surprise
-while testing (even though this shouldn't happen, ha ha).
+  * :func:`admissible_lorentz_ranks` computes all possible Lyapunov
+    ranks arising from sums of Lorentz cones in a given dimension.
+    This is rather fast (so we can compute a lot of them), but it is
+    only useful for proving that certain cones DO NOT have similacra.
+    It is however useless for determining whether or not, say,
+    ``L(m)+L(n)`` has similacra, because a priori we expect the
+    Lyapunov rank of that cone to be in the list (put there by
+    itself). To ask questions about similacra, we would need to know
+    _how many_ sums of Lorentz cones (up to isomorphism) had that same
+    Lyapunov rank... but the function does not provide this
+    information.
 
-If you run this module, on the other hand, it will begin to update the
-live database::
+  * :func:`dim_ranks_cones` is an attempt to address the shortcomings
+    of :func:`admissible_lorentz_ranks`. It computes all cones in a
+    given dimension, as well as their Lyapunov ranks, and returns them
+    in a dimension => rank => tuple-of-cones map. Isomorphic cones are
+    deduplicated along the way. For this to work efficiently, a custom
+    serialized representation of a symmetric cone is used; essentially
+    we represent them as lists of integers.
+
+Both of these functions are fundamentally recursive: the way you get
+all cones of dimension four is to start with the irreducible ones, and
+add them to the reducible ones you get from partitioning n=4 and and
+running the subproblem in e.g. n=3 and n=1. Both of these functions
+therefore operate with a cache to avoid recomputing earlier cases, and
+can optionally cache to a SQL database as well. For our test suite to
+run efficiently, there is no other option than to precompute as many
+values of these functions as we can.
+
+There is one more function of interest in this module:
+
+  * :func:`compute_Ln_Ln_similacra` looks for similacra of
+    ``L(n)+L(n)`` over a range of ``n`` and in parallel. From the
+    paper we know that it suffices to consider only sums of Lorentz
+    cones for this, and thus for performance this function operates
+    on integer partitions rather than with cones. To catalogue the
+    similacra in the paper, you might run
+
+        >>> compute_Ln_Ln_similacra(0, 100, 4)
+
+    which would check ``n=0`` up to ``n=100`` using four processes.
+    Afterwards, it prints the results to the console, and you don't
+    need it any more.
+
+The two functions that use a database take both a ``db`` argument, and
+a ``sql`` toggle. If you really want to affect the live database, you
+have to set ``sql`` to ``True``, and ``db`` to ``sql.LIVE_DATABASE``.
+These are not default because we don't want to modify the live
+database by surprise while testing.
+
+If you _execute_ this module, on the other hand, it will begin to
+update the live database immediately, as it tries to compute more
+and more cones with :func:`dim_cones_ranks`::
 
     $ python compute.py
     computing dimension 99...
@@ -18,7 +61,8 @@ live database::
 This however takes "forever" and will probably run your system out of
 RAM. The bottleneck for both speed and space is putting all of the new
 cones for a given dimension into a list and sorting them to eliminate
-duplicates (specifically, serializations of isomorphic cones).
+duplicates.
+
 """
 import sqlite3
 
