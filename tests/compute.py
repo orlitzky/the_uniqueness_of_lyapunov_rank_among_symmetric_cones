@@ -591,11 +591,19 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
     The precomputed values should agree with the ones we compute::
 
+        >>> import sql
         >>> def check(n):
+        ...     if not sql.have_cone_dim(n):
+        ...         # don't fail if we're just missing the data
+        ...         return True
         ...     d1 = sql.dim_ranks_cones(n)
         ...     d2 = dim_ranks_cones(n)
         ...     return ( all( set(d1[r]) == set(d2[r]) for r in d1 )
         ...              and sorted(d1.keys()) == sorted(d2.keys()) )
+        >>>
+        >>> random_ns = [8,6,7,5,3,0,9]
+        >>> all( check(n) for n in random_ns )
+        True
         >>> from random import randint
         >>> n = randint(0,40)
         >>> check(n)
