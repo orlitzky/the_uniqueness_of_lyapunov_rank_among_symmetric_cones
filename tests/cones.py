@@ -1,5 +1,77 @@
 r"""
-Cone classes used in our test suite.
+Symmetric cone classes and functions.
+
+This module provides symmetric cones via the class hierarchy,
+
+  * :class:`SymmetricCone`  (the superclass)
+    * :class:`L`  (Lorentz)
+    * :class:`HR` (Real symmetric PSD)
+    * :class:`HC` (Complex hermitian PSD)
+    * :class:`HH` (Quaternion hermitian PSD)
+    * :class:`HO` (Octonion hermitian "PSD")
+
+Each cone has methods and/or attributes for its dimension, Lyapunov
+rank, signature, et cetera. Much of the real work, however, is
+dedicated to efficient isomorphism testing and storage. How do we
+check if two symmetric cones are isomorphic, and how can we store
+them?
+
+To store the cones, rather than store all of the python class info, we
+prefer to record only what is necessary to reconstruct each cone. For
+the five irreducible families, this basically boils down to two
+numbers. One identifies the type (``L``, ``HR``, ``HC``, ``HH``, or
+``HO``), and then one identifies the size (usually denoted by ``n``).
+Direct sums of these factors are then identified by tuples of
+integers, where each integer in the tuple represents a factor. A
+priori, direct sums of direct sums are possible by putting tuples
+within the tuples. Storing (and otherwise working with) integers is
+very fast, and we can store a lot of cones represented in this manner
+at the expense of having to convert them back to python classes at
+some point. For more details, see the two methods
+:meth:`SymmetricCone.serialize` and :meth:`DirectSum.serialize` for
+irreducible cones and direct sums, respectively.
+
+Now on to isomorphism checking. The direct sum decomposition is unique
+up to order (and ignoring trivial factors), so what we do for
+isomorphism is to put the factors in a list, flatten sums of sums,
+eliminate trivial factors, replace each remaining factor with a
+canonical representative, and then sort them all into a unique
+order. Choosing canonical representatives is done in the class
+constructors. For example, if you try to construct ``L(2)``, you will
+get ``L(1)+L(1)`` instead. That is because we have declared
+``L(1)+L(1)`` to be the canonical two-dimensional symmetric cone: it
+should not be possible to construct another symmetric cone that is
+isomorphic but not equal to it.
+
+Likewise, flattening happens when you construct a cone such as
+``(L(1)+L(2)) + (L(3)+L(4))``. The factors of these summands are
+collected and combined into ``L(1)+L(2)+L(3)+L(4)``, whereafter
+``L(2)`` gets converted into ``L(1)+L(1)``. Finally, we sort the
+factors to ensure that ``L(1)+L(3)`` is the same cone as
+``L(3)+L(1)``. How we should sort cones is not obvious, but
+thankfully, we can fall back on the serialization format that we are
+using to store them: to sort a collection of cones, we serialize them
+to tuples of ints, and then sort the tuples
+lexicographically. (Irreducible cones can be thought of as singleton
+tuples for this purpose.)
+
+When all is said and done, with a great deal of care, we are able to
+work "up to isomorphism," without which we would not directly be able
+to test for similacra.
+
+One last performance-related quirk is that we cache all instances of
+the cones that are constructed, to avoid e.g. creating a million
+copies of ``L(1)`` in memory. This adds to the level of general
+confusion, but saves quite a bit of memory during large computations,
+and has the nice side effect that "isomorphism" is just equality of
+objects.
+
+Finally, this module provides two "random cone" functions,
+
+  * :func:`random_irreducible_cone`
+  * :func:`random_cone`
+
+that are useful for testing.
 """
 
 # allow forward-references in type signatures
