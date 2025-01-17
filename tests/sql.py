@@ -1,43 +1,47 @@
 r"""
-Functions to access the SQL database of cones and Lorentz ranks
-(Lyapunov ranks arising from direct sums of Lorentz cones).
+Query/update the SQL database where we store cones and Lypaunov
+ranks.
 
-There are only two tables in the database, "cones" and
-"lorentz_ranks". Their structure can be inferred from
-:func:`new_database`.
+For the test suite to complete in a reasonable amount of time, some
+things must be pre-computed. The two main long-running computations
+whose results we need access to are,
 
-Sanity check for a random dimension and rank::
+  1. :func:`compute.admissible_lorentz_ranks`
+  2. :func:`compute.dim_ranks_cones`
 
-    >>> import sqlite3
-    >>> from msgpack import unpackb
-    >>> from random import randint
-    >>> from cones import SymmetricCone
-    >>> d = randint(0, max_cone_dim())
-    >>> r = randint(d, (d**2 - d + 2//2))
-    >>> conn = sqlite3.connect(LIVE_DATABASE)
-    >>> stmt = "SELECT data FROM cones WHERE dim=? AND rank=?"
-    >>> result = False
-    >>> with conn:
-    ...     result = all(
-    ...       K.dim == d and K.rank == r
-    ...       for row in conn.execute(stmt, (d,r)).fetchall()
-    ...       if (K := SymmetricCone.deserialize(unpackb(row[0],
-    ...                                          use_list=False)))
-    ...     )
-    >>> result
-    True
-    >>> conn.close()
+Each of those functions can save the data it computes in a SQL
+database. This module provides the functions to make that possible,
+and also provides helper functions that make it easier to query the
+data from within the test suite. There are in fact two databases, one
+"live" database, and one "test" database. The test database is
+temporary and may be erased, replaced, or overwritten during
+testing. The live database is where important data are stored, and
+should not be modified by the test suite, only intentionally by
+calling the functions in :mod:`compute.
 
-Ensure that the trivial cone is in the database::
+Within the database, there are only two tables: ``cones``, and
+``lorentz_ranks``. These correspond in an obvious way to the two
+functions in :mod:`compute` mentioned above. Their structure can be
+inferred from :func:`new_database`, which is used to create them.
 
-    >>> conn = sqlite3.connect(LIVE_DATABASE)
-    >>> stmt = "SELECT MIN(dim) FROM cones"
-    >>> with conn:
-    ...     conn.execute(stmt, ()).fetchone()[0] == 0
-    True
-    >>> conn.close()
+Typically, within a test, you will use these SQL functions rather than
+the ones in :mod:`compute`. For example, if you want to know what
+Lyapunov ranks are achievable using sums of Lorentz cones in a given
+dimension, you would use :func:`admissible_lorentz_ranks` from this
+module rather than :func:`compute.admissible_lorentz_ranks`. Using the
+SQL module ensures that the live database is never modified by the
+test suite (no computation is done). The only caveat is that you must
+first check (using :func:`max_lorentz_rank_dim`, for example) that
+there are enough rows in the database to answer your query.
 
+The live database is guaranteed to exist, but it is not guaranteed to
+contain any data. The tests should pass with an empty live
+database. If you accidentally delete it, the live database can easily
+be recreated by running ``new_database(LIVE_DATABASE)`` in a python
+interpreter. The test database, on the other hand, is created
+on-the-fly and you shouldn't have to worry about it.
 """
+
 import sqlite3
 import msgpack
 from cones import SymmetricCone, SerialCone
