@@ -2,6 +2,9 @@ r"""
 Cone classes used in our test suite.
 """
 
+# allow forward-references in type signatures
+from __future__ import annotations
+
 from itertools import chain
 from math import sqrt
 
@@ -77,17 +80,32 @@ class SymmetricCone:
     dim: int
     rank: int
 
-    # All subclasses have an instance cache as well.
+    # All subclasses have an instance cache and an id as well.
     _instance_cache: dict
+    id: int
 
     @staticmethod
-    def irreducible_classes():
+    def irreducible_classes() -> tuple:
         return (L,HR,HC,HH,HO)
 
     @staticmethod
-    def _deserialize_one(s):
+    def _deserialize_one(s : SerialIrreducible) -> SymmetricCone:
         r"""
         Deserialize one integer into an irreducible cone.
+
+        Parameters
+
+        s : int
+          The integer to deserialize.
+
+        Returns
+        -------
+
+        An instance of an irreducible cone (:class:`L`, :class:`HR`,
+        :class:`HC`, :class:`HH`, or :class:`HO`).
+
+        Examples
+        --------
 
             >>> SymmetricCone._deserialize_one(32)
             HR(3)
@@ -102,7 +120,6 @@ class SymmetricCone:
             L(0)
 
         """
-
         # Heads up: serializing L(0) produces 01 = 1.
         # The math for i and n below should produce
         # i=1 and n=0 for "1".
@@ -114,10 +131,21 @@ class SymmetricCone:
         raise ValueError(f"unable to deserialize {s}")
 
     @staticmethod
-    def deserialize(s):
+    def deserialize(s : SerialCone) -> SymmetricCone:
         r"""
         Deserialize either an integer or a tuple of integers into
         a symmetric cone.
+
+        Parameters
+        ----------
+
+        s : SerialCone
+          Either an int or a tuple of ints to deserialize.
+
+        Returns
+        -------
+
+        The symmetric cone that serializes to ``s``.
 
         Examples
         --------
@@ -175,21 +203,21 @@ class SymmetricCone:
         self.n = n
 
     @staticmethod
-    def name():
+    def name() -> str:
         r"""
-        The name of this cones. This method should be overridden
+        The name of this cone. This method should be overridden
         in each subclass, and exists only to make the implementation
         of :meth:`__repr__` easier.
         """
         raise NotImplementedError
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         r"""
         The string representation of this cone.
         """
         return f"{self.name()}({self.n})"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         r"""
         Return a unique integer hash for this cone. The
         :meth:`serialize` method already returns a unique integer or
@@ -217,10 +245,10 @@ class SymmetricCone:
             self._hash = hash(self.serialize())
         return self._hash
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.serialize() == other.serialize()
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         r"""
         Implement an ordering for symmetric cones.
 
@@ -292,8 +320,8 @@ class SymmetricCone:
         return s < o
 
 
-    @classmethod
-    def _flatten_factors(cls, factors):
+    @staticmethod
+    def _flatten_factors(factors : tuple[SymmetricCone, ...]) -> tuple[SymmetricCone, ...]:
         r"""
         Flatten the given factors, removing all class:`DirectSum`
         wrappers.
@@ -307,6 +335,17 @@ class SymmetricCone:
         result of the class's :meth:`factors` method, which,
         for irreducible cones, will return a singleton list.
 
+        Parameters
+        ----------
+
+        factors : tuple[SymmetricCone, ...]
+          A list of symmetric cones, some of which may be direct sums.
+
+        Returns
+        -------
+
+        A tuple of irreducible cones.
+
         Examples
         --------
 
@@ -316,7 +355,8 @@ class SymmetricCone:
         """
         return factors
 
-    def factors(self) -> tuple:
+
+    def factors(self) -> tuple[SymmetricCone, ...]:
         r"""
         Return the factors of this symmetric cone.
 
@@ -326,6 +366,14 @@ class SymmetricCone:
 
         To ensure that hashes are unique, we agree once and for all
         that the trivial cone has no factors.
+
+        Returns
+        -------
+
+        A list of symmetric cones.
+
+        TODO: we should be able to restrict the return type to
+        irreducible cones.
 
         Examples
         --------
@@ -338,7 +386,6 @@ class SymmetricCone:
 
             >>> L(0).factors()
             ()
-
         """
         if self.dim == 0:
             return ()
@@ -346,16 +393,30 @@ class SymmetricCone:
             return (self,)
 
 
-    def signature(self):
+    def signature(self) -> tuple[int,int]:
         r"""
         The signature of this cone.
 
         The signature of a cone is simply a pair consisting of its
         dimension and its Lyapunov rank.
+
+        Returns
+        -------
+
+        A pair (2-tuple) of ints. Its first entry is the dimension of
+        this cone, and its second entry is its Lypaunov rank.
+
+        Examples
+        --------
+
+            >>> L(3).signature()
+            (3, 4)
+
         """
         return (self.dim, self.rank)
 
-    def serialize(self):
+
+    def serialize(self) -> SerialCone:
         r"""
         Serialize this cone to an integer (irreducible cones) or
         tuple of integers (direct sums).
@@ -378,9 +439,19 @@ class SymmetricCone:
             self._serial = 10*self.n + self.id
         return self._serial
 
-    def similacra(self) -> tuple:
+
+    def similacra(self) -> tuple[SymmetricCone, ...]:
         r"""
         Return all similacra of this cone.
+
+        Returns
+        -------
+
+        A tuple of symmetric cones, not isomorphic to ``self``, but
+        sharing their dimensions and Lyapunov ranks with it.
+
+        Examples
+        --------
 
         Examples from the paper::
 
@@ -405,7 +476,6 @@ class SymmetricCone:
             ...     K = random_cone()
             >>> K in K.similacra()
             False
-
         """
         from sql import similacra
         return similacra(self)
@@ -414,7 +484,21 @@ class SymmetricCone:
 def RN(n : int) -> SymmetricCone:
     r"""
     A convenient wrapper around an ``n``-fold direct sum of
-    one-dimensional Lorentz cones::
+    one-dimensional Lorentz cones.
+
+    Parameters
+    ----------
+
+    n : int
+      How many copies of ``L(1)`` you want.
+
+    Returns
+    -------
+
+    The direct sum of ``n`` copies of ``L(1)``.
+
+    Examples
+    --------
 
         >>> RN(3)
         L(1) + L(1) + L(1)
@@ -438,11 +522,23 @@ class L(SymmetricCone):
     id = 1
 
     @staticmethod
-    def name():
+    def name() -> str:
         return "L"
 
     @staticmethod
-    def in_dim(d):
+    def in_dim(d : int) -> L:
+        r"""
+        Return the Lorentz cone of dimension ``d``.
+
+        This always works, because there's a Lorentz cone in every dimension.
+
+        Examples
+        --------
+
+            >>> L.in_dim(21)
+            L(21)
+
+        """
         return L(d)
 
     # Instance cache. After the class definition, we'll prepopulate
@@ -477,45 +573,66 @@ class L(SymmetricCone):
             cls._instance_cache[n].rank = (n**2 - n + 2)//2
         return cls._instance_cache[n]
 
-# fix this, the general formula is wrong.
+# We have to fix this case because the general formula we use in
+# __new__ fails at n=0.
 L(0).rank = 0
 
 
 class HR(SymmetricCone):
     r"""
-    The real PSD cone of order ``n``.
+    The real symmetric PSD cone of order ``n``.
 
     Examples
     --------
 
-    Test the inverse dimension formula::
-
-        >>> HR.in_dim(0)
-        L(0)
-        >>> HR.in_dim(1)
-        L(1)
-        >>> HR.in_dim(2)
-        >>> HR.in_dim(3)
-        L(3)
-        >>> HR.in_dim(4)
-        >>> HR.in_dim(5)
-        >>> HR.in_dim(6)
-        HR(3)
-        >>> HR.in_dim(7)
-        >>> HR.in_dim(8)
-        >>> HR.in_dim(9)
-        >>> HR.in_dim(10)
+        >>> HR(4)
         HR(4)
+        >>> HR(4).signature()
+        (10, 16)
+
+    When ``n`` is small, you will get the Lorentz cone isomorphic to
+    ``HR(n)`` instead::
+
+        >>> HR(0)
+        L(0)
+        >>> HR(1)
+        L(1)
+        >>> HR(2)
+        L(3)
 
     """
     id = 2
 
     @staticmethod
-    def name():
+    def name() -> str:
         return "HR"
 
     @staticmethod
-    def in_dim(d):
+    def in_dim(d : int) -> L | HR | None:
+        r"""
+        Return the real symmetric PSD cone of dimension ``d``, or
+        ``None`` if there isn't one.
+
+        Examples
+        --------
+
+            >>> HR.in_dim(0)
+            L(0)
+            >>> HR.in_dim(1)
+            L(1)
+            >>> HR.in_dim(2)
+            >>> HR.in_dim(3)
+            L(3)
+            >>> HR.in_dim(4)
+            >>> HR.in_dim(5)
+            >>> HR.in_dim(6)
+            HR(3)
+            >>> HR.in_dim(7)
+            >>> HR.in_dim(8)
+            >>> HR.in_dim(9)
+            >>> HR.in_dim(10)
+            HR(4)
+        """
         n = (sqrt(8*d + 1) - 1)/2
         if n.is_integer():
             return HR(int(n))
@@ -536,27 +653,48 @@ class HR(SymmetricCone):
 
 class HC(SymmetricCone):
     r"""
+    The complex hermitian PSD cone of order ``n``.
+
+        >>> HC(4)
+        HC(4)
+        >>> HC(4).signature()
+        (16, 31)
+
+    When ``n`` is small, you will get the Lorentz cone isomorphic to
+    ``HC(n)`` instead::
+
+        >>> HC(0)
+        L(0)
+        >>> HC(1)
+        L(1)
+        >>> HC(2)
+        L(4)
+
+    Examples
+    --------
+
     The direct sum of ``m >= 2`` copies of the 3-by-3 cone has
-    similacra (Lemma 1)::
+    similacra. This used to be a Lemma in the paper, but it has
+    been superseded.
 
         >>> K2 = DirectSum([
         ...   L(7),
         ...   L(3),
         ...   RN(8)
         ... ])
+        >>> K2.signature()
+        (18, 34)
+        >>> DirectSum(2*[HC(3)]).signature()
+        (18, 34)
+
         >>> K3 = DirectSum([
         ...   L(8),
         ...   L(4),
         ...   RN(15)
         ... ])
-        >>> K2.signature()
-        (18, 34)
-        >>> H = HC(3)
-        >>> DirectSum([H,H]).signature()
-        (18, 34)
         >>> K3.signature()
         (27, 51)
-        >>> DirectSum([H,H,H]).signature()
+        >>> DirectSum(3*[HC(3)]).signature()
         (27, 51)
 
     Do a random check so make sure this works for many copies::
@@ -564,46 +702,52 @@ class HC(SymmetricCone):
         >>> from random import randint
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> m = randint(2, 12)
-        >>> K = DirectSum(m*[H])
+        >>> K = DirectSum(m*[HC(3)])
         >>> mlrd = max_lorentz_rank_dim()
         >>> skip = (not mlrd) or (K.dim > mlrd)
         >>> skip or K.rank in admissible_lorentz_ranks(K.dim)
         True
 
-    Test the inverse dimension formula::
-
-        >>> HC.in_dim(0)
-        L(0)
-        >>> HC.in_dim(1)
-        L(1)
-        >>> HC.in_dim(2)
-        >>> HC.in_dim(3)
-        >>> HC.in_dim(4)
-        L(4)
-        >>> HC.in_dim(5)
-        >>> HC.in_dim(6)
-        >>> HC.in_dim(7)
-        >>> HC.in_dim(8)
-        >>> HC.in_dim(9)
-        HC(3)
-        >>> HC.in_dim(10)
-        >>> HC.in_dim(11)
-        >>> HC.in_dim(12)
-        >>> HC.in_dim(13)
-        >>> HC.in_dim(14)
-        >>> HC.in_dim(15)
-        >>> HC.in_dim(16)
-        HC(4)
-
     """
     id = 3
 
     @staticmethod
-    def name():
+    def name() -> str:
         return "HC"
 
     @staticmethod
-    def in_dim(d):
+    def in_dim(d : int) -> L | HC | None:
+        r"""
+        Return the complex hermitian PSD cone of dimension ``d``,
+        or ``None`` if there isn't one.
+
+        Examples
+        --------
+
+            >>> HC.in_dim(0)
+            L(0)
+            >>> HC.in_dim(1)
+            L(1)
+            >>> HC.in_dim(2)
+            >>> HC.in_dim(3)
+            >>> HC.in_dim(4)
+            L(4)
+            >>> HC.in_dim(5)
+            >>> HC.in_dim(6)
+            >>> HC.in_dim(7)
+            >>> HC.in_dim(8)
+            >>> HC.in_dim(9)
+            HC(3)
+            >>> HC.in_dim(10)
+            >>> HC.in_dim(11)
+            >>> HC.in_dim(12)
+            >>> HC.in_dim(13)
+            >>> HC.in_dim(14)
+            >>> HC.in_dim(15)
+            >>> HC.in_dim(16)
+            HC(4)
+
+        """
         n = sqrt(d)
         if n.is_integer():
             return HC(int(n))
@@ -624,56 +768,64 @@ class HC(SymmetricCone):
 
 class HH(SymmetricCone):
     r"""
+    The quaternion hermitian PSD cone of order ``n``.
 
-    We know the formula for each similacrum from Proposition 5. First
-    we check ``n == 3``, ``n == 4``, and ``n == 5`` individually::
+    Examples
+    --------
 
+        >>> HH(4)
+        HH(4)
+        >>> HH(4).signature()
+        (28, 64)
 
-    Now we check the remaining ``n >= 6`` using the generic formula::
+    When ``n`` is small, you will get the Lorentz cone isomorphic to
+    ``HH(n)`` instead::
 
-        >>> def check(n):
-        ...     K1 = HC(n+1)
-        ...     K2 = L(n+1)
-        ...     K3 = L(n+1)
-        ...     K4 = RN(n**2 - 5*n - 3)
-        ...     K = DirectSum([K1,K2,K3,K4])
-        ...     return (HH(n).signature() == K.signature())
-        >>>
-        >>> all( check(n) for n in range(6,100) )
-        True
-
-    Test the inverse dimension formula::
-
-        >>> HH.in_dim(0)
+        >>> HH(0)
         L(0)
-        >>> HH.in_dim(1)
+        >>> HH(1)
         L(1)
-        >>> HH.in_dim(2)
-        >>> HH.in_dim(3)
-        >>> HH.in_dim(4)
-        >>> HH.in_dim(5)
-        >>> HH.in_dim(6)
+        >>> HH(2)
         L(6)
-        >>> HH.in_dim(7)
-        >>> HH.in_dim(8)
-        >>> HH.in_dim(9)
-        >>> HH.in_dim(10)
-        >>> HH.in_dim(11)
-        >>> HH.in_dim(12)
-        >>> HH.in_dim(13)
-        >>> HH.in_dim(14)
-        >>> HH.in_dim(15)
-        HH(3)
 
     """
     id = 4
 
     @staticmethod
-    def name():
+    def name() -> str:
         return "HH"
 
     @staticmethod
-    def in_dim(d):
+    def in_dim(d : int) -> L | HH | None:
+        r"""
+        Return the quaternion hermitian PSD cone of dimension ``d``, or
+        ``None`` if there isn't one.
+
+        Examples
+        --------
+
+            >>> HH.in_dim(0)
+            L(0)
+            >>> HH.in_dim(1)
+            L(1)
+            >>> HH.in_dim(2)
+            >>> HH.in_dim(3)
+            >>> HH.in_dim(4)
+            >>> HH.in_dim(5)
+            >>> HH.in_dim(6)
+            L(6)
+            >>> HH.in_dim(7)
+            >>> HH.in_dim(8)
+            >>> HH.in_dim(9)
+            >>> HH.in_dim(10)
+            >>> HH.in_dim(11)
+            >>> HH.in_dim(12)
+            >>> HH.in_dim(13)
+            >>> HH.in_dim(14)
+            >>> HH.in_dim(15)
+            HH(3)
+
+        """
         if d == 0:
             # This is the one special case where the other solution to
             # the quadratic formula is valid.
@@ -699,8 +851,20 @@ class HH(SymmetricCone):
 
 class HO(SymmetricCone):
     r"""
-    There's only one of these (up to isomorphism) and it has a
-    similacrum::
+    The cone of squares in the Albert algebra of order ``n``.
+
+    Examples
+    --------
+
+    When ``n`` is small, you will get the Lorentz cone isomorphic to
+    ``HO(n)`` instead::
+
+        >>> HO(0)
+        L(0)
+        >>> HO(1)
+        L(1)
+        >>> HO(2)
+        L(10)
 
     These cones are only symmetric for ``n <= 3``::
 
@@ -709,36 +873,47 @@ class HO(SymmetricCone):
         ...
         ValueError: invalid size n=7
 
-    Test the inverse dimension formula::
+    So there's only one interesting case remaining::
 
-        >>> HO.in_dim(0)
-        L(0)
-        >>> HO.in_dim(1)
-        L(1)
-        >>> HO.in_dim(2)
-        >>> HO.in_dim(4)
-        >>> HO.in_dim(3)
-        >>> HO.in_dim(5)
-        >>> HO.in_dim(6)
-        >>> HO.in_dim(7)
-        >>> HO.in_dim(8)
-        >>> HO.in_dim(9)
-        >>> HO.in_dim(10)
-        L(10)
-        >>> HO.in_dim(26)
-        >>> HO.in_dim(27)
+        >>> HO(3)
         HO(3)
+        >>> HO(3).signature()
+        (27, 79)
 
     """
     id = 5
 
     @staticmethod
-    def name():
+    def name() -> str:
         return "HO"
 
     @staticmethod
-    def in_dim(d):
+    def in_dim(d : int) -> L | HO | None:
         r"""
+        Return the octonion hermitian "PSD" cone of dimension ``d``,
+        or ``None`` if there isn't one.
+
+        Examples
+        --------
+
+            >>> HO.in_dim(0)
+            L(0)
+            >>> HO.in_dim(1)
+            L(1)
+            >>> HO.in_dim(2)
+            >>> HO.in_dim(4)
+            >>> HO.in_dim(3)
+            >>> HO.in_dim(5)
+            >>> HO.in_dim(6)
+            >>> HO.in_dim(7)
+            >>> HO.in_dim(8)
+            >>> HO.in_dim(9)
+            >>> HO.in_dim(10)
+            L(10)
+            >>> HO.in_dim(26)
+            >>> HO.in_dim(27)
+            HO(3)
+
         The would-be Octonion cone in dimension 52 is not symmetric
         (it corresponds to n=4)::
 
@@ -789,7 +964,8 @@ class DirectSum(SymmetricCone):
     A direct sum of factors, provided as a generator (list,
     tuple, set, whatever).
 
-    Examples::
+    Examples
+    --------
 
         >>> K = DirectSum([])
         >>> K.dim
@@ -798,7 +974,7 @@ class DirectSum(SymmetricCone):
         0
 
     """
-    _factors: list[SymmetricCone]
+    _factors: tuple[SymmetricCone, ...]
 
     # instance cache
     _instance_cache = {}
@@ -864,13 +1040,27 @@ class DirectSum(SymmetricCone):
     def __repr__(self):
         return " + ".join(repr(f) for f in self._factors)
 
-    @classmethod
-    def _flatten_factors(cls, factors):
+    @staticmethod
+    def _flatten_factors(factors : tuple[SymmetricCone, ...]) -> tuple[SymmetricCone, ...]:
         r"""
-        Recursively flatten the factors of our factors.
+        Recursively flatten the factors of the given factors.
 
         The base case where we do nothing for an irreducible factor
         is implemented as :meth:`SymmetricCone._flatten_factors`.
+
+        Parameters
+        ----------
+
+        factors : tuple[SymmetricCone, ...]
+          A tuple of (not necessarily irreducible) symmetric cones.
+
+        Returns
+        -------
+
+        A new tuple of factors, but this time with each factor
+        irreducible.
+
+        TODO: we should be able to tighten the return type!
 
         Examples
         --------
@@ -883,10 +1073,12 @@ class DirectSum(SymmetricCone):
         return sum( (f._flatten_factors(f.factors()) for f in factors),
                     () )
 
-    def factors(self):
+
+    def factors(self) -> tuple[SymmetricCone, ...]:
         return self._factors
 
-    def serialize(self):
+
+    def serialize(self) -> SerialSum:
         r"""
         Serialize this cone to a tuple of integers.
 
@@ -903,10 +1095,18 @@ L._instance_cache[2] = DirectSum( (L(1),L(1)) )
 
 def random_irreducible_cone() -> SymmetricCone:
     r"""
-    Generate a random irreducible (i.e. not a :class:`DirectSum`)
-    symmetric cone.
+    Generate a random irreducible symmetric cone; that is, a
+    :class:`SymmetricCone` that is not a :class:`DirectSum`.
 
-    Examples::
+    Returns
+    -------
+
+    An irreducible symmetric cone.
+
+    TODO: we should be able to tighten the return type!
+
+    Examples
+    --------
 
         >>> isinstance(random_irreducible_cone(), DirectSum)
         False
@@ -930,7 +1130,13 @@ def random_cone() -> SymmetricCone:
     r"""
     Produce a somewhat-random cone with ten or fewer factors.
 
-    Examples::
+    Returns
+    -------
+
+    A symmetric cone.
+
+    Examples
+    --------
 
         >>> K = random_cone()
         >>> K.dim >= 0
@@ -970,3 +1176,4 @@ def random_cone() -> SymmetricCone:
         factors.append(c(n))
 
     return DirectSum(factors)
+
