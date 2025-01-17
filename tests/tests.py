@@ -265,7 +265,7 @@ def lowerbound3b(K):
     Examples
     --------
 
-    Test the claim that if we drop the ``n >= 10`` condition, then the
+    Test the claim that if we drop the ``n >= 15`` condition, then the
     only counterexample we get is HR(3) ~ L(4) + L(2). We have to
     assume that ``n >= 3``, because that is implied by the first two
     bounds (just add them), but for ``n == 4`` we do get one
@@ -277,24 +277,21 @@ def lowerbound3b(K):
         >>>
         >>> def check(n_start):
         ...     winners = []
-        ...     for n in range(n_start, 10):
-        ...         for d in range(1, floor(sqrt(4*n - 10))+2):
+        ...     for n in range(n_start, 15):
+        ...         for d in range(1, max_dimK(n)+1):
         ...             for K in all_cones_of_dim(d):
         ...                 if n < lowerbound1(K) or n < lowerbound2(K):
         ...                     continue
         ...                 C = DirectSum([K, L(n)])
         ...                 for s in C.similacra():
-        ...                     factors = [s]
-        ...                     if isinstance(s,DirectSum):
-        ...                         factors = s.factors()
-        ...                     if L(n) not in factors:
-        ...                         winners.append((K,n,s))
+        ...                     if L(n) not in s.factors():
+        ...                         winners.append((C,s))
         ...     return winners
         >>>
         >>> check(3)
-        [(L(1) + L(1), 4, HR(3))]
+        [(L(1) + L(1) + L(4), HR(3))]
         >>> check(4)
-        [(L(1) + L(1), 4, HR(3))]
+        [(L(1) + L(1) + L(4), HR(3))]
         >>> check(5)
         []
 
