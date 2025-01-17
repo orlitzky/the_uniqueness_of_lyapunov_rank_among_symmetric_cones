@@ -39,7 +39,7 @@ There is one more function of interest in this module:
     on integer partitions rather than with cones. To catalogue the
     similacra in the paper, you might run
 
-        >>> compute_Ln_Ln_similacra(0, 100, 4)
+        >>> compute_Ln_Ln_similacra(0, 100, 4)     # doctest: +SKIP
 
     which would check ``n=0`` up to ``n=100`` using four processes.
     Afterwards, it prints the results to the console, and you don't
