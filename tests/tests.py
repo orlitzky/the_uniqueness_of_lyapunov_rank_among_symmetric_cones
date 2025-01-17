@@ -846,13 +846,14 @@ def test_theorem3() -> bool:
         K = random_cone()
 
     r = False
-    r |= any( partition_rank(p) == K.rank for p in partitions(K.dim) )
+    r |= any( partition_rank(p) == K.rank
+              for p in partitions(K.dim, include_two=False) )
 
     dim_rest = K.dim - 9
     if dim_rest >= 0:
         # Try with an HC(3) factor
         r |= any( partition_rank(p) == (K.rank - 17)
-                  for p in partitions(dim_rest) )
+                  for p in partitions(dim_rest, include_two=False) )
     return r
 
 
@@ -1116,7 +1117,7 @@ def test_lemma4() -> bool:
         n = randint(min_n, max_n)
 
         J = DirectSum([K,L(n)])
-        for p in partitions(n + K.dim, n-1):
+        for p in partitions(n + K.dim, n-1, include_two=False):
             result &= (partition_rank(p) < J.rank)
 
     return result
@@ -1352,15 +1353,17 @@ def test_theorem5() -> bool:
         >>>
         >>> for n in range(5,10):
         ...     for d in range(1,max_dimK(n)+1):
-        ...         for K in partitions(d):
+        ...         for K in partitions(d, include_two=False):
         ...             if n < lb1(K): continue
         ...             if n < lb2(K): continue
         ...             if n < lb3(K): continue
         ...             Ln_K_rank = f(n) + partition_rank(K)
-        ...             for J in partitions(d+n):
+        ...             for J in partitions(d+n, include_two=False):
         ...                 if (partition_rank(J) == Ln_K_rank):
-        ...                         Ln_K = [n] + K
-        ...                         if not partitions_equivalent(J,Ln_K):
+        ...                         # n is guaranteed to be larger than d,
+        ...                         # so we know it goes at the end.
+        ...                         Ln_K = K + [n]
+        ...                         if not J == Ln_K:
         ...                             matches.append( (Ln_K, J) )
         >>> matches
         []
@@ -1376,7 +1379,7 @@ def test_theorem5() -> bool:
         >>> for n in range(10,15):
         ...     for d in range(1,max_dimK(n)+1):
         ...         Ks = []
-        ...         for p in partitions(d):
+        ...         for p in partitions(d, include_two=False):
         ...             # K is pure Lorentz, per the theorem
         ...             if n < lb1(p): continue
         ...             if n < lb2(p): continue
@@ -1384,15 +1387,17 @@ def test_theorem5() -> bool:
         ...             Ks.append( (0,p) )
         ...
         ...         # Always include pure-Lorentz J
-        ...         Js = [ (0,p) for p in partitions(d+n) ]
+        ...         Js = [ (0,p) for p in partitions(d+n, include_two=False) ]
         ...
         ...         # And since d+n is always >= 6, always include HR(3)
         ...         # with a partition of whatever's left.
-        ...         for q in partitions(d + n - HR(3).dim):
+        ...         for q in partitions(d + n - HR(3).dim, include_two=False):
         ...             Js.append( (1,q) )
         ...
         ...         for K in Ks:
-        ...             Ln_K = (K[0], [n] + K[1])
+        ...             # n is guaranteed to be larger than d, so we know it
+        ...             # goes at the end.
+        ...             Ln_K = (K[0], K[1] + [n])
         ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3) here
         ...
         ...             for J in Js:
@@ -1402,7 +1407,7 @@ def test_theorem5() -> bool:
         ...                     # they're enough to eliminate all matches.
         ...                     if J[0] != Ln_K[0]:
         ...                         matches.append( (Ln_K,J) )
-        ...                     if not partitions_equivalent(Ln_K[1],J[1]):
+        ...                     if not Ln_K[1] == J[1]:
         ...                         matches.append( (Ln_K,J) )
         >>> matches
         []
@@ -1841,7 +1846,9 @@ def test_proposition9() -> bool:
         ...     simcount = len(list(partition_similacra(p)))
         ...     f = lambda q: partition_rank(q) == (partition_rank(p) - 17)
         ...     if n >= 5:
-        ...         simcount += len(list(filter(f, partitions(2*n - 9))))
+        ...         simcount += len(list(
+        ...           filter(f, partitions(2*n - 9, include_two=False))
+        ...         ))
         ...     if simcount == 0:
         ...         n_without_similacra.append(n)
         >>> n_without_similacra
