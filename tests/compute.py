@@ -22,7 +22,7 @@ duplicates (specifically, serializations of isomorphic cones).
 """
 import sqlite3
 
-from cones import L,HR,HC,HH,HO, SerialCone
+from cones import L,HR,HC,HH,HO, SerialCone, SerialSum
 import partitions
 import sql
 
@@ -307,7 +307,7 @@ def _irreducible_cones_of_dim(n : int) -> tuple:
     return tuple(s)
 
 
-def _merge_factors(a, b) -> tuple:
+def _merge_factors(a, b) -> SerialSum:
     r"""
     Merged two serialized cones into a third.
 
@@ -359,7 +359,6 @@ def _merge_factors(a, b) -> tuple:
         >>> actual = SymmetricCone.deserialize(_merge_factors(a,b))
         >>> actual == expected
         True
-
     """
     # Computing/comparing the type to int is actually a bit faster on
     # average than isinstance.
@@ -448,6 +447,7 @@ def _dim_ranks_cones(n : int, d : dict[int, dict[int,tuple[SerialCone,...]]] | N
         >>> _ = _dim_ranks_cones(2, None, sql.TEST_DATABASE, False)
         >>> sql.dim_ranks_cones(0, sql.TEST_DATABASE)
         {0: (1,)}
+
     """
     if n == 1:
         # This function has side effects (updating the dictionary or
@@ -467,7 +467,7 @@ def _dim_ranks_cones(n : int, d : dict[int, dict[int,tuple[SerialCone,...]]] | N
     # The dict for this n. It will either be inserted as d[n],
     # or put into the SQL database instead. (We'll convert the
     # set to a tuple before doing so.)
-    d_n : dict[int, set[tuple[int,...]] ]
+    d_n : dict[ int, set[SerialCone] ]
     d_n = {}
 
     # We partition "n" ourselves here. Basically, we split n into (i,
@@ -488,7 +488,7 @@ def _dim_ranks_cones(n : int, d : dict[int, dict[int,tuple[SerialCone,...]]] | N
         # in dim=i and dim=(n-i)
         for r1 in s1:
             for r2 in s2:
-                s : set[ tuple[int,...] ]
+                s : set[SerialCone]
                 s = set( _merge_factors(b1,b2)
                          for b1 in s1[r1]
                          for b2 in s2[r2] )

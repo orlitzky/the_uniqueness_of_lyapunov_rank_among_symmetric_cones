@@ -5,7 +5,9 @@ Cone classes used in our test suite.
 from itertools import chain
 from math import sqrt
 
-type SerialCone = tuple[int,...]
+type SerialSum = tuple[int,...]
+type SerialIrreducible = int
+type SerialCone = SerialIrreducible | SerialSum
 
 # Lyapunov rank and dimension calculations
 class SymmetricCone:
