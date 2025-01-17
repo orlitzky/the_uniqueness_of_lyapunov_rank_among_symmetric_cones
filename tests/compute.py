@@ -615,8 +615,18 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
 
         >>> sql.new_database(sql.TEST_DATABASE)
         >>> _ = dim_ranks_cones(4, True)
-        >>> dim_ranks_cones(0, True)
+        >>> dim_ranks_cones(0, sql=True)
         {0: (1,)}
+
+    And we might as well check the other rows we just computed::
+
+        >>> all(
+        ...   dim_ranks_cones(k)
+        ...   ==
+        ...   dim_ranks_cones(k, sql=True)
+        ...   for k in range(5)
+        ... )
+        True
 
     """
     # The implementation of this function _always_ uses a cache, the
