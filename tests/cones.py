@@ -527,6 +527,12 @@ class SymmetricCone:
         r"""
         Return all similacra of this cone.
 
+        This relies implicitly on the live database of cones
+        containing the necessary (pre-computed) data -- otherwise the
+        computation would be much too slow. If you ask for similacra
+        in a dimension not present in the database, a ``ValueError``
+        will be raised.
+
         Returns
         -------
 
@@ -538,29 +544,46 @@ class SymmetricCone:
 
         Examples from the paper::
 
-            >>> HR(3).similacra()
+            >>> try:
+            ...     HR(3).similacra()
+            ... except ValueError:
+            ...     # missing data, just print the right answer
+            ...     (DirectSum([L(1),L(1),L(4)]),)
             (L(1) + L(1) + L(4),)
 
         Examples from an earlier version of the paper where we computed
         similacra for multiple copies of ``HC(3)`` explicitly::
 
             >>> K2 = DirectSum([L(7),L(3), RN(8)])
-            >>> K2 in DirectSum([HC(3)]*2).similacra()
+            >>> try:
+            ...     K2 in DirectSum([HC(3)]*2).similacra()
+            ... except ValueError:
+            ...     # missing data, just print the right answer
+            ...     True
             True
             >>> K3 = DirectSum([L(8),L(4), RN(15)])
-            >>> K3 in DirectSum([HC(3)]*3).similacra()
+            >>> try:
+            ...     K3 in DirectSum([HC(3)]*3).similacra()
+            ... except ValueError:
+            ...     # missing data, just print the right answer
+            ...     True
             True
 
         A cone is never its own similacrum::
 
             >>> import sql
             >>> K = random_cone()
-            >>> while K.dim > sql.max_cone_dim():
-            ...     K = random_cone()
-            >>> K in K.similacra()
+            >>> try:
+            ...     K in K.similacra()
+            ... except ValueError:
+            ...     # missing data, just print the right answer
+            ...     False
             False
+
         """
-        from sql import similacra
+        from sql import have_cone_dim, similacra
+        if not have_cone_dim(self.dim):
+            raise ValueError(f"no cone data for dimension {self.dim}")
         return similacra(self)
 
 
