@@ -43,10 +43,10 @@ import msgpack
 from cones import SymmetricCone, SerialCone
 
 # The default "live" database.
-LIVE_DATABASE = "cones.db"
+LIVE_DATABASE = "live.db"
 
 # The database used for testing.
-TEST_DATABASE = "tests.db"
+TEST_DATABASE = "test.db"
 
 def new_database(db : str = TEST_DATABASE):
     r"""
