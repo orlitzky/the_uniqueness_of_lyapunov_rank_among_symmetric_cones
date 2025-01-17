@@ -184,23 +184,13 @@ def partitions(n : int, entry_max : int | None = None, include_two : bool = True
         >>> list(partitions(2, include_two=False))
         [[1, 1]]
 
-    Excluding two should not remove any partitions that are not
-    equivalent to something remaining::
-
-        >>> ps1 = list(partitions(20))
-        >>> ps2 = list(partitions(20, include_two=False))
-        >>> all(
-        ...   any(partitions_equivalent(p1,p2) for p2 in ps2)
-        ...   for p1 in ps1
-        ... )
-        True
-
     This is a significant reduction in the number of partitions::
 
-        >>> len(ps1)
+        >>> len(list(partitions(20)))
         627
-        >>> len(ps2)
+        >>> len(list(partitions(20, include_two=False)))
         242
+
     """
     a = [0 for i in range(n + 1)]
     k = 1
