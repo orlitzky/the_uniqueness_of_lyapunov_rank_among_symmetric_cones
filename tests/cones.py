@@ -9,6 +9,7 @@ This module provides symmetric cones via the class hierarchy,
     * :class:`HC` (Complex hermitian PSD)
     * :class:`HH` (Quaternion hermitian PSD)
     * :class:`HO` (Octonion hermitian "PSD")
+    * :class:`DirectSum` (direct sums of the others)
 
 Each cone has methods and/or attributes for its dimension, Lyapunov
 rank, signature, et cetera. Much of the real work, however, is
@@ -41,30 +42,40 @@ constructors. For example, if you try to construct ``L(2)``, you will
 get ``L(1)+L(1)`` instead. That is because we have declared
 ``L(1)+L(1)`` to be the canonical two-dimensional symmetric cone: it
 should not be possible to construct another symmetric cone that is
-isomorphic but not equal to it.
+isomorphic but not equal to it. Likewise, flattening happens when you
+construct a cone such as ``(L(3)+L(4)) + (L(5)+L(6))``. The factors of
+these summands are collected and combined into ``L(3)+L(4)+L(5)+L(6)``.
 
-Likewise, flattening happens when you construct a cone such as
-``(L(1)+L(2)) + (L(3)+L(4))``. The factors of these summands are
-collected and combined into ``L(1)+L(2)+L(3)+L(4)``, whereafter
-``L(2)`` gets converted into ``L(1)+L(1)``. Finally, we sort the
-factors to ensure that ``L(1)+L(3)`` is the same cone as
-``L(3)+L(1)``. How we should sort cones is not obvious, but
+Finally, we sort the factors to ensure that ``L(1)+L(3)`` is the same
+cone as ``L(3)+L(1)``. How we should sort cones is not obvious, but
 thankfully, we can fall back on the serialization format that we are
 using to store them: to sort a collection of cones, we serialize them
-to tuples of ints, and then sort the tuples
-lexicographically. (Irreducible cones can be thought of as singleton
-tuples for this purpose.)
+to tuples of ints, and then sort the tuples lexicographically.
+(Irreducible cones can be thought of as singleton tuples for this
+purpose.)
 
-When all is said and done, with a great deal of care, we are able to
-work "up to isomorphism," without which we would not directly be able
-to test for similacra.
+Most of this happens in the :method:`DirectSum.__new__` method. But to
+understand how we replace ``L(2)`` with ``L(1)+L(1)``, we have to
+mention one last performance optimization. Namely that we cache all
+instances of the symmetric cone classes to avoid, say, creating a
+million copies of ``L(1)`` in memory. This adds to the general level
+of confusion, but saves quite a bit of memory during large
+computations, and has the nice side effect that "isomorphism" becomes
+just equality of objects. To accomplish it, each subclass of
+:class:`SymmetricCone` keeps an ``_instance_cache`` dictionary that is
+keyed on the size of the cone, ``n``. If you ask for ``L(1)`` a hunred
+times, then the last 99 of them, you'll get the copy that's stored in
+``L._instance_cache[1]``. This makes declaring canonical factors
+relatively easy, because we can just pre-populate the instance caches
+with the canonical choices. There are only a few ``n`` that lead to
+isomorphism, but you will see for example in :class:`HR` that we set::
 
-One last performance-related quirk is that we cache all instances of
-the cones that are constructed, to avoid e.g. creating a million
-copies of ``L(1)`` in memory. This adds to the level of general
-confusion, but saves quite a bit of memory during large computations,
-and has the nice side effect that "isomorphism" is just equality of
-objects.
+    _instance_cache = { 0: L(0), 1: L(1), 2: L(3) }
+
+Meaning that, when you ask for ``HR(2)``, you get ``L(3)``. When all
+is said and done, with a great deal of care, we are able to work "up
+to isomorphism," without which we would not directly be able to test
+for similacra.
 
 Finally, this module provides two "random cone" functions,
 
