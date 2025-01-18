@@ -809,8 +809,7 @@ class HC(SymmetricCone):
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> m = randint(2, 12)
         >>> K = DirectSum(m*[HC(3)])
-        >>> mlrd = max_lorentz_rank_dim()
-        >>> skip = (not mlrd) or (K.dim > mlrd)
+        >>> skip = K.dim > max_lorentz_rank_dim()
         >>> skip or K.rank in admissible_lorentz_ranks(K.dim)
         True
 
