@@ -17,9 +17,6 @@
 6. Add a verify-db script to ensure that the local database is suitable
    for running the test suite:
 
-   a) it should have enough dimensions, lorentz ranks, and partitions
-      for the theorems that need those things
    b) no two cones should have the same hash
-   c) the trivial cases should be in there
 
 7. Partitions should suffice for Ln + Lm, too?
