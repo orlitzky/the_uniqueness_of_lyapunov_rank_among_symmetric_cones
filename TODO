@@ -14,9 +14,4 @@
 5. Explain the computational motivation for Lypaunov rank. It greatly
    speeds up isomorphism computations.
 
-6. Add a verify-db script to ensure that the local database is suitable
-   for running the test suite:
-
-   b) no two cones should have the same hash
-
-7. Partitions should suffice for Ln + Lm, too?
+6. Partitions should suffice for Ln + Lm, too?
