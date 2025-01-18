@@ -272,11 +272,18 @@ def lowerbound3b(K):
     counterexample. Thus the real bound is ``n >= 5``, for which we
     get no counterexamples::
 
-        >>> from sql import all_cones_of_dim
+        >>> from sql import all_cones_of_dim, max_cone_dim
         >>> from math import floor
         >>>
+        >>> # skip check if not enough data; the largest dimension
+        >>> # we need is 21 when n=14 and d=7.
+        >>> skip = ( max_cone_dim() < 21 )
+        >>>
         >>> def check(n_start):
-        ...     winners = []
+        ...     if skip:
+        ...         return []
+        ...
+        ...     actual = []
         ...     for n in range(n_start, 15):
         ...         for d in range(1, max_dimK(n)+1):
         ...             for K in all_cones_of_dim(d):
@@ -285,13 +292,19 @@ def lowerbound3b(K):
         ...                 C = DirectSum([K, L(n)])
         ...                 for s in C.similacra():
         ...                     if L(n) not in s.factors():
-        ...                         winners.append((C,s))
-        ...     return winners
+        ...                         actual.append((C,s))
+        ...     return actual
         >>>
-        >>> check(3)
-        [(L(1) + L(1) + L(4), HR(3))]
-        >>> check(4)
-        [(L(1) + L(1) + L(4), HR(3))]
+        >>> expected = [ (DirectSum([L(2),L(4)]), HR(3)) ]
+        >>> if skip:
+        ...     expected = []
+        >>>
+        >>> check(3) == expected
+        True
+        >>> check(4) == expected
+        True
+        >>>
+        >>> # this should be empty even if we have data in the db
         >>> check(5)
         []
 
@@ -304,8 +317,10 @@ def lowerbound3b(K):
         True
         >>> n >= lowerbound2(K)
         True
-        >>> DirectSum([K,L(n)]).similacra()
-        (HR(3),)
+        >>> from sql import max_cone_dim
+        >>> skip = ( max_cone_dim() < (n + 2) )
+        >>> skip or HR(3) in DirectSum([K,L(n)]).similacra()
+        True
 
     """
     return 5
@@ -423,10 +438,10 @@ def test_proposition3() -> bool:
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = -1
-        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
-        ...     while HR(n_max).dim <= mlrd:
-        ...         n_max += 1
-        ...     n_max -= 1
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> while HR(n_max).dim <= mlrd:
+        ...     n_max += 1
+        >>> n_max -= 1
         >>> all(
         ...   HR(n).rank
         ...   in admissible_lorentz_ranks(HR(n).dim)
@@ -451,10 +466,10 @@ def test_proposition3() -> bool:
     # Figure out how big "n" can be if we want to use the database of
     # cached cones (the ``similacra`` method uses it implicitly).
     n_max = 0
-    if (mcd := max_cone_dim()) is not None:
-        while HR(n_max).dim <= mcd:
-            n_max += 1
-        n_max -= 1
+    mcd = max_cone_dim()
+    while HR(n_max).dim <= mcd:
+        n_max += 1
+    n_max -= 1
 
     n_min = 3
     if n_max <= n_min:
@@ -493,7 +508,8 @@ def test_proposition4() -> bool:
         >>> from math import floor, sqrt
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = -1
-        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> if mlrd >= 0:
         ...     n_max = floor(sqrt(mlrd))
         >>> all(
         ...   HC(n).rank
@@ -525,7 +541,7 @@ def test_proposition4() -> bool:
         >>> from sql import max_cone_dim
         >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
         >>> mcd = max_cone_dim()
-        >>> skip = (not mcd) or (HC(4).dim > mcd)
+        >>> skip = ( HC(4).dim > mcd )
         >>> skip or K in HC(4).similacra()
         True
 
@@ -536,7 +552,8 @@ def test_proposition4() -> bool:
     # Figure out how big "n" can be if we want to use the database of
     # cached cones (the ``similacra`` method uses it implicitly).
     n_max = 0
-    if (mcd := max_cone_dim()) is not None:
+    mcd = max_cone_dim()
+    if mcd >= 0:
         n_max = floor(sqrt(mcd))
 
     n_min = 4
@@ -578,10 +595,10 @@ def test_proposition5() -> bool:
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = -1
-        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
-        ...     while HH(n_max).dim <= mlrd:
-        ...         n_max += 1
-        ...     n_max -= 1
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> while HH(n_max).dim <= mlrd:
+        ...     n_max += 1
+        >>> n_max -= 1
         >>>
         >>> all(
         ...   HH(n).rank
@@ -621,17 +638,17 @@ def test_proposition5() -> bool:
         >>> mcd = max_cone_dim()
 
         >>> K = DirectSum([L(8), RN(7)])
-        >>> skip = (not mcd) or (HH(3).dim > mcd)
+        >>> skip = ( HH(3).dim > mcd )
         >>> skip or K in HH(3).similacra()
         True
 
         >>> K = DirectSum([L(10), RN(18)])
-        >>> skip = (not mcd) or (HH(4).dim > mcd)
+        >>> skip = ( HH(4).dim > mcd )
         >>> skip or K in HH(4).similacra()
         True
 
         >>> K = DirectSum([L(12), RN(33)])
-        >>> skip = (not mcd) or (HH(5).dim > mcd)
+        >>> skip = ( HH(5).dim > mcd )
         >>> skip or K in HH(5).similacra()
         True
 
@@ -641,10 +658,10 @@ def test_proposition5() -> bool:
     # Figure out how big "n" can be if we want to use the database of
     # cached cones (the ``similacra`` method uses it implicitly).
     n_max = 0
-    if (mcd := max_cone_dim()) is not None:
-        while HH(n_max).dim <= mcd:
-            n_max += 1
-        n_max -= 1
+    mcd = max_cone_dim()
+    while HH(n_max).dim <= mcd:
+        n_max += 1
+    n_max -= 1
 
     n_min = 3
     if n_max <= n_min:
@@ -680,10 +697,10 @@ def test_proposition6() -> bool:
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = -1
-        >>> if (mlrd := max_lorentz_rank_dim()) is not None:
-        ...     while n_max <= 3 and HO(n_max).dim <= mlrd:
-        ...         n_max += 1
-        ...     n_max -= 1
+        >>> mlrd = max_lorentz_rank_dim()
+        >>> while n_max <= 3 and HO(n_max).dim <= mlrd:
+        ...     n_max += 1
+        >>> n_max -= 1
         >>>
         >>> all(
         ...   HO(n).rank
@@ -1288,11 +1305,13 @@ def test_theorem5() -> bool:
     The two cases that we argue via similacra::
 
         >>> from sql import max_cone_dim
-        >>> ( HR(5).dim > max_cone_dim()
+        >>> skip = ( HR(5).dim > max_cone_dim() )
+        >>> ( skip
         ...   or
         ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra() )
         True
-        >>> ( HR(6).dim > max_cone_dim()
+        >>> skip = ( HR(6).dim > max_cone_dim() )
+        >>> ( skip
         ...   or
         ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra() )
         True
@@ -1504,6 +1523,7 @@ def test_corollary3() -> bool:
 
         >>> from sql import max_cone_dim
         >>> n_min = 31
+        >>> n_max = 0
         >>> n_max = max_cone_dim() - 9
         >>> all( not DirectSum([HC(3),L(n)]).similacra()
         ...      for n in range(n_min, n_max+1) )
@@ -1648,12 +1668,18 @@ def test_proposition8() -> bool:
     Verify the cases mentioned explicitly in the proof. First, the
     ``m != 2`` cases where there are no similacra::
 
+        >>> from sql import max_cone_dim
+        >>> mcd = max_cone_dim()
+
         >>> m = 4
         >>> K = L(m)
         >>> n = 5
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, True)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
 
         >>> m = 3
@@ -1661,12 +1687,18 @@ def test_proposition8() -> bool:
         >>> n = 4
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
         >>> n = 3
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
 
         >>> m = 1
@@ -1674,34 +1706,51 @@ def test_proposition8() -> bool:
         >>> n = 2
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
         >>> n = 3
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, True, False)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
         >>> n = 4
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, True, False)
-        >>> DirectSum([K,L(n)]).similacra()
+        >>> if K.dim + n <= mcd:
+        ...     DirectSum([K,L(n)]).similacra()
+        ... else:
+        ...     ()
         ()
 
     And now the ``m == 2`` case where there is exactly one
     counterexample::
 
+        >>> from sql import max_cone_dim
         >>> m = 2
         >>> K = L(m)
         >>> lowerbound1(K)
         2
-        >>> DirectSum([K,L(2)]).similacra()
+        >>> if K.dim + 2 <= mcd:
+        ...     DirectSum([K,L(2)]).similacra()
+        ... else:
+        ...     ()
         ()
-        >>> DirectSum([K,L(3)]).similacra()
+        >>> if K.dim + 3 <= mcd:
+        ...     DirectSum([K,L(3)]).similacra()
+        ... else:
+        ...     ()
         ()
         >>> from sql import max_cone_dim
         >>> expected = (HR(3),)
         >>> J = DirectSum([K,L(4)])
-        >>> (J.dim > max_cone_dim()) or (J.similacra() == expected)
+        >>> skip = ( J.dim > max_cone_dim() )
+        >>> skip or (J.similacra() == expected)
         True
 
    Confirm that the stated bound actually comes from
@@ -1744,7 +1793,9 @@ def test_lemma5() -> bool:
     For ``n <= 2``, there shouldn't be any similacra in the first
     place::
 
-        >>> [ K.similacra()
+        >>> from sql import max_cone_dim
+        >>> mcd = max_cone_dim()
+        >>> [ K.similacra() if 2*n <= mcd else ()
         ...   for n in range(3)
         ...   if (K := DirectSum(2*[L(n)])) ]
         [(), (), ()]
@@ -1962,5 +2013,10 @@ def test_proposition9() -> bool:
       if (K := DirectSum([L(n)]*2))
       and not K.similacra()
     ]
-    expected = [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
+
+    # We have to filter the expected result based on the
+    # max available cone dimension, too.
+    expected = [ e for e in [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
+                 if e <= n_max ]
+
     return (n_without_similacra == expected)
