@@ -135,4 +135,22 @@ if __name__ == "__main__":
             result = False
     report()
 
+    # This takes forever to get a random sample but there's no easy
+    # way around it.
+    print("There should be no hash collisions in the database... ", flush=True, end="")
+    conn = sqlite3.connect(LIVE_DATABASE)
+    expected = 1000000
+    stmt = f"SELECT data FROM cones ORDER BY random() LIMIT {expected}"
+    with conn:
+        rows = conn.execute(stmt).fetchall()
+    conn.close()
+
+    # Dedupe via set(); if any were removed, there'll be fewer elements
+    # than we started with.
+    actual = len(set( hash(msgpack.unpackb(r[0], use_list=False))
+                      for r in rows ))
+    if not (actual == expected):
+        result = False
+    report()
+
     exit(int(not result))
