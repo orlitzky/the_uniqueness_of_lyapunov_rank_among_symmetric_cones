@@ -1305,12 +1305,13 @@ def test_theorem5() -> bool:
     The two cases that we argue via similacra::
 
         >>> from sql import max_cone_dim
-        >>> skip = ( HR(5).dim > max_cone_dim() )
+        >>> mcd = max_cone_dim()
+        >>> skip = ( HR(5).dim > mcd )
         >>> ( skip
         ...   or
         ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra() )
         True
-        >>> skip = ( HR(6).dim > max_cone_dim() )
+        >>> skip = ( HR(6).dim > mcd )
         >>> ( skip
         ...   or
         ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra() )
@@ -1732,6 +1733,7 @@ def test_proposition8() -> bool:
     counterexample::
 
         >>> from sql import max_cone_dim
+        >>> mcd = max_cone_dim()
         >>> m = 2
         >>> K = L(m)
         >>> lowerbound1(K)
