@@ -287,6 +287,11 @@ def _direct_lorentz_ranks(n : int) -> tuple:
         >>> _direct_lorentz_ranks(2)
         (2,)
 
+    Things only get non-trivial in dimension three::
+
+        >>> _direct_lorentz_ranks(3)
+        (3, 4)
+
     Some comparisons with the recursive algorithm. The
     magic numbers below are not important, they were chosen "randomly"
     but small enough that this doesn't take forever::
@@ -301,9 +306,9 @@ def _direct_lorentz_ranks(n : int) -> tuple:
         True
 
     """
-    # go from list -> set -> tuple to deduplicate them
+    # go from generator -> set -> tuple to deduplicate them
     return tuple(set( (sum(f(p_k) for p_k in p) )
-                      for p in partitions(n) ))
+                      for p in partitions(n, include_two=False) ))
 
 
 def partition_rank(p):
