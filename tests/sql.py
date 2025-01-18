@@ -274,16 +274,18 @@ def have_cone_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     return result
 
 
-def max_cone_dim(db : str = LIVE_DATABASE) -> int | float:
+def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     r"""
-    Return the maximum dimension (int) of any cone in the
-    database, or ``-math.inf`` (float) if the database is empty.
+    Return the maximum dimension of any cone in the database, or
+    ``~sys.maxsize`` if the database is empty.
+
+    Returning "negative infinity" for the maximum of an empty set is
+    standard in optimization because it makes comparisons less clunky.
+    Our ``~sys.maxsize`` is not quite negative infinity, but it's
+    close?
 
     Since this does not modify the database, we use the live database
     by default.
-
-    Returning ``-math.inf`` for the maximum of an empty set is
-    standard in optimization because it makes comparisons less clunky.
 
     Parameters
     ----------
@@ -294,7 +296,7 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int | float:
     Returns
     -------
 
-    The largest dimesion in the ``cones`` table, or ``-math.inf``
+    The largest dimesion in the ``cones`` table, or ``~sys.maxsize``
     if the table is empty.
 
     Examples
@@ -303,26 +305,26 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int | float:
     The right answer depends on how long you're willing to wait (and
     whether or not the data exist)::
 
-        >>> from math import inf
+        >>> from sys import maxsize
         >>> mcd = max_cone_dim()
-        >>> isinstance(mcd, int) or mcd == -inf
+        >>> isinstance(mcd, int) or mcd == ~maxsize
         True
 
     In a new database, there won't be a maximum::
 
+       >>> from sys import maxsize
        >>> new_database(db=TEST_DATABASE)
-       >>> max_cone_dim(db=TEST_DATABASE)
-       -inf
-
+       >>> max_cone_dim(db=TEST_DATABASE) == ~maxsize
+       True
     """
-    from math import inf
+    from sys import maxsize
     conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM cones"
     with conn:
         result = conn.execute(stmt).fetchone()[0]
     conn.close()
     if result is None:
-        return -inf
+        return ~maxsize
     else:
         return result
 
@@ -512,13 +514,15 @@ def have_lorentz_rank_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     return result
 
 
-def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int | float:
+def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     r"""
-    Return the maximum dimension (int) of any Lorentz rank in the
-    database, or ``-math.inf`` (float) if there are none.
+    Return the maximum dimension of any Lorentz rank in the
+    database, or ``~sys.maxsize`` if there are none.
 
-    Returning ``-math.inf`` for the maximum of an empty set is
+    Returning "negative infinity" for the maximum of an empty set is
     standard in optimization because it makes comparisons less clunky.
+    Our ``~sys.maxsize`` is not quite negative infinity, but it's
+    close?
 
     Since this does not modify the database, we use the live database
     by default.
@@ -541,26 +545,26 @@ def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int | float:
     The right answer depends on how long you're willing to wait (and
     whether or not the data exist)::
 
-        >>> from math import inf
+        >>> from sys import maxsize
         >>> mlrd = max_lorentz_rank_dim()
-        >>> isinstance(mlrd, int) or mlrd == -inf
+        >>> isinstance(mlrd, int) or mlrd == ~maxsize
         True
 
     In a new database, there won't be a maximum::
 
+       >>> from sys import maxsize
        >>> new_database(db=TEST_DATABASE)
-       >>> max_lorentz_rank_dim(db=TEST_DATABASE)
-       -inf
-
+       >>> max_lorentz_rank_dim(db=TEST_DATABASE) == ~maxsize
+       True
     """
-    from math import inf
+    from sys import maxsize
     conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM lorentz_ranks"
     with conn:
         result = conn.execute(stmt).fetchone()[0]
     conn.close()
     if result is None:
-        return -inf
+        return ~maxsize
     else:
         return result
 
