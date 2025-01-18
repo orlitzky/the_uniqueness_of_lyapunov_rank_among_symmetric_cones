@@ -758,11 +758,11 @@ def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
 if __name__ == "__main__":
     # if executed, we start computing more cones
     mcd = sql.max_cone_dim()
-    if mcd:
-        n = mcd + 1
-    else:
-        # there won't be a maximum dimension if the DB is empty
+    if mcd < 0:
+        # the max dim will be -inf if the db is empty
         n = 0
+    else:
+        n = mcd + 1
 
     while True:
         print(f"computing dimension {n}", end="", flush=True)
