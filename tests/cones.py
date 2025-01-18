@@ -202,6 +202,14 @@ class SymmetricCone:
             >>> SymmetricCone._deserialize_one(1)
             L(0)
 
+        The deserialized cone already has its ``_serial`` attribute
+        cached::
+
+            >>> K = L(22091)
+            >>> J = SymmetricCone._deserialize_one(K.serialize())
+            >>> J._serial
+            220911
+
         """
         # Heads up: serializing L(0) produces 01 = 1.
         # The math for i and n below should produce
@@ -210,7 +218,9 @@ class SymmetricCone:
         n = (s - i) // 10
         for c in SymmetricCone.irreducible_classes():
             if c.id == i:
-                return c(n)
+                res = c(n)
+                res._serial = s
+                return res
         raise ValueError(f"unable to deserialize {s}")
 
     @staticmethod
