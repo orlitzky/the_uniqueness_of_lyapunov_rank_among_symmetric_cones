@@ -40,6 +40,9 @@ database. If you accidentally delete it, the live database can easily
 be recreated by running ``new_database(LIVE_DATABASE)`` in a python
 interpreter. The test database, on the other hand, is created
 on-the-fly and you shouldn't have to worry about it.
+
+If you want to be sure that the cached data are sufficient to verify
+the results in the paper, run the ``verify-live-db.py`` script.
 """
 
 import sqlite3
