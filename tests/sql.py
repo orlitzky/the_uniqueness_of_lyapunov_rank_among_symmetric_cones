@@ -443,7 +443,10 @@ def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int, ...]:
     All cones share a signature with a cone of this form::
 
         >>> from cones import random_cone
-        >>> if max_lorentz_rank_dim() < 3:
+        >>> from sql import max_lorentz_rank_dim
+        >>> mlrd = max_lorentz_rank_dim()
+        >>>
+        >>> if mlrd < 3:
         ...     # not enough data, just return the right answer
         ...     True
         ... else:
