@@ -13,7 +13,9 @@ and it will return either success (0) or failure (1) after telling you
 what it is doing.
 """
 
-from random import randint, sample
+import msgpack
+from random import randint
+import sqlite3
 
 from cones import SymmetricCone
 from sql import *
@@ -52,16 +54,19 @@ if __name__ == "__main__":
     if mcd < 0:
         result = False
     else:
+        # decide on a dimension first; otherwise random ordering is
+        # too slow.
         n = randint(0, mcd)
-        d = dim_ranks_cones(n)
-        for r in d:
-            # check only a few cones of each rank, otherwise this can take
-            # forever
-            sample_count = min(10, len(d[r]))
-            for s in sample(d[r], sample_count):
-                K = SymmetricCone.deserialize(s)
-                if not (K.dim == n and K.rank == r):
-                    result = False
+        conn = sqlite3.connect(LIVE_DATABASE)
+        stmt = "SELECT rank,data FROM cones WHERE dim=? ORDER BY random() LIMIT 10000"
+        with conn:
+            rows = conn.execute(stmt, (n,)).fetchall()
+        conn.close()
+
+        for row in rows:
+            K = SymmetricCone.deserialize(msgpack.unpackb(row[1], use_list=False))
+            if not (K.dim == n and K.rank == row[0]):
+                result = False
     report()
 
     print("Need max_cone_dim() >= 4 for Lemma 5... ", flush=True, end="")
