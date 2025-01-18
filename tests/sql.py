@@ -274,12 +274,16 @@ def have_cone_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     return result
 
 
-def max_cone_dim(db : str = LIVE_DATABASE) -> int:
+def max_cone_dim(db : str = LIVE_DATABASE) -> int | float:
     r"""
-    Return the maximum dimension of any cone in the database.
+    Return the maximum dimension (int) of any cone in the
+    database, or ``-math.inf`` (float) if the database is empty.
 
     Since this does not modify the database, we use the live database
     by default.
+
+    Returning ``-math.inf`` for the maximum of an empty set is
+    standard in optimization because it makes comparisons less clunky.
 
     Parameters
     ----------
@@ -287,30 +291,40 @@ def max_cone_dim(db : str = LIVE_DATABASE) -> int:
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.
 
+    Returns
+    -------
+
+    The largest dimesion in the ``cones`` table, or ``-math.inf``
+    if the table is empty.
+
     Examples
     --------
 
     The right answer depends on how long you're willing to wait (and
     whether or not the data exist)::
 
+        >>> from math import inf
         >>> mcd = max_cone_dim()
-        >>> mcd is None or isinstance(mcd, int)
+        >>> isinstance(mcd, int) or mcd == -inf
         True
 
     In a new database, there won't be a maximum::
 
        >>> new_database(db=TEST_DATABASE)
-       >>> print(max_cone_dim(db=TEST_DATABASE))
-       None
+       >>> max_cone_dim(db=TEST_DATABASE)
+       -inf
 
     """
+    from math import inf
     conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM cones"
-    result = 0
     with conn:
         result = conn.execute(stmt).fetchone()[0]
     conn.close()
-    return result
+    if result is None:
+        return -inf
+    else:
+        return result
 
 
 
@@ -427,8 +441,7 @@ def admissible_ranks(n: int, db : str = LIVE_DATABASE) -> tuple[int, ...]:
     All cones share a signature with a cone of this form::
 
         >>> from cones import random_cone
-        >>> mlrd = max_lorentz_rank_dim()
-        >>> if not mlrd or mlrd < 3:
+        >>> if max_lorentz_rank_dim() < 3:
         ...     # not enough data, just return the right answer
         ...     True
         ... else:
@@ -499,10 +512,13 @@ def have_lorentz_rank_dim(d : int, db : str = LIVE_DATABASE) -> bool:
     return result
 
 
-def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
+def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int | float:
     r"""
-    Return the maximum dimension for which we know the admissible
-    Lorentz ranks.
+    Return the maximum dimension (int) of any Lorentz rank in the
+    database, or ``-math.inf`` (float) if there are none.
+
+    Returning ``-math.inf`` for the maximum of an empty set is
+    standard in optimization because it makes comparisons less clunky.
 
     Since this does not modify the database, we use the live database
     by default.
@@ -513,30 +529,40 @@ def max_lorentz_rank_dim(db : str = LIVE_DATABASE) -> int:
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.
 
+    Returns
+    -------
+
+    The largest dimesion in the ``lorentz_ranks`` table, or ``-math.inf``
+    if the table is empty.
+
     Examples
     --------
 
     The right answer depends on how long you're willing to wait (and
     whether or not the data exist)::
 
+        >>> from math import inf
         >>> mlrd = max_lorentz_rank_dim()
-        >>> mlrd is None or isinstance(mlrd, int)
+        >>> isinstance(mlrd, int) or mlrd == -inf
         True
 
     In a new database, there won't be a maximum::
 
        >>> new_database(db=TEST_DATABASE)
-       >>> print(max_lorentz_rank_dim(db=TEST_DATABASE))
-       None
+       >>> max_lorentz_rank_dim(db=TEST_DATABASE)
+       -inf
 
     """
+    from math import inf
     conn = sqlite3.connect(db)
     stmt = "SELECT MAX(dim) FROM lorentz_ranks"
-    result = 0
     with conn:
         result = conn.execute(stmt).fetchone()[0]
     conn.close()
-    return result
+    if result is None:
+        return -inf
+    else:
+        return result
 
 
 def insert_lorentz_ranks(n : int, ranks : tuple[int,...], db : str = TEST_DATABASE):
