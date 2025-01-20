@@ -13,5 +13,3 @@
 
 5. Explain the computational motivation for Lypaunov rank. It greatly
    speeds up isomorphism computations.
-
-6. Partitions should suffice for Ln + Lm, too?

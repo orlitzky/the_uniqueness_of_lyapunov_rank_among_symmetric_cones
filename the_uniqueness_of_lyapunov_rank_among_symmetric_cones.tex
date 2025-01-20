@@ -1355,47 +1355,79 @@
       $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim \Hnplus[3]\of{\Rn[1]}$.
       %
       \begin{proof}
-        \cref{itm:condition1} dominates the other two for $m \ge 5$
-        and is equivalent to $n \ge \qty{m^2 - 3m + 6}/2$ when $K
-        \coloneqq \Lnplus[m]$, so this is a corollary of
-        \cref{thm:improved subproblem reduction} in that case. The
-        remaining pairs of $m$ and $n$ that satisfy $n \ge \qty{m^2 -
-          3m + 6}/2$ but \emph{not} the prerequisites for
-        \cref{thm:improved subproblem reduction} are,
+        The $m = 0$ case is handled by \cref{cor:lorentz cone has no
+          similacra}, so we may assume that $m \ge 1$. The condition
+        $n \ge \qty{m^2 - 3m + 6}/2$ is thus \cref{itm:condition1}
+        applied to $K \coloneqq \Lnplus[m]$.
+
+        For $m \ge 5$, \cref{itm:condition1} dominates the other two,
+        so this is a corollary of \cref{thm:improved subproblem
+          reduction} in that case. The remaining pairs of $m \ge 1$
+        and $n$ that satisfy $n \ge \qty{m^2 - 3m + 6}/2$ but
+        \emph{not} the prerequisites for \cref{thm:improved subproblem
+          reduction} are,
 
         \begin{itemize}
           \begin{item}
-            $m = 4$ and $n = 5$, which violates \cref{itm:condition2},
-            but leads to no similacra.
+            $m = 4$ and $n = 5$, which violates \cref{itm:condition2}.
           \end{item}
           \begin{item}
             $m = 3$ and $n \in \set{3,4}$, which satisfies neither
-            \cref{itm:condition2} nor $n \ge 5$, but still leads to no
-            similacra.
+            \cref{itm:condition2} nor $n \ge 5$.
           \end{item}
           \begin{item}
-            $m = 2$ and $n = 4$, where only $n \ge 5$ is violated but
-            the counterexample $\directsum{\Rnplus[2]}{\Lnplus[4]}
-            \sim \Hnplus[3]\of{\Rn[1]}$ arises.
+            $m = 2$ and $n = 4$, where only $n \ge 5$ is violated.
           \end{item}
           \begin{item}
             $m = 2$ and $n \in \set{2,3}$, where \cref{itm:condition2}
-            and $n \ge 5$ are both violated; there are no similacra.
+            and $n \ge 5$ are both violated.
           \end{item}
           \begin{item}
-            $m = 1$ where no similacra arise for $n \in \set{2,3,4}$
-            despite $n \ge 5$ being violated and \cref{itm:condition2}
-            being violated for $n=2$.
-          \end{item}
-          \begin{item}
-            $m = 0$, which is just \cref{cor:lorentz cone has no
-              similacra}.
+            $m = 1$ where $n \ge 5$ is violated for $n \in
+            \set{2,3,4}$ and \cref{itm:condition2} is violated for
+            $n=2$.
           \end{item}
         \end{itemize}
         %
         All of these cases are of dimension nine or less, where
-        $\Hnplus[3]\of{\Rn[1]}$ is the only non-Lorentz cone that
-        would fit, and can be enumerated.
+        $\Hnplus[3]\of{\Rn[1]}$ is the only non-Lorentz cone small
+        enough to appear in a similacrum. A priori, to check them all,
+        we would need to check all sums of Lorentz cones with/without
+        an $\Hnplus[3]\of{\Rn[1]}$ factor. But there are some
+        shortcuts we can take:
+
+        \begin{itemize}
+          \begin{item}
+            $\directsum{\Lnplus[m]}{\Lnplus} = \Rnplus[m+n]$ when both
+            $m,n \le 2$, and obviously has no similacra.
+          \end{item}
+          \begin{item}
+            When $m,n >= 3$, there are only two factors in
+            $\directsum{\Lnplus[m]}{\Lnplus}$. As a result it cannot
+            be isomorphic to any symmetric cone whose decomposition
+            contains three or more factors; if
+            $\directsum{\Lnplus[m]}{\Lnplus}$ shares its signature
+            with such a cone, they are similacra. From \cref{prop:real
+              psd similacra}, we know that $\Hnplus[3]\of{\Rn[1]} \sim
+            \directsum{\Lnplus[4]}{\Rnplus[2]}$ which has three
+            factors, because $\Rnplus[2]$ is shorthand for
+            $\directsum{\Lnplus[1]}{\Lnplus[1]}$. If
+            $\directsum{\Lnplus[m]}{\Lnplus} \sim
+            \directsum{\Hnplus[3]\of{\Rn[1]}}{J}$, it follows that
+            $\directsum{\Lnplus[m]}{\Lnplus} \sim
+            \directsum{\directsum{\Lnplus[4]}{\Rnplus[2]}}{J}$ as
+            well. And since the dimension of $J$ is too small to admit
+            any non-Lorentz cones, $\directsum{\Lnplus[m]}{\Lnplus}$
+            has a similacrum consisting of only Lorentz cones. We may
+            therefore check these cases by partitioning the dimension
+            and looking for sums of Lorentz cones of the appropriate
+            Lyapunov rank.
+          \end{item}
+        \end{itemize}
+
+        When all is said and done, the only counterexample that arises
+        is $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim
+        \Hnplus[3]\of{\Rn[1]}$ when $m = 2$ and $n = 4$.
       \end{proof}
     \end{proposition}
 
