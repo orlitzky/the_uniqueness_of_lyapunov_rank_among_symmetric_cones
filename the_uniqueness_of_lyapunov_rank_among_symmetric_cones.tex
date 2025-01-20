@@ -1041,6 +1041,21 @@
     counterexample at $n = 4$. As a result, we can get away with
     requiring $n \ge 5$ instead of $n \ge 15$.
 
+    In the proof of this result, we will use integer partitioning to
+    enumerate sums of Lorentz cones, a strategy we employ several
+    times. There are fast algorithms to compute partitions; for
+    example, the accelerated integer partitioning scheme of Kelleher
+    and O'Sullivan~\cite{kelleher-osullivan}. Most partitioning
+    schemes sort the entries to avoid duplication, so no ambiguity
+    arises in the order of our Lorentz factors. The partitions $1 + 1$
+    and $2$, however, correspond to isomorphic cones, so we do not
+    want to consider both. Fortunately, as the entries of each
+    partition are already sorted, it is easy to detect when a
+    partition contains $2$ and omit it from the result. For every
+    partition containing $2$ that we omit, there will be a partition
+    with $1+1$ in its place, so we do not lose any critical
+    candidates. This can save a considerable amount of time.
+
     \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \ge 5$
       satisfies \cref{itm:condition1,itm:condition2}. Then $J \sim
@@ -1158,11 +1173,9 @@
         checked by brute force. If we had only Lorentz factors in both
         $K$ and $J$, we could enumerate the possibilities by
         partitioning the integers $\dim\of{K}$ and $n + \dim\of{K}$
-        for $K$ and $J$ respectively. (There are algorithms to do
-        this; for example, the accelerated integer partitioning scheme
-        of Kelleher and O'Sullivan~\cite{kelleher-osullivan}). But as
-        there may be an $\Hnplus[3]\of{\Rn[1]}$ in $J$, the process
-        gets a little more complicated.
+        for $K$ and $J$ respectively. But as there may be an
+        $\Hnplus[3]\of{\Rn[1]}$ in $J$, the process gets a little more
+        complicated.
 
         For $n \le 9$ a pure integer-partition comparison can be used.
         For each $n \ge 10$ and each associated $\dim\of{K}$ in the
@@ -1176,11 +1189,9 @@
         the remaining dimensions.
 
         Once the possibilities are computed for a fixed $n$ and
-        $\dim\of{K}$, we compare Lyapunov ranks. They will be equal in
-        a few cases, but keeping in mind that the partitions $1 + 1$
-        and $2$ are the same ($\Rnplus[2] \cong \Lnplus[2]$) and that
-        \cref{itm:condition1,itm:condition2} must hold, it easy to see
-        that the theorem holds because $J \nsim
+        $\dim\of{K}$, we compare Lyapunov ranks. Keeping in mind that
+        \cref{itm:condition1,itm:condition2} must be satisfied, it
+        easy to see that the theorem holds because $J \nsim
         \directsum{K}{\Lnplus}$ for all generated $K$ and $J$.
       \end{proof}
     \end{theorem}
