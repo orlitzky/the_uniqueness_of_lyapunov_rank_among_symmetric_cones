@@ -8,8 +8,5 @@
    isomorphism" we probably don't mean up to arbitrary cone
    isomorphism.
 
-4. Mention that the Lypaunov rank of \Rnplus is strictly minimal? We
-   use this in a few places.
-
 5. Explain the computational motivation for Lypaunov rank. It greatly
    speeds up isomorphism computations.
