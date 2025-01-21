@@ -1373,8 +1373,8 @@
 
         For $m \ge 5$, \cref{itm:condition1} dominates the other two,
         so this is a corollary of \cref{thm:improved subproblem
-          reduction} in that case. The remaining pairs of $m \ge 1$
-        and $n$ that satisfy $n \ge \qty{m^2 - 3m + 6}/2$ but
+          reduction} in that case. The remaining pairs of $m,n$ that
+        satisfy $m \ge 1$ and $n \ge \qty{m^2 - 3m + 6}/2$ but
         \emph{not} the prerequisites for \cref{thm:improved subproblem
           reduction} are,
 
@@ -1409,8 +1409,8 @@
 
         \begin{itemize}
           \begin{item}
-            $\directsum{\Lnplus[m]}{\Lnplus} = \Rnplus[m+n]$ when both
-            $m,n \le 2$, and obviously has no similacra.
+            $\directsum{\Lnplus[m]}{\Lnplus} \cong \Rnplus[m+n]$ has
+            no similacra when $m,n \le 2$.
           \end{item}
           \begin{item}
             When $m,n >= 3$, there are only two factors in
@@ -1420,13 +1420,13 @@
             $\directsum{\Lnplus[m]}{\Lnplus}$ shares its signature
             with such a cone, they are similacra. From \cref{prop:real
               psd similacra}, we know that $\Hnplus[3]\of{\Rn[1]} \sim
-            \directsum{\Lnplus[4]}{\Rnplus[2]}$ which has three
-            factors, because $\Rnplus[2]$ is shorthand for
-            $\directsum{\Lnplus[1]}{\Lnplus[1]}$. If
+            \directsum{\Rnplus[2]}{\Lnplus[4]}$ which has three
+            factors, because $\Rnplus[2] \cong
+            \directsum{\Lnplus[1]}{\Lnplus[1]}$. If
             $\directsum{\Lnplus[m]}{\Lnplus} \sim
             \directsum{\Hnplus[3]\of{\Rn[1]}}{J}$, it follows that
             $\directsum{\Lnplus[m]}{\Lnplus} \sim
-            \directsum{\directsum{\Lnplus[4]}{\Rnplus[2]}}{J}$ as
+            \directsum{\directsum{\Rnplus[2]}{\Lnplus[4]}}{J}$ as
             well. And since the dimension of $J$ is too small to admit
             any non-Lorentz cones, $\directsum{\Lnplus[m]}{\Lnplus}$
             has a similacrum consisting of only Lorentz cones. We may
@@ -1438,7 +1438,7 @@
 
         When all is said and done, the only counterexample that arises
         is $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim
-        \Hnplus[3]\of{\Rn[1]}$ when $m = 2$ and $n = 4$.
+        \Hnplus[3]\of{\Rn[1]}$ corresponding to $m = 2$ and $n = 4$.
       \end{proof}
     \end{proposition}
 
