@@ -1,7 +1,5 @@
 1. The natural numbers include zero for us.
 
-2. Is g_delta still increasing at x = 0?
-
 3. Be careful about "isomorphic" in the context of cones. If two
    symmetric cones are isomorphic, they're probably Jordan-isomorphic,
    but in general that's not true. When we say e.g. "up to
