@@ -5,6 +5,3 @@
    but in general that's not true. When we say e.g. "up to
    isomorphism" we probably don't mean up to arbitrary cone
    isomorphism.
-
-5. Explain the computational motivation for Lypaunov rank. It greatly
-   speeds up isomorphism computations.
