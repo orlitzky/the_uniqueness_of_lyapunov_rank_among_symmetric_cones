@@ -56,12 +56,15 @@ update the live database immediately, as it tries to compute more
 and more cones with :func:`dim_cones_ranks`::
 
     $ python compute.py
-    computing dimension 99...
+    computing cones of dimension 99...
 
 This however takes "forever" and will probably run your system out of
 RAM. The bottleneck for both speed and space is putting all of the new
 cones for a given dimension into a list and sorting them to eliminate
-duplicates.
+duplicates. You can also use it to compute admissible Lorentz ranks:
+
+    $ python compute.py lorentz
+    computing lorentz ranks in dimension 200...
 
 """
 import sqlite3
@@ -755,17 +758,47 @@ def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
         print(f"{x}: {y}")
 
 
-if __name__ == "__main__":
+
+def _compute_cones():
+    r"""
+    This gets run when you execute ``python compute.py``.
+    """
     # if executed, we start computing more cones
     mcd = sql.max_cone_dim()
     if mcd < 0:
-        # the max dim will be -inf if the db is empty
+        # the max dim will be negative if the db is empty
         n = 0
     else:
         n = mcd + 1
 
     while True:
-        print(f"computing dimension {n}", end="", flush=True)
+        print(f"computing cones of dimension {n}", end="", flush=True)
         _ = dim_ranks_cones(n, True, sql.LIVE_DATABASE, True)
         print(" done.")
         n += 1
+
+def _compute_lorentz_ranks():
+    r"""
+    This gets run when you execute ``python compute.py lorentz``.
+    """
+    # if executed, we start computing more cones
+    mlrd = sql.max_lorentz_rank_dim()
+    if mlrd < 0:
+        # the max dim will be negative if the db is empty
+        n = 0
+    else:
+        n = mlrd + 1
+
+    while True:
+        print(f"computing lorentz ranks in dimension {n}", end="", flush=True)
+        _ = admissible_lorentz_ranks(n, True, sql.LIVE_DATABASE)
+        print(" done.")
+        n += 1
+
+
+if __name__ == "__main__":
+    from sys import argv
+    if len(argv) > 1 and argv[1] == "lorentz":
+        _compute_lorentz_ranks()
+    else:
+        _compute_cones()
