@@ -871,9 +871,9 @@ def test_theorem3() -> bool:
     return r
 
 
-def test_example1() -> bool:
+def test_theorem3_example() -> bool:
     r"""
-    Test Example 1.
+    Test the example given directly after Theorem 3.
 
     Returns
     -------
@@ -885,7 +885,7 @@ def test_example1() -> bool:
 
     The relationships in the example should hold::
 
-        >>> test_example1()
+        >>> test_theorem3_example()
         True
 
     """
