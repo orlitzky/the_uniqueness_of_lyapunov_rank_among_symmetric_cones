@@ -1,5 +1,0 @@
-1. Be careful about "isomorphic" in the context of cones. If two
-   symmetric cones are isomorphic, they're probably Jordan-isomorphic,
-   but in general that's not true. When we say e.g. "up to
-   isomorphism" we probably don't mean up to arbitrary cone
-   isomorphism.

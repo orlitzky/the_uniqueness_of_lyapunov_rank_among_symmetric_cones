@@ -321,20 +321,25 @@
       \end{center}
     \end{table}
 
-    \noindent
-    The cone $\Rnplus \cong \directsummany{i=1}{n}{\Lnplus[1]}$ is
-    symmetric but generally not irreducible (unless $n = 0$ or $n =
-    1$). We include it because it is easier, for example, to write
-    $\Rnplus[3]$ than it is to write $\Lnplus[1] \oplus \Lnplus[1]
-    \oplus \Lnplus[1]$. In dimension $n \le 2$, all proper cones are
-    polyhedral and therefore isomorphic to $\Rnplus$. As a result,
-    when we are working up to isomorphism, we will usually write
-    $\Roneplus$ or $\Rnplus[2]$ to indicate a one- or two-dimensional
-    symmetric cone.
+    The cone $\Rnplus = \directsummany{i=1}{n}{\Lnplus[1]}$ is
+    symmetric but not irreducible unless $n \in \set{0,1}$. We include
+    it because it is easier, for example, to write $\Rnplus[3]$ than
+    it is to write $\Lnplus[1] \oplus \Lnplus[1] \oplus
+    \Lnplus[1]$. In dimension $n \le 2$, all symmetric cones have $n$
+    extreme rays and are thus linearly isomorphic to $\Rnplus$. Less
+    obviously, they are Jordan-isomorphic: using Proposition~IV.3.2 of
+    Faraut and Korányi~\cite{faraut-koranyi}, we can choose bases for
+    both spaces consisting of primitive idempotents that belong to
+    extreme rays of the symmetric cone. The map sending one basis to
+    the other must then be a Jordan isomorphism, and it maps one cone
+    onto the other.
 
-    It is easy to see from the two tables that the Lyapunov rank of
-    $\Rnplus$ is strictly less than that of any other (non-isomorphic)
-    $n$-dimensional symmetric cone.
+    As a result, when we are working up to isomorphism, we will
+    usually write $\Roneplus$ or $\Rnplus[2]$ to indicate a one- or
+    two-dimensional symmetric cone. From the two tables and the
+    preceding discussion, it should be apparent that the Lyapunov rank
+    of $\Rnplus$ is strictly less than that of any other
+    (non-isomorphic) $n$-dimensional symmetric cone.
   \end{section}
 
   \begin{section}{Irreducible symmetric cones}\label{sec:irreducible cones}
@@ -351,11 +356,10 @@
       0$.
       %
       \begin{proof}
-        First we note that if $n \le 2$, then all symmetric cones have
-        exactly $n$ extreme rays and are therefore isomorphic to
-        $\Rnplus$. The statement is therefore trivially true for $n
-        \le 2$. We next show that splitting $\Lnplus$ into two smaller
-        Lorentz cones will necessarily reduce the Lyapunov
+        First we recall that when $n \le 2$, all symmetric cones are
+        isomorphic to $\Rnplus$. The statement is therefore trivially
+        true for $n \le 2$. We next show that splitting $\Lnplus$ into
+        two smaller Lorentz cones will necessarily reduce the Lyapunov
         rank. Taking any $k \in \set{1,2,\ldots,n-1}$, and assuming
         now that $n \ge 3$, we can simply compute:
         %
