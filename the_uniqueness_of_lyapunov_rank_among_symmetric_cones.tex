@@ -527,7 +527,7 @@
     \end{proposition}
 
 
-    \begin{proposition}
+    \begin{proposition}\label{prop:octonion psd similacra}
       $\Hnplus[3]\of{\octonions}$ has symmetric similacra.
 
       \begin{proof}
@@ -542,7 +542,7 @@
     \begin{theorem}\label{thm:only irreducible factors}
       If $K$ is an irreducible symmetric cone having no symmetric
       similacra, then either $K \cong \Hnplus[3]\of{\Cn[1]}$ or $K
-      \cong \Lnplus$ for some $n \ge 0$.
+      \cong \Lnplus$ for some $n \in \Nn[1]$.
     \end{theorem}
   \end{section}
 
@@ -626,31 +626,27 @@
 
     This result can be interpreted as saying that every symmetric cone
     shares its signature with a direct sum of Lorentz cones and/or
-    $\Hnplus[3]\of{\Cn[1]}$ via either isomorphism or similacra. We
-    caution however that even this ``reduced'' form of a similacrum is
-    not unique.
+    $\Hnplus[3]\of{\Cn[1]}$. We caution however that similacra of this
+    form may not be unique. Consider the similacra,
+    \begin{equation*}
+      \Lnplus[4] \oplus \Lnplus[3] \oplus \Lnplus[3] \oplus \Lnplus[3]
+      \sim
+      \Lnplus[5] \oplus \Rnplus[8].
+    \end{equation*}
+    %
+    This shows that a cone can be isomorphic to, \emph{and} have
+    similacra of the form in \cref{thm:two sufficient
+      families}. Moreover, when applied to \cref{prop:octonion psd
+      similacra}, it shows that one cone can have two different
+    similacra of the desired form.
 
-    \begin{example}\label{ex:reduction is not unique}
-      It is easy to check that
-      %
-      \begin{equation*}
-        \Lnplus[4] \oplus \Lnplus[3] \oplus \Lnplus[3] \oplus \Lnplus[3]
-        \sim
-        \Lnplus[5] \oplus \Rnplus[8].
-      \end{equation*}
-      %
-      As a result, there are (at least) two similacra of
-      $\Hnplus[3]\of{\octonions}$ that consist only of Lorentz cones.
-    \end{example}
-
-    \cref{cor:no multiple complex factors} shows that if a symmetric
-    cone has one $\Hnplus[3]\of{\Cn[1]}$ factor, then it cannot have
-    any additional $\Hnplus[3]\of{\Cn[1]}$ factors without acquiring
-    symmetric similacra. We will see later in \cref{cor:HC(3)+L(n)}
-    that almost the opposite happens when we combine
-    $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors for large $n$. But
-    to prove that result it is easier to consider the general problem,
-    and ask when we can reduce the problem for
+    \cref{cor:no multiple complex factors} shows that a symmetric cone
+    can have at most one $\Hnplus[3]\of{\Cn[1]}$ factor before
+    acquiring symmetric similacra. We will see later in
+    \cref{cor:HC(3)+L(n)} that almost the opposite happens when we
+    combine $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors for large
+    $n$. But to prove that result it is easier to consider the general
+    case, and ask when we can reduce the problem for
     $\directsum{K}{\Lnplus}$ to that for $K$.
 
     When the problem is to find similacra of $\directsum{K}{\Lnplus}$,
@@ -668,10 +664,10 @@
       \end{item}
     \end{enumerate}
     %
-    The $n \ge 15$ bound is not very elegant, but either way, we are
-    going to wind up checking some low-dimensional cases by hand. With
-    the $n \ge 15$ bound we have more cases to check, but in exchange,
-    a few of the proofs are simplified.
+    The $n \ge 15$ bound is not very elegant, but it will simplify our
+    proofs. Either way we are going to wind up checking cases on a
+    computer; but this way, the computer does a bit more work and we
+    do a little less.
 
     \begin{lemma}\label{lem:condition4}
       If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
