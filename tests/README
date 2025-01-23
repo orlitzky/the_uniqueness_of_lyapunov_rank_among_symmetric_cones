@@ -11,6 +11,13 @@ as well as the supporting code. Here is a quick summary of the files:
   * live.db - an empty (until you fill it) SQLite database for storing
     the cones/ranks computed by the functions in compute.py.
 
+    HINT: unless you want "git diff" to take forever and tempt you to
+    commit gigabytes of binary junk to the repo, you should tell git
+    (insofar as is possible) to ignore changes to the live database:
+
+      $ git update-index --assume-unchanged tests/live.db
+      $ git update-index --skip-worktree tests/live.db
+
   * partitions.py - functions relating to integer partitions.
 
   * sql.py - functions for working with the SQL database.
