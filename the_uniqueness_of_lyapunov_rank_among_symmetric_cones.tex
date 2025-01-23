@@ -690,16 +690,17 @@
     having a larger Lorentz cone factor than $\Lnplus$.
 
     \begin{lemma}\label{lem:no bigger factors}
-      If $K$ is symmetric and if $n \ge 2 + \lyapunovrank{K} -
-      \dim\of{K}$, then $ \signature{\directsum{J}{\Lnplus[n+k]}} \ne
-      \signature{\directsum{K}{\Lnplus}}$ for any symmetric $J$ and
-      any $k \ge 1$.
+      If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
+      \cref{itm:condition1},, then
+      $\signature{\directsum{J}{\Lnplus[n+k]}} \ne
+      \signature{\directsum{K}{\Lnplus}}$ for any symmetric cone $J$
+      and any $k \ge 1$.
       %
       \begin{proof}
         With $k \ge 1$, the smallest possible Lyapunov rank achievable
         by $\directsum{J}{\Lnplus[n+k]}$ in dimension $\dim\of{K}+n$
-        is at $k = 1$ with $J = \Rnplus[\dim\of{K} - k]$. But if $n
-        \ge 2 + \lyapunovrank{K} - \dim\of{K}$, then
+        is at $k = 1$ with $J = \Rnplus[\dim\of{K} - k]$. But if $n$
+        satisfies \cref{itm:condition1}, then
         %
         \begin{equation*}
           \lyapunovrank{\Rnplus[\dim\of{K} - 1] \oplus \Lnplus[n+1]}
