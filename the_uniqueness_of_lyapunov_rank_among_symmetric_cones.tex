@@ -215,21 +215,23 @@
     \end{theorem}
 
     The restrictions on $n$ ensure that the families are distinct up
-    to isomorphism: the cones $\Hnplus[2]\of{\Rn[1]}$,
+    to Jordan isomorphism: the cones $\Hnplus[2]\of{\Rn[1]}$,
     $\Hnplus[2]\of{\Cn[1]}$, $\Hnplus[2]\of{\quaternions}$, and
-    $\Hnplus[2]\of{\octonions}$ are symmetric, but they are isomorphic
-    to Lorentz cones of appropriate sizes (Faraut and
-    Korányi~\cite{faraut-koranyi}, Corollary~IV.1.5). The trivial cone
-    in the trivial space, obtained as an empty sum, is also symmetric
-    but is spiritually a member of the family $\Lnplus$ with $n=0$.
+    $\Hnplus[2]\of{\octonions}$ are symmetric, but they are
+    Jordan-isomorphic to Lorentz cones of appropriate sizes (Faraut
+    and Korányi~\cite{faraut-koranyi}, Corollary~IV.1.5). The trivial
+    cone in the trivial space, obtained as an empty sum, is also
+    symmetric but is spiritually a member of the family $\Lnplus$ with
+    $n=0$.
 
-    The Lyapunov rank of a closed convex cone (and in particular, of a
-    symmetric cone) is the dimension of the Lie algebra of its
-    automorphism group. For our purposes, it is simply a number
-    associated with the cone, and happens to be additive on a direct
-    sum. Given that Cartesian products and direct sums are linearly
-    isomorphic, this follows from Lemma~1 and Proposition~9 of Rudolf,
-    Noyan, Papp, and Alizadeh~\cite{rudolf-noyan-papp-alizadeh}.
+    The Lyapunov rank of a proper cone---and in particular of a
+    symmetric cone---is the dimension of the Lie algebra of its linear
+    automorphism group~\cite{gowda-tao_-_rank}. For our purposes, it
+    is simply a number associated with the cone, and happens to be
+    additive on a direct sum. Given that Cartesian products and direct
+    sums are linearly isomorphic, this follows from Lemma~1 and
+    Proposition~9 of Rudolf, Noyan, Papp, and
+    Alizadeh~\cite{rudolf-noyan-papp-alizadeh}.
 
     \begin{proposition}\label{prop:lyapunov rank is additive on direct sums}
       If $K$ and $J$ are symmetric cones, then
@@ -252,13 +254,23 @@
       $K \nsim J$.
     \end{definition}
 
-    To be clear, by ``isomorphic,'' we mean the following: two closed
-    convex cones $K \subseteq V$ and $J \subseteq W$ are isomorphic
-    (and we write $K \cong J$) if there exists an invertible linear $A
-    : V \to W$ such that $A\of{K} = J$. If two Euclidean Jordan
-    algebras are Jordan-isomorphic (a stronger notion), then their
-    respective cones of squares are necessarily isomorphic in the
-    present sense.
+    We have alluded to the fact that there are two competing notions
+    of isomorphism for a symmetric cone, Jordan and linear. Two convex
+    cones $K \subseteq V$ and $J \subseteq W$ are linearly isomorphic
+    if there exists an invertible linear $A : V \to W$ such that
+    $A\of{K} = J$. This is the usual definition of isomorphism for
+    convex cones. But in a Euclidean Jordan algebra (for a symmetric
+    cone) there is the stronger notion of Jordan algebra
+    isomorphism. A Jordan algebra isomorphism is linear and
+    invertible, but must also preserve the Jordan algebra
+    multiplication. If two Euclidean Jordan algebras are
+    Jordan-isomorphic, their cones of squares are linearly isomorphic
+    under the same map. It is interesting to ponder the converse of
+    that statement, but it is also a subtlety that we wish to avoid
+    for the time being. The classification in \cref{thm:direct sum
+      decomposition} is up to Jordan algebra isomorphism, so from now
+    on when we say ``isomorphic'' or ``up to isomorphism'', or when we
+    write write $K \cong J$, we mean the stronger of the two notions.
 
     Gowda and Tao~\cite{gowda-tao_-_rank} computed the Lyapunov ranks
     of the five families in \cref{thm:direct sum decomposition}. Using
@@ -610,14 +622,15 @@
   \end{section}
 
   \begin{section}{Reducible cones}\label{sec:reducible cones}
-    To venture beyond irreducible cones makes our job much more
-    difficult. We already have several examples of non-irreducible
-    cones whose Lyapunov ranks are not unique. Every similacrum we've
-    constructed so far has symmetric similacra---that's why we
-    constructed them! The best we can hope for is to narrow down the
-    possibilities a bit. In this section our focus will be on reducing
-    the general problem to smaller subproblems. It is worth
-    investigating due to the following (rather obvious) result.
+    The problem becomes much more difficult when we venture beyond
+    irreducible cones. We already have several examples of reducible
+    cones whose Lyapunov ranks are not unique---every similacrum we
+    constructed in the previous section has at least one symmetric
+    similacrum, namely the irreducible cone we constructed it to be a
+    similacrum of. So in the general case, the best we can hope for is
+    to narrow down the possibilities. In this section our focus will
+    be on reducing the general problem to smaller subproblems. It is
+    worth investigating due to the following (rather obvious) result.
 
     \begin{lemma}\label{lem:subcone similacra}
       If any symmetric subcone of a symmetric cone $K$ has symmetric
@@ -635,8 +648,8 @@
     ``bottom up'' approach. Or, suppose we can prove that
     $\directsum{J}{K}$ has symmetric similacra if and only if $K$
     does. In that case our job has become easier, and if we are lucky,
-    the process may be repeated, making it easier still. This would be
-    the ``top down'' approach.
+    the process may be repeated. This would be the ``top down''
+    approach.
 
     \begin{corollary}\label{cor:no multiple complex factors}
       If a symmetric cone contains more than one
