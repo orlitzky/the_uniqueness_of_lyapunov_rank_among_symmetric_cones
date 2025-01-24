@@ -35,7 +35,7 @@ PN = the_uniqueness_of_lyapunov_rank_among_symmetric_cones
 #
 # Leave commented if you don't use a bibliography database.
 #
-BIBS = references.bib
+BIBS = local-references.bib
 
 # A space-separated list of the mjotex files that you use. The path to
 # mjotex must be contain in your $TEXINPUTS environment variable.
