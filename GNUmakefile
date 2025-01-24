@@ -177,5 +177,5 @@ clean:
 .PHONY: dist
 dist: $(BUILDDIR)/$(PN).bbl
 	mkdir -p dist
-	cp $(SRCS) $(BUILDDIR)/$(PN).bbl dist/
+	cp $(SRCS) dist/
 
