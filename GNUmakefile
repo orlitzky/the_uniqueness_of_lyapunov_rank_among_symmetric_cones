@@ -50,14 +50,8 @@ MJOTEX += mjo-theorem.tex mjo.bst
 # of the bibtex/mjotex files listed in in $(BIBS)/$(MJOTEX). The SRCS
 # variable should contain all (Bib)TeX source files for the document.
 SRCS = $(PN).tex
-ifdef BIBS
-BIBPATHS = $(shell kpsewhich $(BIBS))
-SRCS += $(BIBPATHS)
-endif
-ifdef MJOTEX
-MJOTEXPATHS = $(shell kpsewhich $(MJOTEX))
-SRCS += $(MJOTEXPATHS)
-endif
+SRCS += $(BIBS)
+SRCS += $(MJOTEX)
 
 # The first target is the default, so put the PDF document first.
 #
