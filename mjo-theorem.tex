@@ -1,0 +1,27 @@
+%
+% The standard corollary, definition, theorem, etc. that we all define
+% in every single paper.
+%
+\ifx\havemjotheorem\undefined
+\def\havemjotheorem{1}
+
+\ifx\theoremstyle\undefined
+  \usepackage{amsthm}
+\fi
+
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
+\fi

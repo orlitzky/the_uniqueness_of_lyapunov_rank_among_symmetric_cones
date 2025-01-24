@@ -1,0 +1,24 @@
+%
+% Font handling that you probably want to use everywhere.
+%
+\ifx\havemjofont\undefined
+\def\havemjofont{1}
+
+% Support utf8 in LaTeX code. This lets you enter names like
+% Carathéodory and Güler directly, without the funny escape sequences.
+\usepackage[utf8]{inputenc}
+
+% Grab the AMS fonts, too, for things like \mathbb.
+\ifx\mathbb\undefined
+  \usepackage{amsfonts}
+\fi
+
+% Add the \mathpzc (PostScript Zapf Chancery) font face, scaled up by
+% a factor of 1.15. This is described in the documentation for the
+% urwchancal package which further adapts this technique. So long
+% as we don't ask too much of it, however, the few lines below suffice.
+\DeclareFontFamily{OT1}{pzc}{}
+\DeclareFontShape{OT1}{pzc}{m}{it}{<-> s * [1.15] pzcmi7t}{}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\fi

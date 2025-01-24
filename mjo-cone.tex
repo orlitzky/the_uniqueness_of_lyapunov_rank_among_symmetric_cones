@@ -1,0 +1,80 @@
+%
+% Cone stuff.
+%
+% The operator families Z(K), LL(K), etc. can technically be defined on
+% sets other than cones, but nobody cares.
+%
+\ifx\havemjocone\undefined
+\def\havemjocone{1}
+
+
+\ifx\succcurlyeq\undefined
+  \usepackage{amssymb} % \succcurlyeq, \preccurlyeq
+\fi
+
+\input{mjo-common} % for \of, \Rn, etc.
+\input{mjo-linear_algebra} % \Sn and \Hn
+
+% The dual of a subset of an inner-product space; always a closed
+% convex cone.
+\newcommand*{\dual}[1]{ #1^{*} }
+
+%
+% Common cones.
+%
+
+% The nonnegative and strictly positive orthants in the given number
+% of dimensions.
+\newcommand*{\Rnplus}[1][n]{ \Rn[#1]_{+} }
+\newcommand*{\Rnplusplus}[1][n]{ \Rn[#1]_{++} }
+
+% The Lorentz ``ice-cream'' cone in the given number of dimensions.
+\newcommand*{\Lnplus}[1][n]{ \mathcal{L}^{{#1}}_{+} }
+
+% The PSD cone in a space of symmetric matrices.
+\newcommand*{\Snplus}[1][n]{ \Sn[#1]_{+} }
+
+% The PSD cone in a space of Hermitian matrices.
+\newcommand*{\Hnplus}[1][n]{ \Hn[#1]_{+} }
+
+
+%
+% Some collections of linear operators.
+%
+
+% The set of all positive operators on its argument. This uses the
+% same magic as \boundedops to accept either one or two arguments. If
+% one argument is given, the domain and codomain are equal and the
+% positive operators fix a subset of that space. When two arguments
+% are given, the positive operators send the first argument to a
+% subset of the second.
+\newcommand*{\posops}[2][]{
+  \pi\of{ {#2}
+    \if\relax\detokenize{#1}\relax
+      {}%
+    \else
+      {,{#1}}%
+    \fi
+  }
+}
+
+% The set of all S-operators on its argument.
+\newcommand*{\Sof}[1]{ \mathbf{S} \of{ {#1} } }
+
+% The cone of all Z-operators on its argument.
+\newcommand*{\Zof}[1]{ \mathbf{Z} \of{ {#1} } }
+
+% The space of Lyapunov-like operators on its argument.
+\newcommand*{\LL}[1]{ \mathbf{LL}\of{ {#1} } }
+
+% The Lyapunov rank of the given cone.
+\newcommand*{\lyapunovrank}[1]{ \beta\of{ {#1} } }
+
+% Cone inequality operators.
+\newcommand*{\gecone}{\succcurlyeq}
+\newcommand*{\gtcone}{\succ}
+\newcommand*{\lecone}{\preccurlyeq}
+\newcommand*{\ltcone}{\prec}
+
+
+\fi

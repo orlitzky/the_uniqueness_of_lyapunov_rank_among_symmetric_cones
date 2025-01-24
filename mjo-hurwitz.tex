@@ -1,0 +1,27 @@
+\ifx\havemjohurwitz\undefined
+\def\havemjohurwitz{1}
+
+
+\newcommand*{\quaternions}{\mathbb{H}}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{quaternions}{
+    name={\ensuremath{\quaternions}},
+    description={the algebra of quaternions},
+    sort=H
+  }
+\fi
+
+
+\newcommand*{\octonions}{\mathbb{O}}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{octonions}{
+    name={\ensuremath{\octonions}},
+    description={the algebra of octonions},
+    sort=O
+  }
+\fi
+
+
+\fi

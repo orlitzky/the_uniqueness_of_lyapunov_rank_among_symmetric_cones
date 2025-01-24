@@ -1,0 +1,66 @@
+%
+% A proof-by-cases environment. This gives you a nicely-indented list
+% of cases for use in proofs.
+%
+% Example:
+%
+% Case 1 (x >= 0): herp.
+%
+% Case 2 (x < 0): derp.
+%
+\ifx\havemjoproofbycases\undefined
+\def\havemjoproofbycases{1}
+
+
+% Used below to define pcases. The ``loadonly'' parameter prevents
+% a very bad interaction with the beamer document class.
+\usepackage[loadonly]{enumitem}
+
+% Needed to perform division in the definition of \singleblskip.
+\usepackage{calc}
+
+% A \baselineskip without the \baselinestretch scaling factor. Even
+% though \baselinestretch defaults to 1.0, it doesn't really have that
+% value. Thus to avoid division by zero, we need to do the ``is this
+% thing empty?'' hack.
+%
+% If we use \baselineskip instead of \singleblskip in our list, things
+% get real ugly when the text is e.g. double-spaced.
+%
+\newlength{\singleblskip}
+\setlength{\singleblskip}{
+  \baselineskip/\real{
+      \if\relax\detokenize{\baselinestretch}\relax
+        \baselinestretch%
+      \else
+        1%
+      \fi}
+}
+
+% Using the enumitem package, we define a new type of list, called
+% ``pcases'' (proof by cases). Each case has a label with an arabic
+% numeral (the case number), but also a \thiscase identifier. The
+% macro \thiscase is defined below by the \case command, and gives the
+% name or conditions or whatever that distinguish one case from
+% another.
+\newlist{pcases}{enumerate}{1}
+\setlist[pcases]{
+  label=\textit{Case~\arabic*}:~\protect\thiscase\textit{.},
+  ref=\arabic*,
+  align=left,
+  listparindent=\parindent,
+  parsep=\parskip,
+  itemsep=\singleblskip}
+
+% The optional argument here gets stuffed into the \thiscase macro, to
+% be called by pcases when it creates this list item. The \hfill is a
+% hack intended to force the proof to start on a new line, rather than
+% right after the colon. A \newline where the \hfill is does not work,
+% so we consume the rest of the line instead.
+\newcommand{\case}[1][]{
+  \def\thiscase{#1}%
+  \item \hfill\par\vspace{\singleblskip}
+}
+
+
+\fi

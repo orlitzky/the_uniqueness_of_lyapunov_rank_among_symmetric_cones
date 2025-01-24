@@ -1,0 +1,77 @@
+%
+% Things that fit absolutely nowhere else.
+%
+\ifx\havemjoset\undefined
+\def\havemjoset{1}
+
+\input{mjo-common} % binopmany
+\input{mjo-font} % amsfonts and \mathpzc
+
+\ifx\operatorname\undefined
+  \usepackage{amsopn}
+\fi
+
+\ifx\bigtimes\undefined
+  \usepackage{mathtools}
+\fi
+
+% Create a set from the given elements
+\newcommand*{\set}[1]{\left\lbrace{#1}\right\rbrace}
+
+% A set comprehension, where the ``such that...'' bar is added
+% automatically. The bar was chosen over a colon to avoid ambiguity
+% with the L : V -> V notation. We can't leverage \set here because \middle
+% needs \left and \right present.
+\newcommand*{\setc}[2]{\left\lbrace{#1}\ \middle|\ {#2}\right\rbrace}
+
+
+% The cardinality of a set. The |X| notation conflicts with the
+% absolute value, and the meaning of card(X) is clear at once, so we
+% prefer the latter.
+\newcommand*{\card}[1]{ \operatorname{card}\of{{#1}} }
+
+
+% The powerset of (that is, the set of all subsets of) its argument.
+\newcommand*{\powerset}[1]{\mathpzc{P}\of{{#1}}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{powerset}{
+    name={\ensuremath{\powerset{X}}},
+    description={the ``powerset,'' or set of all subsets of $X$},
+    sort=p
+  }
+\fi
+
+
+%
+% Basic set operations
+%
+
+% The union of its two arguments.
+\newcommand*{\union}[2]{ {#1}\cup{#2} }
+
+% A three-argument union.
+\newcommand*{\unionthree}[3]{ \union{\union{#1}{#2}}{#3} }
+
+% The indexed union of many things.
+\newcommand*{\unionmany}[3]{ \binopmany{\bigcup}{#1}{#2}{#3} }
+
+% The intersection of its two arguments.
+\newcommand*{\intersect}[2]{ {#1}\cap{#2} }
+
+% A three-argument intersection.
+\newcommand*{\intersectthree}[3]{ \intersect{\intersect{#1}{#2}}{#3} }
+
+% The indexed intersection of many things.
+\newcommand*{\intersectmany}[3]{ \binopmany{\bigcap}{#1}{#2}{#3} }
+
+% The Cartesian product of two things.
+\newcommand*{\cartprod}[2]{ {#1}\times{#2} }
+
+% The Cartesian product of three things.
+\newcommand*{\cartprodthree}[3]{ \cartprod{{#1}}{\cartprod{{#2}}{{#3}}} }
+
+% The indexed Cartesian product of many things.
+\newcommand*{\cartprodmany}[3]{ \binopmany{\bigtimes}{#1}{#2}{#3} }
+
+
+\fi

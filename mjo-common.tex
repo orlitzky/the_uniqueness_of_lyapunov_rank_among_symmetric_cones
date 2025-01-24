@@ -1,0 +1,187 @@
+%
+% Only the most commonly-used macros. Needed by everything else.
+%
+\ifx\havemjocommon\undefined
+\def\havemjocommon{1}
+
+\ifx\mathbb\undefined
+  \usepackage{amsfonts}
+\fi
+
+\ifx\restriction\undefined
+  \usepackage{amssymb}
+\fi
+
+% Place the argument in matching left/right parentheses.
+\newcommand*{\of}[1]{ \left({#1}\right) }
+
+% Group terms using parentheses.
+\newcommand*{\qty}[1]{ \left({#1}\right) }
+
+% Group terms using square brackets.
+\newcommand*{\sqty}[1]{ \left[{#1}\right] }
+
+% A pair of things.
+\newcommand*{\pair}[2]{ \left({#1},{#2}\right) }
+
+% A triple of things.
+\newcommand*{\triple}[3]{ \left({#1},{#2},{#3}\right) }
+
+% A four-tuple of things.
+\newcommand*{\quadruple}[4]{ \left({#1},{#2},{#3},{#4}\right) }
+
+% A five-tuple of things.
+\newcommand*{\quintuple}[5]{ \left({#1},{#2},{#3},{#4},{#5}\right) }
+
+% A six-tuple of things.
+\newcommand*{\sextuple}[6]{ \left({#1},{#2},{#3},{#4},{#5},{#6}\right) }
+
+% A seven-tuple of things.
+\newcommand*{\septuple}[7]{ \left({#1},{#2},{#3},{#4},{#5},{#6},{#7}\right) }
+
+% A free-form tuple of things. Useful for when the exact number is not
+% known, such as when \ldots will be stuck in the middle of the list,
+% and when you don't want to think in column-vector terms, e.g. with
+% elements of an abstract Cartesian product space.
+\newcommand*{\tuple}[1]{ \left({#1}\right) }
+
+% The "least common multiple of" function. Takes a nonempty set of
+% things that can be multiplied and ordered as its argument. Name
+% chosen for synergy with \gcd, which *does* exist already.
+\newcommand*{\lcm}[1]{ \operatorname{lcm}\of{{#1}} }
+\ifdefined\newglossaryentry
+  \newglossaryentry{lcm}{
+    name={\ensuremath{\lcm{X}}},
+    description={the least common multiple of the elements of $X$},
+    sort=l
+  }
+\fi
+
+% The factorial operator.
+\newcommand*{\factorial}[1]{ {#1}! }
+
+% Restrict the first argument (a function) to the second argument (a
+% subset of that functions domain). Abused for polynomials to specify
+% an associated function with a particular domain (also its codomain,
+% in the case of univariate polynomials).
+\newcommand*{\restrict}[2]{{#1}{\restriction}_{#2}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{restriction}{
+    name={\ensuremath{\restrict{f}{X}}},
+    description={the restriction of $f$ to $X$},
+    sort=r
+  }
+\fi
+
+%
+% Product spaces
+%
+% All of the product spaces (for example, R^n) that follow default to
+% an exponent of ``n'', but that exponent can be changed by providing
+% it as an optional argument. If the exponent given is ``1'', then it
+% will be omitted entirely.
+%
+
+% The natural n-space, N x N x N x ... x N.
+\newcommand*{\Nn}[1][n]{
+  \mathbb{N}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{N}{
+    name={\ensuremath{\Nn[1]}},
+    description={the set of natural numbers},
+    sort=N
+  }
+\fi
+
+% The integral n-space, Z x Z x Z x ... x Z.
+\newcommand*{\Zn}[1][n]{
+  \mathbb{Z}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{Z}{
+    name={\ensuremath{\Zn[1]}},
+    description={the ring of integers},
+    sort=Z
+  }
+\fi
+
+% The rational n-space, Q x Q x Q x ... x Q.
+\newcommand*{\Qn}[1][n]{
+  \mathbb{Q}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{Q}{
+    name={\ensuremath{\Qn[1]}},
+    description={the field of rational numbers},
+    sort=Q
+  }
+\fi
+
+% The real n-space, R x R x R x ... x R.
+\newcommand*{\Rn}[1][n]{
+  \mathbb{R}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{R}{
+    name={\ensuremath{\Rn[1]}},
+    description={the field of real numbers},
+    sort=R
+  }
+\fi
+
+
+% The complex n-space, C x C x C x ... x C.
+\newcommand*{\Cn}[1][n]{
+  \mathbb{C}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{C}{
+    name={\ensuremath{\Cn[1]}},
+    description={the field of complex numbers},
+    sort=C
+  }
+\fi
+
+% The n-dimensional product space of a generic field F.
+\newcommand*{\Fn}[1][n]{
+  \mathbb{F}\if\detokenize{#1}\detokenize{1}{}\else^{#1}\fi
+}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{F}{
+    name={\ensuremath{\Fn[1]}},
+    description={a generic field},
+    sort=F
+  }
+\fi
+
+
+% An indexed arbitrary binary operation such as the union or
+% intersection of an infinite number of sets. The first argument is
+% the operator symbol to use, such as \cup for a union. The second
+% argument is the lower index, for example k=1. The third argument is
+% the upper index, such as \infty. Finally the fourth argument should
+% contain the things (e.g. indexed sets) to be operated on.
+\newcommand*{\binopmany}[4]{
+  \mathchoice{ \underset{#2}{\overset{#3}{#1}}{#4} }
+             { {#1}_{#2}^{#3}{#4} }
+             { {#1}_{#2}^{#3}{#4} }
+             { {#1}_{#2}^{#3}{#4} }
+}
+
+
+% The four standard (UNLESS YOU'RE FRENCH) types of intervals along
+% the real line.
+\newcommand*{\intervaloo}[2]{ \left({#1},{#2}\right) } % open-open
+\newcommand*{\intervaloc}[2]{ \left({#1},{#2}\right] } % open-closed
+\newcommand*{\intervalco}[2]{ \left[{#1},{#2}\right) } % closed-open
+\newcommand*{\intervalcc}[2]{ \left[{#1},{#2}\right] } % closed-closed
+
+
+\fi
