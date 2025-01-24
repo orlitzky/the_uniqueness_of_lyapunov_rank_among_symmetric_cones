@@ -1,0 +1,1363 @@
+\documentclass{article}
+
+\usepackage{amsmath, mathtools}
+
+% Force the tables to appear where they should
+\usepackage{float}
+
+% Ensure that we can break URLs on a hyphen to avoid underfull hbox
+% warnings in the bibliography.
+\usepackage[hyphens]{url}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue
+}
+
+% The cone rank/dim table.
+\usepackage{booktabs}
+\renewcommand{\arraystretch}{1.5} % for the vertical padding
+\setlength{\tabcolsep}{1em} % for the horizontal padding
+
+\input{mjo-algebra}
+\input{mjo-common}
+\input{mjo-cone}
+\input{mjo-font}
+\input{mjo-hurwitz}
+\input{mjo-proof_by_cases}
+\input{mjo-set}
+\input{mjo-theorem}
+
+% Cleveref with Oxford comma!
+\usepackage[capitalize,nameinlink,noabbrev,nosort]{cleveref}
+\newcommand{\creflastconjunction}{, and\nobreakspace}
+
+% Support for "inequality", "implication", "condition", and "form"
+% references in addition to the usual "equation" references.
+\crefname{inequality}{Inequality}{Inequalities}
+\creflabelformat{inequality}{#2\textup{(#1)}#3}
+\crefname{implication}{Implication}{Implications}
+\creflabelformat{implication}{#2\textup{(#1)}#3}
+\crefname{condition}{Condition}{Conditions}
+\creflabelformat{condition}{#2\textup{(#1)}#3}
+\crefname{form}{Form}{Forms}
+\creflabelformat{form}{#2\textup{(#1)}#3}
+
+% amsthm must be loaded BEFORE clevered, but the \newtheorem goes AFTER
+\theoremstyle{plain}
+\newtheorem{conjecture}{Conjecture}
+
+% \Rnplus[1], but with a visible "1"
+\newcommand*{\Roneplus}[0]{ \mathbb{R}^{1}_{+} }
+
+% The signature of its argument.
+\newcommand*{\signature}[1]{ \sigma\of{#1} }
+
+\newcommand*{\smallestidx}[0]{\iota}
+
+\begin{document}
+  \title{
+    The uniqueness of Lyapunov rank among symmetric cones
+  }
+  \author{Michael Orlitzky \and Giovanni Barbarino}
+  %% \email{michael@orlitzky.com}
+  %% \address{University of Maryland Baltimore County,
+  %%          1000 Hilltop Circle, Baltimore, MD 21250}
+
+  \maketitle
+
+  \begin{abstract}
+    The Lyapunov rank of a cone is the dimension of the Lie algebra of
+    its automorphism group. It is invariant under linear isomorphism
+    and in general not unique---two or more non-isomorphic cones can
+    share the same Lyapunov rank. It is therefore not possible in
+    general to identify cones using Lyapunov rank. But what if we look
+    only among \emph{symmetric} cones? Are there any that can be
+    uniquely identified (up to isomorphism) by their Lyapunov ranks?
+    We provide a complete answer for irreducible cones and make some
+    progress in the general case.
+  \end{abstract}
+
+  \begin{section}{Introduction}
+    The motivation for Lyapunov rank comes from linear programming:
+    the familiar complementary slackness condition $\ip{x}{s} = 0$ for
+    $x,s \in \Rnplus$ can be separated into $n$ equations
+    $\setc{x_{i}s_{i} = 0}{i = 1,2,\ldots,n}$ using the nonnegativity
+    of the components. The idea is that these $n$ equations should be
+    easier to solve than the one equation we started
+    with. Complementary slackness is a necessary condition for
+    optimality, so this helps us find candidate solutions. In this
+    example, $n$ is the dimension of the space of all $n$-by-$n$
+    diagonal matrices. It is not terribly obvious, but that space is
+    the Lie algebra of $\Aut{\Rnplus}$.
+
+    Albeit under a different name, the study of Lyapunov rank goes
+    back to Rudolf, Noyan, Papp, and
+    Alizadeh~\cite{rudolf-noyan-papp-alizadeh} who realized that this
+    scenario generalizes to a cone program over a proper cone $K$ and
+    its dual $\dual{K}$. In a cone program, complementary slackness is
+    still a necessary condition for optimality, and the the condition
+    $\ip{x}{s} = 0$ for $x \in K$ and $s \in \dual{K}$ can always be
+    separated into a system of equations via ``bilinear
+    complementarity relations.'' The number of equations, denoted
+    $\lyapunovrank{K}$, depends only on the cone $K$ and is called the
+    bilinearity rank (by them) or the Lyapunov rank (by us) of $K$. If
+    you plan to search for candidate solutions by decomposing the
+    complementary slackness condition, Lyapynov rank is a measure of
+    how cooperative the cone will be.
+
+    If the cone $K$ lives in an $n$-dimensional space, then the set of
+    all candidate pairs $\setc{\pair{x}{s}}{x \in K, s \in \dual{K},
+      \ip{x}{s} = 0}$ forms an $n$-dimensional
+    manifold~\cite{rudolf-noyan-papp-alizadeh}. We might therefore
+    hope to obtain $n$ or more equations ($\lyapunovrank{K} \ge n$) to
+    be solved simultaneously. Rudolf, Noyan, Papp, and Alizadeh call
+    such a cone $K$ \emph{bilinear}, and show that several important
+    cones are not bilinear. A few years later, Gowda and Tao were able
+    to connect these ideas to the Lyapunov-like operators on
+    $K$~\cite{gowda-tao_-_rank}. Lyapunov-like operators on $K$ form
+    the Lie algebra of the automorphism group of $K$, a vector space
+    whose dimension is $\lyapunovrank{K}$. Linearly independent
+    Lyapunov-like operators correspond to ``extra'' equations, and
+    vice-versa. For this reason the name Lyapunov rank was chosen.
+
+    Around the same time, Seeger and Sossa coined the term
+    \emph{Loewnerian cone} for a cone that is isomorphic to the real
+    symmetric PSD cone, $\Snplus$. As demonstrated by Seeger and
+    Sossa, Loewnerian cones have important applications to
+    complementarity
+    problems~\cite{seeger-sossa_-_complementarity_problems}. But how
+    do we know if a cone is Loewnerian? Sossa, Gowda, Tao, and one of
+    the authors would eventually meet at the University of Maryland
+    Baltimore County. The question naturally arose: can Lyapunov rank
+    be used to show that a given cone is, or is not, isomorphic to
+    $\Snplus$?  If the Lyapunov rank of $K$ differs from that of
+    $\Snplus$, then $K$ and $\Snplus$ are not isomorphic. But perhaps
+    there exist non-Loewnerian cones $K$ such that $\lyapunovrank{K} =
+    \lyapunovrank{\Snplus}$?
+
+    It turns out that we are able to answer the question for $\Snplus$
+    negatively and with relative ease, but the problem inspires us to
+    investigate further. Specifically, we ask whether or not there are
+    any symmetric (self-dual and homogeneous) cones whose Lyapunov
+    ranks are not shared by any other non-isomorphic symmetric
+    cone. This question is not so easy to resolve, and the answer is
+    somewhat unexpected.
+  \end{section}
+
+  \begin{section}{Background}
+    Our main objects of interest are symmetric cones in finite
+    dimensions. All such cones arise as the cone of squares in some
+    Euclidean Jordan algebra~\cite{faraut-koranyi}. They are
+    self-dual, and in particular, full-dimensional---they span the
+    ambient space. This will be important because if we are searching
+    for symmetric cones isomorphic to a given cone, it is a waste of
+    time to check inside spaces of higher/lower dimensions.
+
+    Every symmetric cone is the orthogonal direct sum of a unique set
+    of nontrivial irreducible symmetric cones (Faraut and
+    Korányi~\cite{faraut-koranyi}, Proposition~III.4.5). Moreover, up
+    to isomorphism, there are only five families of irreducible
+    factors. Chapter~V of Faraut and Korányi classifies the simple
+    Euclidean Jordan algebras; the classification of irreducible
+    symmetric cones then follows from the correspondence between
+    symmetric cones and Euclidean Jordan algebras. Starting from a
+    symmetric cone, one obtains a Euclidean Jordan algebra (Faraut and
+    Korányi, Chapter~III) in which the given cone is the cone of
+    squares. That algebra is the orthogonal direct sum of a unique set
+    of nontrivial simple algebras by Proposition~III.4.4. In each of
+    those simple factors, the cone of squares is a symmetric cone,
+    which must be irreducible to avoid contradictions.
+
+    \begin{theorem}\label{thm:irreducible families}
+      % Take an empty sum to get K = {0}. This allows us to stipulate
+      % that n >= 1 for the spin algebras and to say that the factors
+      % are nontrivial.
+      Every symmetric cone is the orthogonal direct sum of a unique
+      set of nontrivial irreducible symmetric cones, and every
+      nontrivial irreducible symmetric cone is Jordan-isomorphic to a
+      member of one of the five families,
+      %
+      \begin{enumerate}
+        \begin{item}
+          The $n$-dimensional Lorentz cones, $\Lnplus$, for $n \ge 1$,
+        \end{item}
+        \begin{item}
+          The $n \times n$ real symmetric positive semidefinite cones,
+          $\Hnplus\of{\Rn[1]}$, for $n \ge 3$,
+        \end{item}
+        \begin{item}
+          The $n \times n$ complex Hermitian positive semidefinite
+          cones $\Hnplus\of{\Cn[1]}$, for $n \ge 3$,
+        \end{item}
+        \begin{item}
+          The $n \times n$ quaternion Hermitian positive semidefinite
+          cones\footnote{These cones of squares were identified as
+          positive-semidefinite cones only
+          recently~\cite{orlitzky_-_jordan_automorphisms}.},
+          $\Hnplus\of{\quaternions}$, for $n \ge 3$,
+        \end{item}
+        \begin{item}
+          The cone of squares in the Albert algebra,
+          $\Hnplus[3]\of{\octonions}$.
+        \end{item}
+      \end{enumerate}
+      %
+    \end{theorem}
+
+    The restrictions on $n$ ensure that the families are distinct up
+    to isomorphism: the cones $\Hnplus[2]\of{\Rn[1]}$,
+    $\Hnplus[2]\of{\Cn[1]}$, $\Hnplus[2]\of{\quaternions}$, and
+    $\Hnplus[2]\of{\octonions}$ are symmetric, but they are isomorphic
+    to Lorentz cones of appropriate sizes (Faraut and
+    Korányi~\cite{faraut-koranyi}, Corollary~IV.1.5). The trivial cone
+    in the trivial space, obtained as an empty sum, is also symmetric
+    but is spiritually a member of the family $\Lnplus$ with $n=0$.
+
+    The Lyapunov rank of a closed convex cone (and in particular, of a
+    symmetric cone) is the dimension of the Lie algebra of its
+    automorphism group. For our purposes, it is simply a number
+    associated with the cone, and happens to be additive on a direct
+    sum. Given that Cartesian products and direct sums are linearly
+    isomorphic, this follows from Lemma~1 and Proposition~9 of Rudolf,
+    Noyan, Papp, and Alizadeh~\cite{rudolf-noyan-papp-alizadeh}.
+
+    \begin{proposition}\label{prop:lyapunov rank is additive on direct sums}
+      If $K$ and $J$ are symmetric cones, then
+      $\lyapunovrank{\directsum{K}{J}} = \lyapunovrank{K} +
+      \lyapunovrank{J}$.
+    \end{proposition}
+
+    Taken together, we call the combination of dimension and Lyapunov
+    rank the \emph{signature} of a cone.
+
+    \begin{definition}[signature, similacra]
+      Let $K$ be a closed convex cone. The \emph{signature} of $K$ is
+      the pair $\signature{K} \coloneqq
+      \pair{\dim\of{K}}{\lyapunovrank{K}}$. If $J$ is another closed
+      convex cone, we say that $J$ is a \emph{similacrum} of $K$ if
+      $\signature{K} = \signature{J}$ and if $K$ and $J$ are
+      non-isomorphic. The plural of similacrum is \emph{similacra}. As
+      shorthand we write $K \sim J$ to indicate that $K$ and $J$ are
+      similacra of one another. If they are not, then instead we write
+      $K \nsim J$.
+    \end{definition}
+
+    To be clear, by ``isomorphic,'' we mean the following: two closed
+    convex cones $K \subseteq V$ and $J \subseteq W$ are isomorphic
+    (and we write $K \cong J$) if there exists an invertible linear $A
+    : V \to W$ such that $A\of{K} = J$. If two Euclidean Jordan
+    algebras are Jordan-isomorphic (a stronger notion), then their
+    respective cones of squares are necessarily isomorphic in the
+    present sense.
+
+    Gowda and Tao~\cite{gowda-tao_-_rank} computed Lyapunov ranks for
+    the five irreducible families appearing in \cref{thm:irreducible
+      families}. Using conjugate-symmetry and the fact that
+    $\Cn[1],\quaternions,\octonions$ are $2,4,8$-dimensional algebras
+    over $\Rn[1]$, it is easy to deduce their dimensions (and thus,
+    their signatures) as well. We list these below. Combined with
+    \cref{prop:lyapunov rank is additive on direct sums}, and waving
+    away the practical difficulty of computing the direct sum
+    decomposition in the first place, this gives the signature of any
+    symmetric cone.
+
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}{c cc}
+          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$\\
+          \midrule
+          $\Lnplus$                   & $n$
+                                      & $\frac{n^{2} - n + 2}{2}$
+          \\
+          $\Hnplus\of{\Rn[1]}$        & $\frac{n^{2}+n}2$
+                                      & $n^{2}$
+          \\
+          $\Hnplus\of{\Cn[1]}$        & $n^{2}$
+                                      & $2n^{2} - 1$
+          \\
+          $\Hnplus\of{\quaternions}$  & $2n^{2} - n$
+                                      & $4n^{2}$
+          \\
+          $\Hnplus[3]\of{\octonions}$ & $27$
+                                      & $79$
+        \end{tabular}
+        \caption{Signatures of irreducible symmetric cones for $n \ge 2$}\label{tab:irreducible signatures}
+      \end{center}
+    \end{table}
+
+    To this list we add one more, the nonnegative orthant in $n$
+    dimensions:
+
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}{c cc}
+          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$\\
+          \midrule
+          $\Rnplus$ & $n$ & $n$
+        \end{tabular}
+        \caption{Signature of $\Rnplus$ for $n \ge 0$}\label{tab:rnplus signature}
+      \end{center}
+    \end{table}
+
+    \noindent
+    The cone $\Rnplus = \directsummany{i=1}{n}{\Lnplus[1]}$ is
+    symmetric but generally not irreducible (unless $n = 0$ or $n =
+    1$). We include it because it is easier, for example, to write
+    $\Rnplus[3]$ than it is to write $\Lnplus[1] \oplus \Lnplus[1]
+    \oplus \Lnplus[1]$. In dimension $n \le 2$, all proper cones are
+    polyhedral and therefore isomorphic to $\Rnplus$. As a result,
+    when we are working up to isomorphism, we will usually write
+    $\Roneplus$ or $\Rnplus[2]$ to indicate a one- or two-dimensional
+    symmetric cone.
+  \end{section}
+
+  \begin{section}{Irreducible symmetric cones}\label{sec:irreducible cones}
+    As a starting point, we show that $\Lnplus$ has no symmetric
+    similacra, regardless of $n$. This is not too surprising; it
+    follows from the fact that the Lyapunov rank of $\Lnplus$ is
+    strictly maximal in $n$ dimensions. The latter is known to most
+    people working with Lyapunov rank, and the details can be worked
+    out using \cref{tab:irreducible signatures}.
+
+    \begin{proposition}\label{prop:rank of lorentz is maximal}
+      Among non-isomorphic $n$-dimensional symmetric cones, the
+      Lyapunov rank of $\Lnplus$ is strictly maximal for all $n \ge
+      0$.
+      %
+      \begin{proof}
+        First we note that if $n \le 2$, then all symmetric cones have
+        exactly $n$ extreme rays and are therefore isomorphic to
+        $\Rnplus$. The statement is therefore trivially true for $n
+        \le 2$. We next show that splitting $\Lnplus$ into two smaller
+        Lorentz cones will necessarily reduce the Lyapunov
+        rank. Taking any $k \in \set{1,2,\ldots,n-1}$, and assuming
+        now that $n \ge 3$, we can simply compute:
+        %
+        \begin{equation*}
+          \lyapunovrank{\Lnplus}
+          -
+          \lyapunovrank{\directsum{\Lnplus[k]}{\Lnplus[n-k]} }
+          =
+          \qty{n-k}{k} - 1.
+        \end{equation*}
+        %
+        For $n \ge 3$, this difference is strictly positive, showing
+        that the direct sum has a strictly inferior Lyapunov rank.
+
+        Finally, we show that members of the other four irreducible
+        families have Lyapunov ranks smaller than a Lorentz cone of
+        the same dimension. There's only one cone of octonion matrices
+        to worry about, and it's easy to see that
+        $\lyapunovrank{\Lnplus[27]} >
+        \lyapunovrank{\Hnplus[3]\of{\octonions}}$. For the other three
+        families, we compute:
+        %
+        \begin{alignat*}{3}
+          \lyapunovrank{\Lnplus[\qty{m^{2}+m}/2]}
+          &-&
+          \lyapunovrank{\Hnplus[m]\of{\Rn[1]}}
+          &=
+          \frac{1}{8}m^{4} + \frac{1}{4}m^{3} - \frac{9}{8}m^{2} - \frac{1}{4}m + 1,
+          \\
+          \lyapunovrank{\Lnplus[m^{2}]}
+          &-&
+          \lyapunovrank{\Hnplus[m]\of{\Cn[1]}}
+          &=
+          \frac{1}{2}m^{4} - \frac{5}{2}m^{2} + 2,
+          \\
+          \lyapunovrank{\Lnplus[2m^{2} - m]}
+          &-&
+          \lyapunovrank{\Hnplus[m]\of{\quaternions}}
+          &=
+          2m^{4} - 2m^{3} - \frac{9}{2}m^{2} + \frac{1}{2}m + 1.
+        \end{alignat*}
+        %
+        At $m = 3$, the higher-order (positive) terms already dominate
+        the lower-order (negative) ones. These expressions therefore
+        remain strictly positive as $m$ grows. The result now follows:
+        in $n \ge 3$, splitting the Lorentz cone into two smaller
+        Lorentz cones will decrease the Lyapunov rank, and using
+        anything other than Lorentz cones will only decrease it
+        further.
+      \end{proof}
+    \end{proposition}
+
+    \begin{corollary}\label{cor:lorentz cone has no similacra}
+      $\Lnplus$ has no symmetric similacra for any $n \ge 0$.
+    \end{corollary}
+
+    Looking beyond symmetric cones for a moment, it is known that the
+    Lyapunov rank of the Lorentz cone is maximal among all proper
+    cones of the same dimension~\cite{orlitzky_-_tight_bounds}, but it
+    is not known if the inequality is strict. In other words, whether
+    or not there is a non-isomorphic, $n$-dimensional, proper (but not
+    symmetric) cone having the same Lyapunov rank as $\Lnplus$ is
+    still open.
+
+    \begin{proposition}\label{prop:real psd similacra}
+      $\Hnplus\of{\Rn[1]}$ has symmetric similacra for all $n \ge 3$.
+      %
+      \begin{proof}
+        Compare the signature of $\Lnplus[n+1] \oplus
+        \Rnplus[\qty{n^{2} - n - 2}/2]$.
+      \end{proof}
+    \end{proposition}
+
+    Interestingly, the formula in \cref{prop:real psd similacra}
+    produces a duplicate signature for $n=2$ as well. The resulting
+    cone $\Lnplus[3]$ is however isomorphic to $\Hnplus[2]\of{\Rn[1]}$
+    and therefore not a similacrum.
+
+    \begin{proposition}\label{prop:uniqueness of h3}
+      $\Hnplus[3]\of{\Cn[1]}$ has no symmetric similacra.
+
+      \begin{proof}
+        Keeping in mind that $n \ge 3$ is required to produce
+        non-isomorphic families, the dimension of this cone rules out
+        $\Hnplus\of{\Cn[1]}$, $\Hnplus\of{\quaternions}$ and
+        $\Hnplus[3]\of{\octonions}$ as factors. By \cref{prop:real psd
+          similacra} we may therefore assume without loss of
+        generality that all factors are Lorentz cones of various
+        sizes. Since $\lyapunovrank{\Lnplus} > 17$ for $n > 6$, we
+        need only consider Lorentz cone factors of dimension six or
+        less. And $\lyapunovrank{\Lnplus[6]} = 16$, so if $\Lnplus[6]$
+        were one factor, then the other factors would have combined
+        signature $\pair{3}{1}$, which is not possible. So, all
+        Lorentz cone factors have dimension five or less.
+
+        If $\Lnplus[5]$ is a factor, then the remaining factors
+        (combined) have signature $\pair{4}{6}$. The Lyapunov ranks of
+        $\Rnplus[4]$ and $\Lnplus[3] \oplus \Roneplus$
+        are too small, and that of $\Lnplus[4]$ is too large. Thus, a
+        similacrum cannot have $\Lnplus[5]$ factors.
+
+        If $\Lnplus[4]$ is a factor, then the other factors have
+        signature $\pair{5}{10}$. $\Lnplus[5]$ has already been ruled
+        out as a factor, and the Lyapunov rank of $\Lnplus[4] \oplus
+        \Roneplus$ is too small. \cref{prop:rank of lorentz is % chktex 12
+          maximal} shows that further splitting of $\Lnplus[4]$ will
+        not help, so $\Lnplus[4]$ cannot be a factor.
+
+        Finally, we note that $\lyapunovrank{\Lnplus[3] \oplus
+          \Lnplus[3] \oplus \Lnplus[3]}$ is too small.
+      \end{proof}
+    \end{proposition}
+
+    \begin{proposition}\label{prop:complex PSD of size four or more has similacra}
+      $\Hnplus\of{\Cn[1]}$ has symmetric similacra for all $n \ge 4$.
+
+      \begin{proof}
+        If $n = 4$, then $\Hnplus[4]\of{\Cn[1]} \sim \Lnplus[5] \oplus
+        \Lnplus[5] \oplus \Lnplus[4] \oplus \Rnplus[2]$. And if $n \ge 5$,
+        behold:
+        %
+        \begin{equation*}
+          \Hnplus\of{\Cn[1]}
+          \sim \Lnplus[n+1]
+               \oplus \Lnplus[n+1]
+               \oplus \Rnplus[\qty{n^{2} - 5n + 1}]
+               \oplus \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n-1 \text{ times}}.
+          \qedhere
+        \end{equation*}
+        %
+      \end{proof}
+    \end{proposition}
+
+    \begin{proposition}\label{prop:quaternion psd has similacra}
+      $\Hnplus\of{\quaternions}$ has symmetric similacra for all $n \ge 3$.
+
+      \begin{proof}
+        The first few examples we find by trial and error:
+        %
+        \begin{align*}
+          \Hnplus[3]\of{\quaternions}
+            &\sim
+            \directsum{\Lnplus[8]}{\Rnplus[7]},\\
+          \Hnplus[4]\of{\quaternions}
+            &\sim
+            \Lnplus[10] \oplus \Rnplus[18],\\
+            \Hnplus[5]\of{\quaternions}
+            &\sim
+            % The weirdest fucking thing happens if you un-brace the
+            % "3" in "33".
+            \directsum{\Lnplus[12]}{\Rnplus[{3}3]}.
+        \end{align*}
+        %
+        For $n \ge 6$, witness:
+        %
+        \begin{equation*}
+          \Hnplus[n]\of{\quaternions}
+          \sim
+          \Hnplus[n+1]\of{\Cn[1]}
+               \oplus \Lnplus[n+1]
+               \oplus \Lnplus[n+1]
+               \oplus \Rnplus[\qty{n^{2} - 5n - 3}].
+               \qedhere
+        \end{equation*}
+        %
+      \end{proof}
+    \end{proposition}
+
+
+    \begin{proposition}\label{prop:octonion psd has similacra}
+      $\Hnplus[3]\of{\octonions}$ has symmetric similacra.
+
+      \begin{proof}
+        Compare the signature of $\Lnplus[11] \oplus \Lnplus[5] \oplus
+        \Lnplus[3] \oplus \Rnplus[8]$.
+      \end{proof}
+    \end{proposition}
+
+    Combining all of these, we conclude the section with our first
+    major result.
+
+    \begin{theorem}\label{thm:only irreducible factors}
+      If $K$ is an irreducible symmetric cone having no symmetric
+      similacra, then either $K = \Hnplus[3]\of{\Cn[1]}$ or $K =
+      \Lnplus$ for some $n \ge 0$.
+    \end{theorem}
+
+    The similacra in this section appear to have been pulled from thin
+    air. Which is not wholly untrue, but with the benefit of
+    hindsight, we can explain how one might have found them. Searching
+    for similacra is a recursive problem. If $K$ is the target cone,
+    then we are looking to achieve $\signature{K} =
+    \pair{\dim\of{K}}{\lyapunovrank{K}}$. It may not be obvious how to
+    do that, but one thing we can try is to suppose (for example) that
+    $\Hnplus\of{\Rn[1]}$ is one of the factors. That factor will
+    contribute $\qty{n^{2} + n}/2$ to the first component of the
+    signature and $n^{2}$ to the second, meaning that now the problem
+    is reduced to finding a signature of $\pair{\dim\of{K} -
+      \qty{n^{2} + n}/2}{\lyapunovrank{K} - n^{2}}$. If we're lucky,
+    this problem will be easier to solve. If not, we can go back,
+    assume that some other factor is present in the similacrum, and
+    try again.
+
+    To bring that process to a close, it helps to have collection of
+    solutions to subproblems---means of achieving a certain family of
+    signatures, like $\pair{3n}{4n}$ with $n \in \Nn[1]$. If you can
+    construct a cone whose dimension is $3n$ and whose Lyapunov rank
+    is $4n$, then you are done if the signature $\pair{3n}{4n}$ arises
+    as a subproblem. It turns out that, depending on how you count
+    them, only two or three subproblems are needed to construct the
+    similacra in this section.
+
+    The first is straightforward: in \cref{prop:complex PSD of size
+      four or more has similacra}, we used the fact that
+    $\signature{\Lnplus[3]} = \pair{3}{4}$ which leads a solution of
+    the $\pair{3n}{4n}$-subproblem,
+    %
+    \begin{equation*}
+      \signature{
+        \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n \text{ times}}
+      }
+      =
+      \sum_{i=1}^{n}
+      \signature{\Lnplus[3]}
+      =
+      \pair{3n}{4n}.
+    \end{equation*}
+    %
+    For the second, fix a dimension $d$, and let $K =
+    \directsum{\Lnplus[m]}{\Rnplus[d - m]}$, so that $\dim\of{K} =
+    d$. The Lyapunov rank of $K$ is,
+    %
+    \begin{align*}
+      \lyapunovrank{K}
+        &= \frac{m^{2} - m + 2}{2} + \qty{d - m}\\
+        &= d + \frac{m^{2} - 3m + 2}{2}\\
+        &= d + \frac{1}{2}\qty{m-1}\qty{m-2}.
+    \end{align*}
+    %
+    Thus we have a solution for the $\pair{d}{d +
+      \frac{1}{2}\qty{m-1}\qty{m-2}}$-subproblem, for all $d$, and for
+    all $m \le d$. Moreover, if $d - m \ge m$, we can repeat this
+    process with another $\Lnplus[m]$ factor to eliminate the $1/2$:
+    %
+    \begin{equation*}
+      \lyapunovrank{\Lnplus[m] \oplus \Lnplus[m] \oplus \Rnplus[d - 2m]}
+        = d + \qty{m-1}\qty{m-2}.
+    \end{equation*}
+    %
+    This lets us solve the $\pair{d}{d +
+      \qty{m-1}\qty{m-2}}$-subproblem as well, regardless of $d$, and
+    assuming only that $2m \le d$. To see this in action, consider
+    $\Hnplus\of{\Rn[1]}$. Its dimension is $\qty{n^{2} + n}/2$ and its
+    Lyapunov rank is $n^{2}$, so its Lyapunov rank is $\qty{n^{2} -
+      n}/2$ greater than its dimension. If we want to apply the
+    subproblem solution, we need to find an $m$ such that
+    $\qty{m-1}\qty{m-2}/2 = \qty{n^{2} - n}/2$. But this is easy: take
+    $m \coloneqq n + 1$. The solution to the subproblem then gives the
+    similacra in \cref{prop:real psd similacra}. The second form of
+    this subproblem is used in \cref{prop:quaternion psd has
+      similacra} after guessing that one factor is
+    $\Hnplus[n+1]\of{\Cn[1]}$.
+  \end{section}
+
+  \begin{section}{Reducible cones}\label{sec:reducible cones}
+    To venture beyond irreducible cones makes our job much more
+    difficult. We already have several examples of non-irreducible
+    cones whose Lyapunov ranks are not unique. Every similacrum we've
+    constructed so far has symmetric similacra---that's why we
+    constructed it! The best we can hope for is to narrow down the
+    possibilities a bit.
+
+  \begin{lemma}\label{lem:no multiple complex factors}
+      If a symmetric cone contains more than one
+      $\Hnplus[3]\of{\Cn[1]}$ factor (up to isomorphism), then it has
+      symmetric similacra.
+      %
+      \begin{proof}
+        Let,
+        \begin{align*}
+          K_{2} &\coloneqq \Lnplus[7]
+                 \oplus    \Lnplus[3]
+                 \oplus    \Rnplus[8],\\
+          K_{3} &\coloneqq \Lnplus[8]
+                 \oplus    \Lnplus[4]
+                 \oplus    \Rnplus[15].
+        \end{align*}
+        %
+        Then,
+        %
+        \begin{align*}
+          \signature{K_{2}}
+            = \pair{18}{34}
+            &= 2\signature{\Hnplus[3]\of{\Cn[1]}},\\
+          \signature{K_{3}}
+            = \pair{27}{51}
+            &= 3\signature{\Hnplus[3]\of{\Cn[1]}}.
+        \end{align*}
+        %
+        Suppose our target cone contains $m$ copies of
+        $\Hnplus[3]\of{\Cn[1]}$. Since $m = 2k + 3j$ for some $k \in
+        \Nn[1]$ and $j \in \set{0,1}$, we can construct a symmetric cone
+        containing $k$ copies of $K_{2}$ and $j$ copies of $K_{3}$ (in
+        lieu of the $m$ copies of $\Hnplus[3]\of{\Cn[1]}$) sharing its
+        signature. The new cone cannot be isomorphic to the original
+        because the direct sum decomposition into a set of irreducible
+        factors is unique up to isomorphism.
+      \end{proof}
+    \end{lemma}
+
+    \begin{theorem}\label{thm:two unique families}
+      Suppose $K$ is a symmetric cone. If $K$ has no symmetric
+      similacra, then $K$ is isomorphic to
+      %
+      \begin{equation*}
+        \qty{\Hnplus[3]\of{\Cn[1]}}^{j}
+        \oplus
+        \Lnplus[n_{1}]
+        \oplus
+        \Lnplus[n_{2}]
+        \oplus
+        \cdots
+        \oplus
+        \Lnplus[n_{k}],
+      \end{equation*}
+      %
+      where $j \in \set{0,1}$ and $k, n_{i} \in \Nn[1]$. If, on the
+      other hand, $K$ does have symmetric similacra, then it has a
+      similacrum of the above form.
+
+      \begin{proof}
+        \cref{thm:only irreducible factors} shows that the other
+        irreducible families have similacra involving
+        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, and \cref{lem:no
+          multiple complex factors} shows that we need (or can have)
+        at most one $\Hnplus[3]\of{\Cn[1]}$ factor.
+      \end{proof}
+    \end{theorem}
+
+    This result can be interpreted as saying that every symmetric cone
+    shares its signature with a direct sum of Lorentz cones and/or
+    $\Hnplus[3]\of{\Cn[1]}$ via either isomorphism or similacra. This
+    much is true, but we caution that even this ``reduced''
+    representation of a similacrum is not unique.
+
+    \begin{example}\label{ex:reduction is not unique}
+      It is easy to check that
+      %
+      \begin{equation*}
+        \Lnplus[4] \oplus \Lnplus[3] \oplus \Lnplus[3] \oplus \Lnplus[3]
+        \sim
+        \Lnplus[5] \oplus \Rnplus[8].
+      \end{equation*}
+      %
+      As a result, we can derive a second (non-ismomorhpic) similacrum
+      consisting only of Lorentz cones in \cref{prop:octonion psd has
+        similacra}.
+    \end{example}
+
+    Using \cref{thm:two unique families} we can reduce the search for
+    similacra to essentially two integer partition problems, one for
+    $j = 0$ and one for $j = 1$ in \cref{thm:two unique
+      families}. Suppose $\signature{K} =
+    \pair{\dim\of{K}}{\lyapunovrank{K}}$ is given. One possibility is
+    that $K$ has a similacrum with no $\Hnplus[3]\of{\Cn[1]}$ factor;
+    that is, that
+    %
+    \begin{equation*}
+      K
+      \sim
+      \Lnplus[n_{1}]
+        \oplus
+        \Lnplus[n_{2}]
+        \oplus
+        \cdots
+        \oplus
+        \Lnplus[n_{k}]
+    \end{equation*}
+    %
+    where $\set{n_{i}}_{i=1}^{k}$ is an integer partition of
+    $\dim\of{K}$ and
+    %
+    \begin{equation*}
+      \lyapunovrank{K}
+      =
+      \sum_{i=1}^{k} \lyapunovrank{\Lnplus[n_{i}]}
+      =
+      \sum_{i=1}^{k} \qty{n_{i}^{2} - n_{i} + 2}/2.
+    \end{equation*}
+    %
+    The set of all such integer partitions can be enumerated, and the
+    corresponding sums are easily checked against
+    $\lyapunovrank{K}$. The other option is that $K$ has a similacrum
+    with exactly one $\Hnplus[3]\of{\Cn[1]}$ factor. In that case, we
+    can subtract $\signature{\Hnplus[3]\of{\Cn[1]}} = \pair{9}{17}$ from
+    $\signature{K}$ and repeat the procedure above. All \emph{other}
+    factors will be Lorentz cone factors, so the problem is reduced to
+    finding an integer partition $\set{n_{i}}_{i=1}^{k}$ of $\dim\of{K}
+    - 9$ such that $\lyapunovrank{K} - 17 = \sum_{i=1}^{k}
+    \qty{n_{i}^{2} - n_{i} + 2}/2$. This leads to a straightforward
+    algorithm for checking examples of reasonably small dimension using
+    (say) the accelerated integer partitioning scheme of Kelleher and
+    O'Sullivan~\cite{kelleher-osullivan}.
+
+    \cref{lem:no multiple complex factors} shows that if a symmetric
+    cone has one $\Hnplus[3]\of{\Cn[1]}$ factor, then it cannot have any
+    additional $\Hnplus[3]\of{\Cn[1]}$ factors without acquiring
+    symmetric similacra. Does something similar happen when we combine
+    $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ factors? It is worth
+    investigating due to the following (rather obvious) result.
+
+    \begin{lemma}\label{lem:subcone similacra}
+      If any symmetric subcone of a symmetric cone $K$ has symmetric
+      similacra, then so does $K$.
+    \end{lemma}
+
+    If we can determine which pairs of irreducible factors induce
+    symmetric similacra, then we can rule out those pairs as factors in
+    any larger symmetric cone that does not have symmetric
+    similacra.
+
+    \begin{lemma}\label{lem:no bigger factors}
+      If $n \ge 10$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}
+      \nsim \directsum{J}{\Lnplus[n+k]}$ for any symmetric $J$ and any
+      $k \ge 0$.
+      %
+      \begin{proof}
+        We can rule out $k = 0$, because in that case, we are left with
+        just $\Hnplus[3]\of{\Cn[1]}$ which has no similacra. With $k \ge
+        1$, the smallest possible Lyapunov rank of any similacrum is at
+        $k = 1$ with $J = \Rnplus[8]$. But if $n \ge 10$, then
+        %
+        \begin{equation*}
+          \lyapunovrank{\Rnplus[8] \oplus \Lnplus[n+1]}
+          -
+          \lyapunovrank{\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus}
+          =
+          n-9
+          \ge
+          1.
+        \end{equation*}
+        %
+        Thus, the smallest possible Lyapunov rank is too large to work.
+      \end{proof}
+    \end{lemma}
+
+    \begin{proposition}\label{prop:no similacra for h3plus and big enough lnplus}
+      If $n \ge 31$, then $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$
+      has no symmetric similacra.
+
+      \begin{proof}
+        We first note that it suffices to search for a similacrum of the
+        form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with $n_{1} \ge
+        n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. If a similacrum
+        contains $\Hnplus[3]\of{\Cn[1]}$, then, by subtracting
+        $\pair{9}{17}$ from both sides, it also contains a similacrum
+        for $\Lnplus$, which is not possible by \cref{cor:lorentz cone
+          has no similacra}. The same corollary makes $k = 1$
+        impossible, and we may reorder components to put the
+        superscripts in whatever order we like. In light of \cref{lem:no
+          bigger factors}, we may further assume that $n_{1} \le n-1$,
+        and thus $n_{i} \le n-1$ for all $i \in \set{1,2,\ldots,k}$.
+
+        The problem now is to find an integer partition
+        $\set{n_{1},n_{2},\ldots,n_{k}}$ of $n+9$ such that
+        $\sum_{i=1}^{k}\lyapunovrank{\Lnplus[n_{i}]} =
+        \lyapunovrank{\Lnplus} + 17$. To simplify the notation, we let
+        %
+        \begin{equation*}
+          f\of{x} \coloneqq \lyapunovrank{\Lnplus[x]},
+        \end{equation*}
+        %
+        and note that, by \cref{prop:rank of lorentz is maximal},
+        %
+        \begin{equation}\label[inequality]{ineq:f is superadditive}
+          f\of{x} + f\of{y} \le f\of{x + y}.
+        \end{equation}
+        %
+        It is also easy to see that
+        %
+        \begin{equation}\label{eq:f of n - 1}
+          f\of{n - 1} = f\of{n} - \qty{n - 1}.
+        \end{equation}
+        %
+        If we fix $\delta > 0$, then $g_{\delta}\of{x} \coloneqq f\of{x}
+        - f\of{x - \delta}$ is increasing since $g_{\delta}'\of{x} =
+        \delta$. In particular, $g_{\delta}\of{n - 1} \ge
+        g_{\delta}\of{10+\delta}$ whenever $n - 1 \ge 10 + \delta$. In
+        other words,
+        %
+        \begin{equation}\label[implication]{impl:growth inequality for f}
+          \begin{gathered}
+            n - 1 \ge 10 + \delta\\
+            \implies\\
+            f\of{n - 1} + f\of{10} \ge f\of{n - 1 - \delta} + f\of{10 + \delta}.
+          \end{gathered}
+        \end{equation}
+        %
+        Suppose we have a partition $\set{n_{1},n_{2},\ldots,n_{k}}$ of
+        $n+9$. We split the proof into two cases based on the dimension
+        of the largest factor, $n_{1}$. In each case we will see that
+        $\sum_{i=1}^{k}f\of{n_{i}}$ cannot be equal to $f\of{n} + 17$.
+        %
+        \begin{pcases}
+          \begin{case}[$n_{1} \le 9$]
+            Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$ with $S\of{0}
+            \coloneqq 0$. By assumption and definition we may
+            immediately conclude that $S\of{j} + 9 \ge S\of{j+1} >
+            S\of{j}$ for all $j<k$, and that $S\of{k} = n + 9 \ge 40$.
+            Define $\smallestidx$ to be the smallest index for which
+            $S\of{\smallestidx} > 9$ holds. There is such an index,
+            and $\smallestidx \ge 2$. It follows that $S\of{\smallestidx
+              - 1} \le 9$, $S\of{\smallestidx} \le 18$, and $\smallestidx <
+            k$. Applying \cref{ineq:f is superadditive} repeatedly, we
+            find that
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              =
+              \sum_{i=1}^{\smallestidx}f\of{n_{i}}
+              +
+              \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
+              \le
+              f\of{S\of{\smallestidx}} + f\of{n + 9 - S\of{\smallestidx}}.
+            \end{equation*}
+            %
+            Let $\delta \coloneqq S\of{\smallestidx} - 10$. Then
+            $\delta \ge 0$ by definition, and $10 + \delta =
+            S\of{\smallestidx} \le 18 \le n - 1$.  As a result, we may
+            rewrite the expression above in terms of $\delta$, and
+            apply \cref{impl:growth inequality for f} to conclude that
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              \le
+              f\of{10 + \delta} + f\of{n - 1 - \delta}
+              \le
+              f\of{n - 1} + f\of{10}.
+            \end{equation*}
+            %
+            Finally, using \cref{eq:f of n - 1}, we arrive at
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k}f\of{n_{i}}
+              \le
+              f\of{n} - \qty{n-1} + f\of{10}
+              \le
+              f\of{n} - 30 + 46
+              <
+              f\of{n} + 17.
+            \end{equation*}
+          \end{case}
+          \begin{case}[$n_{1} \ge 10$]
+            Recall that $n_{1} \le n-1$, and let $\delta \coloneqq n - 1 -
+            n_{1} \ge 0$. Then $n_{1} = n - 1 - \delta$ and $\sum_{i=2}^{k}
+            n_{i} = 10 + \delta$, so using \cref{ineq:f is superadditive},
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k} f\of{n_{i}}
+              \le
+              f\of{n - 1 - \delta} + f\of{10 + \delta}.
+            \end{equation*}
+            %
+            We have $n_{1} \ge 10$ by assumption, so from \cref{impl:growth
+              inequality for f} we conclude that
+            %
+            \begin{equation*}
+              f\of{n - 1 - \delta} + f\of{10 + \delta}
+              \le
+              f\of{n-1} + f\of{10}.
+            \end{equation*}
+            %
+            Finally, \cref{eq:f of n - 1} and the assumption that $n \ge
+            31$ now quickly lead to
+            %
+            \begin{equation*}
+              \sum_{i=1}^{k} f\of{n_{i}}
+              \le
+              f\of{n} - n + 47
+              <
+              f\of{n} + 17. \qedhere
+            \end{equation*}
+            %
+          \end{case}
+        \end{pcases}
+      \end{proof}
+    \end{proposition}
+
+    To catalogue the similacra of
+    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it now suffices to
+    check only the first thirty values of $n$. Using the integer
+    partition approach we have calculated the cases $n = 1,2\ldots,30$
+    and have listed their similacra below. Absent rows indicate the
+    absence of similacra.
+
+    \begin{equation*}
+      \begin{array}{c ccc}
+        K & \dim\of{K} & \lyapunovrank{K} & \sim\\
+        \midrule
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[2] &
+          11 &
+          19 &
+          \Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[3] &
+          12 &
+          21 &
+          \Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[4] &
+          13 &
+          24 &
+          \Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[5] &
+          14 &
+          28 &
+          \Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[6] &
+          15 &
+          33 &
+          \Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[7] &
+          16 &
+          39 &
+          \Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[8] &
+          17 &
+          46 &
+          \Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[9] &
+          18 &
+          54 &
+          \Lnplus[10] \oplus \Rnplus[8]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[10] &
+          19 &
+          63 &
+          \Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[15] &
+          24 &
+          123 &
+          \Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[18] &
+          27 &
+          171 &
+          \Lnplus[14] \oplus \Lnplus[13]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[21] &
+          30 &
+          228 &
+          \Lnplus[19] \oplus \Lnplus[11]\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[22] &
+          31 &
+          249 &
+          \Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus\\
+        %
+        \Hnplus[3]\of{\Cn[1]} \oplus \Lnplus[30] &
+          39 &
+          453 &
+          \Lnplus[29] \oplus \Lnplus[10]\\
+      \end{array}
+    \end{equation*}
+
+    \begin{proposition}\label{prop:h3plus plus lnplus characterization}
+      $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric similacra if
+      and only if $n \in \set{2,3,\ldots,10,15,18,21,22,30}$.
+    \end{proposition}
+
+    \begin{proposition}
+      If $K$ is a symmetric cone with an $\Hnplus[3]\of{\Cn[1]}$ factor
+      and no symmetric similacra, then
+      %
+      \begin{equation*}
+        K
+        \cong
+        \Hnplus[3]\of{\Cn[1]}
+        \oplus
+        \Lnplus[n_{1}]
+        \oplus
+        \Lnplus[n_{2}]
+        \oplus
+        \cdots
+        \oplus
+        \Lnplus[n_{k}],
+      \end{equation*}
+      %
+      where $k \in \Nn[1]$ and $n_{i} \in \Nn[1]
+      \setminus \set{2,3,\ldots,10,15,18,21,22,30}$.
+      %
+      \begin{proof}
+        With \cref{lem:subcone similacra} in mind, start from
+        \cref{thm:two unique families} and remove the known similacra
+        from the table.
+      \end{proof}
+    \end{proposition}
+
+    The meta-problem we are up against with reducible cones is that,
+    since there are so many possibilities, it is not terribly
+    interesting to start crossing them off the list one at a time. It
+    was worth looking at $\Hnplus[3]\of{\Cn[1]}$ because it is
+    ``unique.'' But where can we go from here?
+
+    Our last result aims to eliminate an entire family of
+    possibilities by reducing them to subproblems. The idea is that,
+    if a given cone has an $\Lnplus$ factor for large enough $n$, then
+    any similacrum must have that same factor. Those two factors can
+    then be subtracted, leaving the subproblem for whatever is
+    left. This is essentially a generalization of \cref{prop:h3plus
+      plus lnplus characterization}, except that in \cref{prop:h3plus
+      plus lnplus characterization} we are able to able to check the
+    cases $n < 31$ explicitly, and we know that the subproblem for
+    $\Hnplus[3]\of{\Cn[1]}$ has no solution.
+
+    \begin{lemma}\label{lem:no bigger factors pt2}
+      If $K$ is symmetric and if $n \ge 2 + \lyapunovrank{K} -
+      \dim\of{K}$, then $ \signature{\directsum{J}{\Lnplus[n+k]}} \ne
+      \signature{\directsum{K}{\Lnplus}}$ for any symmetric $J$ and
+      any $k \ge 1$.
+      %
+      \begin{proof}
+        With $k \ge 1$, the smallest possible Lyapunov rank achievable
+        by $\directsum{J}{\Lnplus[n+k]}$ in dimension $\dim\of{K}+n$
+        is at $k = 1$ with $J = \Rnplus[\dim\of{K} - k]$. But if $n
+        \ge 2 + \lyapunovrank{K} - \dim\of{K}$, then
+        %
+        \begin{equation*}
+          \lyapunovrank{\Rnplus[\dim\of{K} - 1] \oplus \Lnplus[n+1]}
+          -
+          \lyapunovrank{K \oplus \Lnplus}
+          =
+          \dim\of{K} - 1 - \lyapunovrank{K} + n
+          \ge
+          1.
+        \end{equation*}
+        %
+        Thus, the smallest possible Lyapunov rank is too large to work.
+      \end{proof}
+    \end{lemma}
+
+    \begin{conjecture}\label{conj:subproblem reduction}
+      Suppose that $K,J$ are symmetric cones and that $n \in \Nn[1]$
+      satisfies the following conditions:
+      %
+      \begin{enumerate}
+        \begin{item}\label[condition]{itm:condition1}
+          $n \ge 2 + \lyapunovrank{K} - \dim\of{K}$,
+        \end{item}
+        \begin{item}\label[condition]{itm:condition2}
+          $n \ge 2 + \lyapunovrank{\Lnplus[1 + \dim\of{K}]} - \lyapunovrank{K}$,
+        \end{item}
+        \begin{item}\label[condition]{itm:condition3}
+          $n \ge 10$.
+        \end{item}
+      \end{enumerate}
+      %
+      Then $J \sim \directsum{\Lnplus}{K}$ if and only if there exists
+      a symmetric $J'$ such that $J \cong \directsum{\Lnplus}{J'}$ and
+      $J' \sim K$.
+
+      \begin{proof}
+        The ``if'' case is obvious and doesn't require any conditions
+        on $n$. Likewise when $K = \set{0}$.
+
+        In the other direction, and with $\dim\of{K} \ge 1$, we begin
+        by recalling \cref{thm:two unique families,ex:reduction is not
+          unique}. The cone $J$ is (up to isomorphism) either itself
+        of the form
+        %
+        \begin{equation}\label[form]{eq:lorentz repr}
+          \qty{\Hnplus[3]\of{\Cn[1]}}^{j}
+          \oplus
+          \Lnplus[n_{1}]
+          \oplus
+          \Lnplus[n_{2}]
+          \oplus
+          \cdots
+          \oplus
+          \Lnplus[n_{k}],
+        \end{equation}
+        %
+        for $j \in \set{0,1}$, or it is a similacrum of such a
+        cone. In either case, $J$ shares its signature with one or
+        more cones of this form. Suppose $\signature{J} =
+        \signature{H}$, where $H$ has \cref{eq:lorentz repr}. We see
+        immediately that $H$ contains Lorentz cone factors ($k \ge
+        1$); for if not, neither $J = \set{0}$ nor $J \cong
+        \Hnplus[3]\of{\Cn[1]}$ could have symmetric similacra. By
+        relabeling the factors we may therefore assume as before that
+        $n_{1} \ge n_{2} \ge \cdots \ge n_{k}$ in any such $H$. And if
+        $n_{1} > n$, then \cref{lem:no bigger factors pt2} would show
+        that $\signature{H} = \signature{J} \ne
+        \signature{\directsum{\Lnplus}{K}}$. As a result, we have
+        $n_{1} \le n$ in any such $H$.
+
+        In what remains we will avoid the question of what happens if
+        $n_{1} = n$, and instead suppose that $n_{1} < n$ for all such
+        $H$. The goal is to show that $\signature{H} = \signature{J}
+        \ne \signature{\directsum{\Lnplus}{K}}$, meaning that our
+        supposition cannot hold. To accomplish this, we will again
+        analyze cases. In the first two cases we will suppose that $H$
+        has no $\Hnplus[3]$ factor. The resulting scenario follows
+        closely that of \cref{prop:no similacra for h3plus and big
+          enough lnplus}, with the new bounds on $n$ supplied by
+        \cref{itm:condition1,itm:condition2,itm:condition3}. We
+        quickly sketch the reasoning.
+
+        Recall the definition $f\of{x} \coloneqq
+        \lyapunovrank{\Lnplus[x]}$ satisfying \cref{ineq:f is
+          superadditive} and \cref{eq:f of n - 1}. One can derive a
+        more-general version of \cref{impl:growth inequality for f},
+        namely
+        %
+        \begin{equation}\label[implication]{impl:growth inequality for f pt2}
+          \begin{gathered}
+            n - 1 \ge 1 + \dim\of{K} + \delta\\
+            \implies\\
+            f\of{n - 1} + f\of{1 + \dim\of{K}}
+            \ge
+            f\of{n - 1 - \delta} + f\of{1 + \dim\of{K} + \delta}.
+          \end{gathered}
+        \end{equation}
+
+        In what follow, keep in mind that $j$ is the exponent on
+        $\Hnplus[3]\of{\Cn[1]}$ in \cref{eq:lorentz repr}, and that
+        $n_{1}$ is implicitly (and strictly) bounded above by $n$.
+
+        \begin{pcases}
+          \begin{case}[$j=0$ and $n_{1} \le \dim\of{K}$]
+            This time around we define $\smallestidx$ to be the
+            smallest index such that $S\of{\smallestidx} >
+            \dim\of{K}$. Then $S\of{k} \le 2\dim\of{K}$, and we need
+            $n > \dim\of{K}$ to conclude that $\smallestidx < k$. But
+            by adding \cref{itm:condition1,itm:condition2} and using
+            \cref{itm:condition3} to rule out small $n$, we can derive
+            the additional bound $n > 2\dim\of{K} - 1$. Since $K$ can
+            be assumed to be nontrivial, we also have $2\dim\of{K} - 1
+            \ge \dim\of{K}$, giving $n > \dim\of{K}$. The inequality
+            $n > 2\dim\of{K} - 1$ moreover lets us apply
+            \cref{impl:growth inequality for f pt2}, and then
+            \cref{itm:condition2} lets us conclude that
+            $\sum_{i=1}^{k}f\of{n_{i}} < f\of{n} + \lyapunovrank{K}$.
+          \end{case}
+
+          \begin{case}[$j=0$ and $n_{1} > \dim\of{K}$]
+            With $\sum_{i=2}^{k} n_{i} = \dim\of{K} + 1 + \delta$, the
+            proof proceeds as before. By assumption we can apply
+            \cref{impl:growth inequality for f pt2}, and then
+            \cref{itm:condition2} gives $\sum_{i=1}^{k}f\of{n_{i}} <
+            f\of{n} + \lyapunovrank{K}$
+          \end{case}
+
+          \begin{case}[$j=1$]
+            In this case,
+            %
+            \begin{equation*}
+              H
+              =
+              \Hnplus[3]\of{\Cn[1]}
+              \oplus
+              \Lnplus[n_{1}]
+              \oplus
+              \Lnplus[n_{2}]
+              \oplus
+              \cdots
+              \oplus
+              \Lnplus[n_{k}],
+            \end{equation*}
+            %
+            but notice that
+            %
+            \begin{equation*}
+              \lyapunovrank{H}
+              <
+              \lyapunovrank{
+                \Lnplus[9]
+                \oplus
+                \Lnplus[n_{1}]
+                \oplus
+                \Lnplus[n_{2}]
+                \oplus
+                \cdots
+                \oplus
+                \Lnplus[n_{k}]
+              }.
+            \end{equation*}
+            %
+            We would like now to cite the previous two cases, but we
+            have to be a little bit careful: the new $\Lnplus[9]$
+            factor might be larger than $\Lnplus[n_{1}]$. However,
+            \cref{itm:condition3} allows us to say that in any case,
+            $9 < n$. We may therefore defer to the previous two cases
+            using whichever is larger, $9$ or $n_{1}$, in either case
+            concluding that
+            %
+            \begin{equation*}
+              \lyapunovrank{J}
+              =
+              \lyapunovrank{H}
+              <
+              \lyapunovrank{
+                \Lnplus[9]
+                \oplus
+                \Lnplus[n_{1}]
+                \oplus
+                \Lnplus[n_{2}]
+                \oplus
+                \cdots
+                \oplus
+                \Lnplus[n_{k}]
+              }
+              <
+              \lyapunovrank{\directsum{\Lnplus}{K}}.
+            \end{equation*}
+          \end{case}
+        \end{pcases}
+
+        We have shown that no $H \sim J$ having \cref{eq:lorentz repr}
+        can have a largest $\Lnplus[m]$ factor with $m \ne n$. What
+        remains is to show that, if all such $H$ have largest Lorentz
+        factor $\Lnplus$, then $J$ itself (up to isomorphism) has an
+        $\Lnplus$ factor. This is false if there are no restrictions
+        on $n$. For example, $\Hnplus[3]\of{\Rn[1]} \sim
+        \directsum{\Lnplus[4]}{\Rnplus[2]}$, but the former is not
+        isomorphic to the latter.
+      \end{proof}
+    \end{conjecture}
+
+    \begin{corollary}
+      If $K$ is a symmetric cone having no symmetric similacra and if
+      $n$ satisfies
+      \cref{itm:condition1,itm:condition2,itm:condition3}, then
+      $\directsum{\Lnplus}{K}$ has no symmetric similacra.
+    \end{corollary}
+
+    One might wonder whether all three of the conditions on $n$ in
+    \cref{conj:subproblem reduction} are strictly necessary. To
+    confirm that they are, we demonstrate that each of the three
+    conditions can fail even if the other two are met. Let
+    $\ell_{1}\of{K}$, $\ell_{2}\of{K}$, and $\ell_{3}\of{K}$ be the
+    lower bounds on $n$ given by
+    \cref{itm:condition1,itm:condition2,itm:condition3}, respectively.
+    %
+    \begin{itemize}
+      \begin{item}
+        If $K = \Lnplus[3]$, then $\ell_{1}\of{K} < \ell_{2}\of{K} <
+        \ell_{3}\of{K}$.
+      \end{item}
+      \begin{item}
+        If $K = \Rnplus[5]$, then $\ell_{1}\of{K} < \ell_{3}\of{K} <
+        \ell_{2}\of{K}$.
+      \end{item}
+      \begin{item}
+        If $K = \Lnplus[6]$, then $\ell_{2}\of{K} < \ell_{3}\of{K} <
+        \ell_{1}\of{K}$.
+      \end{item}
+    \end{itemize}
+  \end{section}
+
+  \section*{Acknowledgments}{
+    The authors thank David Sossa and the University of O'Higgins for
+    organizing and sponsoring the 2024 Workshop on Variation Analysis
+    and Euclidean Jordan Algebras (VAEJA). The results in
+    \cref{sec:reducible cones} were proved as a result of the
+    workshop.
+  }
+
+  \appendix
+  \begin{section}{The table of Lyapunov ranks}
+    In the absence of any restrictions on $n$, \cref{tab:irreducible
+      signatures} would produce incorrect values for $\Lnplus[0]$,
+    $\Hnplus[0]\of{\Cn[1]}$, and $\Hnplus[1]\of{\quaternions}$. The
+    theorem of Gowda and Tao (on which our table is based) is itself
+    based upon a table at the bottom of page 97 in Faraut and
+    Korányi~\cite{faraut-koranyi}. The latter states no restrictions
+    on $n$, but that can lead to misinterpretation in two ways. First,
+    the rows in the table are not necessarily distinct. When $n = 1$
+    for example, we have $\Lnplus = \Hnplus\of{\quaternions}$, and
+    when that happens, the choice of the $\Hnplus\of{\quaternions}$
+    row (as opposed to the $\Lnplus$ row) is what produces the wrong
+    Lyapunov rank. Second, the table is simply not valid in trivial
+    cases.
+
+    Based on the notation, we find it likely that the Lie algebras in
+    Faraut and Korányi's table are derived from Satz~IX.3.3 in Braun
+    in Koecher~\cite{braun-koecher}. Braun and Koecher have one case
+    for $\Lnplus$ with $n \ge 2$, and then require $n \ge 3$ for
+    $\Hnplus\of{\Rn[1]}$, $\Hnplus\of{\Cn[1]}$, and
+    $\Hnplus\of{\quaternions}$. As in \cref{thm:irreducible families},
+    this ensures that there is no overlap between the families. From
+    this we may draw two conclusions about the Faraut and
+    Korányi table:
+
+    \begin{enumerate}
+      \begin{item}
+        When there is ambiguity, the Lorentz cone row should be used.
+      \end{item}
+      \begin{item}
+        A priori, the table is invalid for $n < 2$.
+      \end{item}
+    \end{enumerate}
+
+    It is interesting to note however that the entries for
+    $\Hnplus[2]\of{\Rn[1]} \cong \Lnplus[3]$, $\Hnplus[2]\of{\Cn[1]}
+    \cong \Lnplus[4]$, and $\Hnplus[2]\of{\quaternions} \cong
+    \Lnplus[6]$ are consistent. In each case we have a choice of rows
+    (and should prefer the row for the Lorentz cone), but up to
+    isomorphism, either row gives the same Lie algebras. The entire
+    table is therefore free of ambiguity for $n \ge 2$, which is how
+    we arrive at the $n \ge 2$ condition on \cref{tab:irreducible
+      signatures}.
+
+    For the remaining cases $n \in \set{0,1}$, the computations are
+    trivial and we find it much simpler to use a separate table
+    (\cref{tab:rnplus signature}) than it would be to make
+    \cref{tab:irreducible signatures} consistent for all $n \ge 0$.
+  \end{section}
+
+  \bibliographystyle{mjo}
+  \bibliography{references}
+\end{document}

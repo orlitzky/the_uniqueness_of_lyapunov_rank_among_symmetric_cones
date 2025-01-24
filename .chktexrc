@@ -1,0 +1,8 @@
+# America, fuck yeah.
+QuoteStyle = Traditional
+
+# Without this, chktex warns about \label[foo].
+WipeArg
+{
+    \label:[]{}
+}
