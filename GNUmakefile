@@ -152,7 +152,7 @@ check-undefined: $(BUILDDIR)/$(PN).log
 # Run python doctests
 .PHONY: check-python
 check-python:
-	python -m doctest tests/*.py
+	cd tests && python -m doctest ./*.py && cd ../
 
 # Run a suite of checks.
 .PHONY: check
