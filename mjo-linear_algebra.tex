@@ -1,0 +1,228 @@
+%
+% Standard operations from linear algebra.
+%
+\ifx\havemjolinearalgebra\undefined
+\def\havemjolinearalgebra{1}
+
+
+\ifx\lvert\undefined
+  \usepackage{amsmath} % \lvert, \rVert, etc. and \operatorname.
+\fi
+
+\ifx\ocircle\undefined
+  \usepackage{wasysym}
+\fi
+
+\ifx\clipbox\undefined
+  % Part of the adjustbox package; needed to clip the \perp sign.
+  \usepackage{trimclip}
+\fi
+
+\input{mjo-common} % for \of, at least
+
+% Absolute value (modulus) of a scalar.
+\newcommand*{\abs}[1]{\left\lvert{#1}\right\rvert}
+
+% Norm of a vector.
+\newcommand*{\norm}[1]{\left\lVert{#1}\right\rVert}
+
+% The inner product between its two arguments.
+\newcommand*{\ip}[2]{\left\langle{#1},{#2}\right\rangle}
+
+% The tensor product of its two arguments.
+\newcommand*{\tp}[2]{ {#1}\otimes{#2} }
+
+% The Kronecker product of its two arguments. The usual notation for
+% this is the same as the tensor product notation used for \tp, but
+% that leads to confusion because the two definitions may not agree.
+\newcommand*{\kp}[2]{ {#1}\odot{#2} }
+
+% The adjoint of a linear operator.
+\newcommand*{\adjoint}[1]{ #1^{*} }
+
+% The ``transpose'' of a linear operator; namely, the adjoint, but
+% specialized to real matrices.
+\newcommand*{\transpose}[1]{ #1^{T} }
+
+% The Moore-Penrose (or any other, I guess) pseudo-inverse of its
+% sole argument.
+\newcommand*{\pseudoinverse}[1]{ #1^{+} }
+
+% The trace of an operator.
+\newcommand*{\trace}[1]{ \operatorname{trace}\of{{#1}} }
+
+% The diagonal matrix whose only nonzero entries are on the diagonal
+% and are given by our argument. The argument should therefore be a
+% vector or tuple of entries, by convention going from the top-left to
+% the bottom-right of the matrix.
+\newcommand*{\diag}[1]{\operatorname{diag}\of{{#1}}}
+
+% The "rank" of its argument, which is context-dependent. It can mean
+% any or all of,
+%
+%   * the rank of a matrix,
+%   * the rank of a power-associative algebra (particularly an EJA),
+%   * the rank of an element in a Euclidean Jordan algebra.
+%
+\newcommand*{\rank}[1]{ \operatorname{rank}\of{{#1}} }
+
+
+% The ``span of'' operator. The name \span is already taken.
+\newcommand*{\spanof}[1]{ \operatorname{span}\of{{#1}} }
+
+% The ``co-dimension of'' operator.
+\newcommand*{\codim}{ \operatorname{codim} }
+
+% The orthogonal projection of its second argument onto the first.
+\newcommand*{\proj}[2] { \operatorname{proj}\of{#1, #2} }
+
+% The set of all eigenvalues of its argument, which should be either a
+% matrix or a linear operator. The sigma notation was chosen instead
+% of lambda so that lambda can be reserved to denote the ordered tuple
+% (largest to smallest) of eigenvalues.
+\newcommand*{\spectrum}[1]{\sigma\of{{#1}}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{spectrum}{
+    name={\ensuremath{\spectrum{L}}},
+    description={the set of all eigenvalues of $L$},
+    sort=s
+  }
+\fi
+
+% The reduced row-echelon form of its argument, a matrix.
+\newcommand*{\rref}[1]{\operatorname{rref}\of{#1}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{rref}{
+    name={\ensuremath{\rref{A}}},
+    description={the reduced row-echelon form of $A$},
+    sort=r
+  }
+\fi
+
+% The ``Automorphism group of'' operator.
+\newcommand*{\Aut}[1]{ \operatorname{Aut}\of{{#1}} }
+
+% The ``Lie algebra of'' operator.
+\newcommand*{\Lie}[1]{ \operatorname{Lie}\of{{#1}} }
+
+% The ``write a matrix as a big vector'' operator.
+\newcommand*{\vectorize}[1]{ \operatorname{vec}\of{{#1}} }
+
+% The ``write a big vector as a matrix'' operator.
+\newcommand*{\matricize}[1]{ \operatorname{mat}\of{{#1}} }
+
+% An inline column vector, with parentheses and a transpose operator.
+\newcommand*{\colvec}[1]{ \transpose{\left({#1}\right)} }
+
+% Bounded linear operators on some space. The required argument is the
+% domain of those operators, and the optional argument is the
+% codomain. If the optional argument is omitted, the required argument
+% is used for both.
+\newcommand*{\boundedops}[2][]{
+  \mathcal{B}\of{ {#2}
+    \if\relax\detokenize{#1}\relax
+      {}%
+    \else
+      {,{#1}}%
+    \fi
+  }
+}
+
+
+%
+% Orthogonal direct sum.
+%
+% First declare my ``perp in a circle'' operator, which is meant to be
+% like an \obot or an \operp except has the correct weight circle. It's
+% achieved by overlaying an \ocircle with a \perp, but only after we
+% clip off the top half of the \perp sign and shift it up.
+\DeclareMathOperator{\oplusperp}{\mathbin{
+  \ooalign{
+    $\ocircle$\cr
+    \raisebox{0.625\height}{$\clipbox{0pt 0pt 0pt 0.5\height}{$\perp$}$}\cr
+  }
+}}
+
+% Now declare an orthogonal direct sum in terms of \oplusperp.
+\newcommand*{\directsumperp}[2]{ {#1}\oplusperp{#2} }
+
+
+% The space of real symmetric n-by-n matrices. Does not reduce to
+% merely "S" when n=1 since S^{n} does not mean an n-fold cartesian
+% product of S^{1}.
+\newcommand*{\Sn}[1][n]{ \mathcal{S}^{#1} }
+\ifdefined\newglossaryentry
+  \newglossaryentry{Sn}{
+    name={\ensuremath{\Sn}},
+    description={the set of $n$-by-$n$ real symmetric matrices},
+    sort=Sn
+  }
+\fi
+
+% The space of complex Hermitian n-by-n matrices. Does not reduce to
+% merely "H" when n=1 since H^{n} does not mean an n-fold cartesian
+% product of H^{1}. The field may also be given rather than assumed
+% to be complex; for example \Hn[3]\of{\mathbb{O}} might denote the
+% 3-by-3 Hermitian matrices with octonion entries.
+\newcommand*{\Hn}[1][n]{ \mathcal{H}^{#1} }
+\ifdefined\newglossaryentry
+  \newglossaryentry{Hn}{
+    name={\ensuremath{\Hn}},
+    description={the set of $n$-by-$n$ complex Hermitian matrices},
+    sort=Hn
+  }
+\fi
+
+
+% The general linear group of square matrices whose size is the first
+% argument and whose entries come from the second argument.
+\newcommand*{\GL}[2]{\operatorname{GL}_{#1}\of{#2}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{GL}{
+    name={\ensuremath{\GL{n}{\mathbb{F}}}},
+    description={the general linear group of order $n$ over $\mathbb{F}$},
+    sort=GL
+  }
+\fi
+
+
+% The space of all (linear) derivations on its argument, an algebra.
+\newcommand*{\Der}[1]{\operatorname{Der}\of{#1}}
+\ifdefined\newglossaryentry
+  \newglossaryentry{Der}{
+    name={\ensuremath{\Der{V}}},
+    description={the space of all (linear) derivations on $V$},
+    sort=Der
+  }
+\fi
+
+
+% The set of all isometries from its first argument to its second
+% (optional) argument, both assumed to be at least normed spaces, and
+% more likely Hilbert spaces. The norms are implicit, i.e. not
+% included in the arguments. If the optional argument is omitted, you
+% get the isometries from the first argument to itself AKA its
+% isometry group.
+\newcommand*{\Isom}[2][]{
+  \operatorname{Isom}\of{ {#2}
+    \if\relax\detokenize{#1}\relax
+      {}%
+    \else
+      {,{#1}}%
+    \fi
+  }
+}
+\ifdefined\newglossaryentry
+  \newglossaryentry{Isom}{
+    name={\ensuremath{\Isom{V}}},
+    description={the group of isometries on $V$},
+    sort=Isom
+  }
+  \newglossaryentry{Isom2}{
+    name={\ensuremath{\Isom[W]{V}}},
+    description={the set of isometries from $V$ to $W$},
+    sort=Isom
+  }
+\fi
+
+\fi
