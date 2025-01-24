@@ -1393,8 +1393,8 @@
     similacra except for a few small values of $n$.
 
     \begin{lemma}\label{lem:Ln-squared is easy to brute force}
-      If $\directsum{\Lnplus}{\Lnplus}$ has similacra, then it has
-      similacra of the form
+      If $\directsum{\Lnplus}{\Lnplus}$ has symmetric similacra, then it has
+      symmetric similacra of the form
       %
       \begin{equation*}
         \alpha \Hnplus[3]\of{\Cn[1]}
@@ -1413,18 +1413,18 @@
 
       \begin{proof}
         For $n \le 2$, the result holds vacuously because
-        $\directsum{\Lnplus[2]}{\Lnplus[2]} \cong \Rnplus[4]$ has no
+        $\directsum{\Lnplus[n]}{\Lnplus[n]} \cong \Rnplus[2n]$ has no
         similacra.
 
         So suppose $J \sim \directsum{\Lnplus}{\Lnplus}$ with $n \ge
-        3$. If $J$ has any irreducible factors other than
-        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, then the results
-        in \cref{sec:irreducible cones} can be used to find another
-        symmetric cone of the desired form having the same signature
-        as $J$. We need only convince ourselves that this new cone is
-        not isomorphic to $\directsum{\Lnplus}{\Lnplus}$. For that, we
-        note that the similacra constructed in \cref{sec:irreducible
-          cones} all have more than two Lorentz
+        3$. If $J$ is not of the desired form, then the results in
+        \cref{sec:irreducible cones,cor:no multiple complex factors}
+        can be used to find another symmetric cone having the same
+        signature as $J$ that is of the desired form. We need only
+        convince ourselves that this new cone is not isomorphic to
+        $\directsum{\Lnplus}{\Lnplus}$. For that, we note that the
+        similacra constructed in \cref{sec:irreducible cones,cor:no
+          multiple complex factors} all have more than two Lorentz
         factors. $\directsum{\Lnplus}{\Lnplus}$ cannot be isomorphic
         to a direct sum of three or more factors when $n \ge 3$, so we
         are done.
@@ -1433,7 +1433,7 @@
 
     \begin{proposition}
       Suppose $n \in \Nn[1]$. Then $\directsum{\Lnplus}{\Lnplus}$ has
-      similacra if and only if $n \notin
+      symmetric similacra if and only if $n \notin
       \set{0,1,2,3,5,6,7,11,12,13,18}$.
 
       \begin{proof}
@@ -1450,7 +1450,7 @@
         %
         Having assumed that $n \ge 100$, it is straightforward to see
         that $\alpha, \gamma \ge 0$. Both are integers as
-        well. Rewriting a bit,
+        well: rewriting a bit,
         %
         \begin{equation*}
           \alpha
