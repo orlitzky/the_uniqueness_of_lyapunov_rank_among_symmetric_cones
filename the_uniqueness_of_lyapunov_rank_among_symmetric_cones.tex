@@ -22,6 +22,7 @@
 \setlength{\tabcolsep}{1em} % for the horizontal padding
 
 \input{mjo-algebra}
+\input{mjo-arrow}
 \input{mjo-common}
 \input{mjo-cone}
 \input{mjo-font}
@@ -277,24 +278,6 @@
       $K \nsim J$.
     \end{definition}
 
-    We have alluded to the fact that there are two competing notions
-    of isomorphism for a symmetric cone, Jordan and linear. Two convex
-    cones $K \subseteq V$ and $J \subseteq W$ are linearly isomorphic
-    if there exists an invertible linear $A : V \to W$ such that
-    $A\of{K} = J$. This is the usual definition of isomorphism for
-    convex cones. But in a Euclidean Jordan algebra (for a symmetric
-    cone) there is the stronger notion of Jordan algebra
-    isomorphism. A Jordan algebra isomorphism is linear and
-    invertible, but must also preserve the Jordan algebra
-    multiplication. If two Euclidean Jordan algebras are
-    Jordan-isomorphic, their cones of squares are linearly isomorphic
-    under the same map. It is interesting to ponder the converse of
-    that statement, but it is also a subtlety that we wish to avoid
-    for the time being. The classification in \cref{thm:direct sum
-      decomposition} is up to Jordan algebra isomorphism, so when we
-    say ``isomorphic'' or ``up to isomorphism,'' or when we write
-    write $K \cong J$, we mean the stronger of the two notions.
-
     Gowda and Tao~\cite{gowda-tao_-_rank} computed the Lyapunov ranks
     of the five families in \cref{thm:direct sum decomposition}. Using
     conjugate-symmetry and the fact that
@@ -357,6 +340,82 @@
     symmetric cone. From the two tables, it should be apparent that
     the Lyapunov rank of $\Rnplus$ is strictly less than that of any
     other (non-isomorphic) $n$-dimensional symmetric cone.
+
+    We have alluded to the fact that there are two competing notions
+    of isomorphism for a symmetric cone, Jordan and linear. Two convex
+    cones $K \subseteq V$ and $J \subseteq W$ are linearly isomorphic
+    if there exists an invertible linear $A : V \to W$ such that
+    $A\of{K} = J$. This is the usual definition of isomorphism for
+    convex cones. In a Euclidean Jordan algebra (that is, for
+    symmetric cones) there is the stronger notion of Jordan algebra
+    isomorphism. A Jordan algebra isomorphism is linear and
+    invertible, but must also preserve the Jordan algebra
+    multiplication. If two Euclidean Jordan algebras are
+    Jordan-isomorphic, their cones of squares are linearly isomorphic,
+    because the Jordan isomorphism between them preserves squaring and
+    is itself a linear isomorphism. We will quickly argue that, for
+    symmetric cones, the converse is true as well. This allows us to
+    work ``up to isomorphism'' and write things like $K \cong J$ when
+    referring to \cref{thm:direct sum decomposition} without having to
+    redefine ``isomorphism'' for convex cones.
+
+    \begin{proposition}
+      If $K$ is a symmetric cone in $V$, if $A : V \to W$ is linear
+      and invertible, and if $A\of{K}$ is symmetric, then $K$ and
+      $A\of{K}$ are Jordan-isomorphic.
+
+      \begin{proof}
+        $K$ is symmetric and is therefore the unique (up to order)
+        orthogonal direct sum of nontrivial irreducible factors, as in
+        \cref{thm:direct sum decomposition},
+        %
+        \begin{equation*}
+          K = K_{1} \oplus K_{2} \oplus \cdots \oplus K_{N}.
+        \end{equation*}
+        %
+        And $A$ is invertible, so it preserves irreducibility: if
+        $A\of{K_{1}}$ were expressible as $\directsum{J_{1}}{J_{2}}$,
+        we could invert to obtain $K_{1} =
+        \directsum{\inverse{A}\of{J_{1}}}{\inverse{A}\of{J_{2}}}$,
+        contradicting the irreducibility of $K_{1}$. It follows that
+        %
+        \begin{equation*}
+          A\of{K}
+          =
+          A\of{K_{1}} \oplus A\of{K_{2}} \oplus \cdots \oplus A\of{K_{N}}
+        \end{equation*}
+        %
+        is a direct sum of nontrivial irreducible proper cones. The
+        factors in this decomposition are not a priori symmetric, but
+        there is also a decomposition of $A\of{K}$ into nontrivial
+        irreducible symmetric factors using \cref{thm:direct sum
+          decomposition}:
+        %
+        \begin{equation*}
+          A\of{K} = J_{1} \oplus J_{2} \oplus \cdots \oplus J_{M}.
+        \end{equation*}
+        %
+        Theorem~4.3 of Hauser and Güler states that any such
+        decomposition of a proper cone is unique up to the order of
+        its (nontrivial) factors~\cite{hauser-guler}. The two
+        decompositions of $A\of{K}$ are therefore equivalent, meaning
+        that each $A\of{K_{i}}$ is in fact symmetric.
+
+        It remains only to show that $A$ does not change the
+        Jordan-isomorphism class of any $K_{i}$. Obviously $A$ will
+        not change the dimension of $K_{i}$, and Lemma~1 of Rudolf,
+        Noyan, Papp, and Alizadeh states that $A$ will not change the
+        Lyapunov rank of $K_{i}$
+        either~\cite{rudolf-noyan-papp-alizadeh}. The question is
+        therefore reduced to the following: are there two different
+        (not Jordan-isomorphic) irreducible symmetric cones having the
+        same signature? The answer to this question is negative. The
+        full list of distinct cones is provided in \cref{thm:direct
+          sum decomposition}, and \cref{tab:signatures of building
+          blocks} can be used to verify that no two distinct factors
+        can have the same signature.
+      \end{proof}
+    \end{proposition}
   \end{section}
 
   \begin{section}{Irreducible symmetric cones}\label{sec:irreducible cones}
