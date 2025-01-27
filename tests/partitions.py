@@ -145,7 +145,7 @@ def partitions(n : int, entry_max : int | None = None, include_two : bool = True
     n : int
       The integer to partition.
 
-    entry_max : int | None
+    entry_max : int | None, default=None
       An inclusive upper limit on the size of a partitions entries. If
       any entry in a partition exceeds this limit, it is
       omitted. Defaults to ``None`` (no limit).
