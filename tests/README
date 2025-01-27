@@ -1,5 +1,11 @@
 This directory contains all of the tests for the claims in the paper,
-as well as the supporting code. Here is a quick summary of the files:
+as well as the supporting code. It has a few requirements:
+
+  * Python built with support for sqlite
+  * SymPy <https://pypi.org/project/sympy/>
+  * MessagePack for python <https://pypi.org/project/msgpack/>
+
+Here is a quick summary of the files:
 
   * compute.py - utilities for computing all cones, ranks of Lorentz
     cones, etc. and storing them in a database. These are long-
