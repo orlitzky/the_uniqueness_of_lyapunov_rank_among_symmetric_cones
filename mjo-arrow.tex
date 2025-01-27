@@ -1,0 +1,48 @@
+%
+% Things dealing with arrows in a category. Or functions, basically.
+%
+\ifx\havemjoarrow\undefined
+\def\havemjoarrow{1}
+
+
+\input{mjo-common} % for \of, at least.
+
+\ifx\operatorname\undefined
+  \usepackage{amsopn}
+\fi
+
+
+% The constant function that always returns its argument.
+\newcommand*{\const}[1]{\operatorname{const}_{{#1}}}
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{const}{
+    name={\ensuremath{\const{a}}},
+    description={the constant function that always returns $a$},
+    sort=c
+  }
+\fi
+
+% The identity function/arrow on its argument.
+\newcommand*{\identity}[1]{ \operatorname{id}_{{#1}} }
+
+\ifdefined\newglossaryentry
+  \newglossaryentry{identity}{
+    name={\ensuremath{\identity{X}}},
+    description={the identity function or arrow on $X$},
+    sort=i
+  }
+\fi
+
+% The composition of two arrows/functions. For example, the
+% composition of g with f is \compose{g}{f}\of{x} === g\of{f\of{x}}.
+\newcommand*{\compose}[2]{ {#1}\circ{#2} }
+
+% The inverse of an arrow, function, or whatever.
+\newcommand*{\inverse}[1]{ #1^{-1} }
+
+% The preimage of the second argument (a set) under the first (a function).
+\newcommand*{\preimage}[2]{ #1^{-1}\of{#2} }
+
+
+\fi
