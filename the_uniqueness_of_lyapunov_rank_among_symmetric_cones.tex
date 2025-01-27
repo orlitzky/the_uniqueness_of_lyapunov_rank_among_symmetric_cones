@@ -163,18 +163,17 @@
     isomorphic to a given cone, it is a waste of time to check inside
     spaces of higher/lower dimensions.
 
-    Every symmetric cone is the orthogonal direct sum of a unique set
-    of nontrivial irreducible symmetric cones (Faraut and
-    Korányi~\cite{faraut-koranyi}, Proposition~III.4.5). Moreover, up
-    to isomorphism, there are only five families of irreducible
-    factors. Chapter~V of Faraut and Korányi classifies the simple
-    Euclidean Jordan algebras; the classification of irreducible
-    symmetric cones then follows from the correspondence between
-    symmetric cones and Euclidean Jordan algebras. Starting from a
-    symmetric cone, one obtains a Euclidean Jordan algebra (Faraut and
-    Korányi, Chapter~III) in which the given cone is the cone of
-    squares. That algebra is the orthogonal direct sum of a unique set
-    of nontrivial simple algebras by Proposition~III.4.4. In each of
+    Every symmetric cone is the orthogonal direct sum of irreducible
+    symmetric cones (Faraut and Korányi~\cite{faraut-koranyi},
+    Proposition~III.4.5). Moreover, up to isomorphism, there are only
+    five families of irreducible factors. Chapter~V of Faraut and
+    Korányi classifies the simple Euclidean Jordan algebras; the
+    classification of irreducible symmetric cones then follows from
+    the correspondence between symmetric cones and Euclidean Jordan
+    algebras. Starting from a symmetric cone, one obtains a Euclidean
+    Jordan algebra (Faraut and Korányi, Chapter~III) in which the
+    given cone is the cone of squares. That algebra is the orthogonal
+    direct sum of simple algebras by Proposition~III.4.4. In each of
     those simple factors, the cone of squares is a symmetric cone,
     which must be irreducible to avoid contradictions.
 
@@ -182,14 +181,20 @@
       % Take an empty sum to get K = {0}. This allows us to stipulate
       % that n >= 1 for the spin algebras and to say that the factors
       % are nontrivial.
-      Every symmetric cone is the orthogonal direct sum of a unique
-      set of nontrivial irreducible symmetric cones, and every
+      %
+      % I have avoided saying "unique set" here so that we can ignore
+      % questions like what it means for two abstract vector spaces to
+      % be equal. We will encounter cones like K_{1} + K_{1}, but we
+      % can't put both of those factors in a set.
+      Every symmetric cone is the unique (up to order) orthogonal
+      direct sum of nontrivial irreducible symmetric cones, and every
       nontrivial irreducible symmetric cone is Jordan-isomorphic to a
-      member of one of the five families,
+      member of one of the five distinct families,
       %
       \begin{enumerate}
         \begin{item}
-          The $n$-dimensional Lorentz cones, $\Lnplus$, for $n \ge 1$,
+          The $n$-dimensional Lorentz cones, $\Lnplus$, for $n \notin
+          \set{0,2}$,
         \end{item}
         \begin{item}
           The $n \times n$ real symmetric positive semidefinite cones,
@@ -212,17 +217,35 @@
         \end{item}
       \end{enumerate}
       %
+      % For the trivial cone, e.g. {0} = {0} + {0} is not unique,
+      % but there is only one direct sum whose factors come from
+      % the list above, namely the empty sum, so even the trivial
+      % cone is OK here.
+      %
+      As a result, every symmetric cone is Jordan-isomorphic to a
+      unique (up to order) orthogonal direct sum whose factors come
+      from the list above.
     \end{theorem}
 
-    The restrictions on $n$ ensure that the families are distinct up
-    to Jordan isomorphism: the cones $\Hnplus[2]\of{\Rn[1]}$,
-    $\Hnplus[2]\of{\Cn[1]}$, $\Hnplus[2]\of{\quaternions}$, and
-    $\Hnplus[2]\of{\octonions}$ are symmetric, but they are
-    Jordan-isomorphic to Lorentz cones of appropriate sizes (Faraut
-    and Korányi~\cite{faraut-koranyi}, Corollary~IV.1.5). The trivial
-    cone in the trivial space, obtained as an empty sum, is also
-    symmetric but is spiritually a member of the family $\Lnplus$ with
-    $n=0$.
+    The trivial cone in the trivial space, obtained as an empty sum,
+    is also symmetric but is spiritually a member of the family
+    $\Lnplus$ with $n=0$.
+
+    The restrictions on $n$ in \cref{thm:direct sum decomposition}
+    ensure that the families are distinct up to Jordan isomorphism.
+    The cones $\Hnplus[2]\of{\Rn[1]}$, $\Hnplus[2]\of{\Cn[1]}$,
+    $\Hnplus[2]\of{\quaternions}$, and $\Hnplus[2]\of{\octonions}$ are
+    symmetric, but they are Jordan-isomorphic to Lorentz cones of
+    appropriate sizes (Faraut and Korányi~\cite{faraut-koranyi},
+    Corollary~IV.1.5). In dimensions one and two, all symmetric cones
+    are polyhedral and are therefore linearly isomorphic to either
+    $\Lnplus[1]$ or $\directsum{\Lnplus[1]}{\Lnplus[1]}$. Less
+    obviously, they are Jordan-isomorphic: using Proposition~IV.3.2 of
+    Faraut and Korányi~\cite{faraut-koranyi}, we can choose bases for
+    both spaces consisting of primitive idempotents that belong to
+    extreme rays of the symmetric cone. The map sending one basis to
+    the other must then be a Jordan isomorphism, and it maps one cone
+    onto the other.
 
     The Lyapunov rank of a proper cone---and in particular of a
     symmetric cone---is the dimension of the Lie algebra of its linear
@@ -328,21 +351,12 @@
     \Lnplus[1]$. (The decomposition in \cref{thm:direct sum
       decomposition} is orthogonal, so there is no issue switching
     between Cartesian products and direct sums when we are working up
-    to isomorphism.) In dimension $n \le 2$, all symmetric cones have
-    $n$ extreme rays and are thus linearly isomorphic to
-    $\Rnplus$. Less obviously, they are Jordan-isomorphic: using
-    Proposition~IV.3.2 of Faraut and Korányi~\cite{faraut-koranyi}, we
-    can choose bases for both spaces consisting of primitive
-    idempotents that belong to extreme rays of the symmetric cone. The
-    map sending one basis to the other must then be a Jordan
-    isomorphism, and it maps one cone onto the other.
-
-    As a result, when we are working up to isomorphism, we will
-    usually write $\Roneplus$ or $\Rnplus[2]$ to indicate a one- or
-    two-dimensional symmetric cone. From the two tables and the
-    preceding discussion, it should be apparent that the Lyapunov rank
-    of $\Rnplus$ is strictly less than that of any other
-    (non-isomorphic) $n$-dimensional symmetric cone.
+    to isomorphism.) Keeping in mind that all symmetric cones are
+    isomorphic in fewer than three dimensions, we will typically write
+    $\Roneplus$ or $\Rnplus[2]$ to indicate a one- or two-dimensional
+    symmetric cone. From the two tables, it should be apparent that
+    the Lyapunov rank of $\Rnplus$ is strictly less than that of any
+    other (non-isomorphic) $n$-dimensional symmetric cone.
   \end{section}
 
   \begin{section}{Irreducible symmetric cones}\label{sec:irreducible cones}
