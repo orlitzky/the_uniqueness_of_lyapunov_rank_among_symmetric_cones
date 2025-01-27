@@ -326,9 +326,9 @@ def lowerbound3b(K):
     return 5
 
 
-def test_proposition2():
+def test_proposition3():
     r"""
-    Test the statement of Proposition 2.
+    Test the statement of Proposition 3.
 
     We construct a random cone and checking that its Lorentz rank is
     exceeded by that of the Lorentz cone of the same dimension.
@@ -346,7 +346,7 @@ def test_proposition2():
 
     The result should hold::
 
-        >>> test_proposition2()
+        >>> test_proposition3()
         True
 
     Confirm that using two Lorentz cones gives you a smaller Lyapunov
@@ -412,9 +412,9 @@ def test_proposition2():
     return ( J == K or J.rank > K.rank )
 
 
-def test_proposition3() -> bool:
+def test_proposition4() -> bool:
     r"""
-    Test the statement of Proposition 3.
+    Test the statement of Proposition 4.
 
     Returns
     -------
@@ -426,10 +426,10 @@ def test_proposition3() -> bool:
 
     The result should hold::
 
-        >>> test_proposition3()
+        >>> test_proposition4()
         True
 
-    From the proof of Proposition 3, we know that for ``n >= 3``,
+    From the proof of Proposition 4, we know that for ``n >= 3``,
     ``HR(n)`` has symmetric similacra with only Lorentz
     factors. Moreover when ``n < 3``, ``HR(n)`` _is_ a Lorentz
     cone. In either case, ``HR(n)`` should share its signature with a
@@ -480,9 +480,9 @@ def test_proposition3() -> bool:
 
 
 
-def test_proposition4() -> bool:
+def test_proposition5() -> bool:
     r"""
-    Test the statement of Proposition 4.
+    Test the statement of Proposition 5.
 
     Returns
     -------
@@ -494,10 +494,10 @@ def test_proposition4() -> bool:
 
     The result should hold::
 
-        >>> test_proposition4()
+        >>> test_proposition5()
         True
 
-    From the proof of Proposition 4, we know that for ``n >= 4``,
+    From the proof of Proposition 5, we know that for ``n >= 4``,
     ``HC(n)`` has symmetric similacra with only Lorentz
     factors. Moreover when ``n < 3``, ``HC(n)`` _is_ a Lorentz
     cone. In either case, ``HC(n)`` should share its signature with a
@@ -567,9 +567,9 @@ def test_proposition4() -> bool:
 
 
 
-def test_proposition5() -> bool:
+def test_proposition6() -> bool:
     r"""
-    Test the statement of Proposition 5.
+    Test the statement of Proposition 6.
 
     Returns
     -------
@@ -581,13 +581,13 @@ def test_proposition5() -> bool:
 
     The result should hold::
 
-        >>> test_proposition5()
+        >>> test_proposition6()
         True
 
-    From the proof of Proposition 5, we know that for ``n >= 3``,
+    From the proof of Proposition 6, we know that for ``n >= 3``,
     ``HH(n)`` has symmetric similacra with only Lorentz factors (the
     convenient ``HC(n+1)`` factor can be replaced by Lorentz cones
-    using Proposition 4). Moreover when ``n < 3``, ``HH(n)`` _is_ a
+    using Proposition 5). Moreover when ``n < 3``, ``HH(n)`` _is_ a
     Lorentz cone. In either case, ``HH(n)`` should share its signature
     with a sum of Lorentz cones. We begin by computing the largest
     ``n`` for which we have the corresponding sum-of-Lorentz-cone data
@@ -671,9 +671,9 @@ def test_proposition5() -> bool:
     return all( HH(n).similacra() for n in range(n_min, n_max+1) )
 
 
-def test_proposition6() -> bool:
+def test_proposition7() -> bool:
     r"""
-    Test the statement of Proposition 6.
+    Test the statement of Proposition 7.
 
     Returns
     -------
@@ -685,10 +685,10 @@ def test_proposition6() -> bool:
 
     The result should hold::
 
-        >>> test_proposition6()
+        >>> test_proposition7()
         True
 
-    From the proof of Proposition 6, we know that ``HO(3)`` has a
+    From the proof of Proposition 7, we know that ``HO(3)`` has a
     symmetric similacrum with only Lorentz factors. Moreover when ``n
     < 3``, ``HO(n)`` _is_ a Lorentz cone. In either case, ``HO(n)``
     should share its signature with a sum of Lorentz cones. We begin
@@ -1576,9 +1576,9 @@ def test_corollary3() -> bool:
     return result
 
 
-def test_proposition7() -> bool:
+def test_proposition8() -> bool:
     r"""
-    Test Proposition 7.
+    Test Proposition 8.
 
     Returns
     -------
@@ -1590,7 +1590,7 @@ def test_proposition7() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_proposition7()
+        >>> test_proposition8()
         True
 
     Confirm the table for ``n <= 30`` using sums of Lorentz cones. If
@@ -1649,9 +1649,9 @@ def test_proposition7() -> bool:
     )
 
 
-def test_proposition8() -> bool:
+def test_proposition9() -> bool:
     r"""
-    Test Proposition 8.
+    Test Proposition 9.
 
     Returns
     -------
@@ -1663,7 +1663,7 @@ def test_proposition8() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_proposition8()
+        >>> test_proposition9()
         True
 
     Verify the cases mentioned explicitly in the proof. First, the
@@ -1820,9 +1820,9 @@ def test_lemma5() -> bool:
     )
 
 
-def test_proposition9() -> bool:
+def test_proposition10() -> bool:
     r"""
-    Test Proposition 9.
+    Test Proposition 10.
 
     Returns
     -------
@@ -1834,7 +1834,7 @@ def test_proposition9() -> bool:
 
     The characterization in the result should hold::
 
-        >>> test_proposition9()
+        >>> test_proposition10()
         True
 
     In addition to the ``similacra`` check, we can also use our cached

@@ -43,7 +43,7 @@ def f(n : int) -> int:
     r"""
     Compure the Lyapunov rank of the Lorentz cone in ``n``
     dimensions. This function was imaginatively called ``f`` in
-    Proposition 8 and Theorem 4.
+    Proposition 9 and Theorem 4.
 
     Parameters
     ----------
@@ -365,7 +365,7 @@ def partition_similacra(p : list[int]) -> Generator[list[int], None, None]:
     We infer the integer from the given partition, and then compute
     the other partitions of it one-at-a-time. We skip partitions all
     of whose entries are less than the smallest entry in the given
-    partition, since by Proposition 2, the Lyapunov rank associated
+    partition, since by Proposition 3, the Lyapunov rank associated
     with any such partition will be too small. We also skip partitions
     whose largest entry is equal to the smallest entry in the target
     partition, since the best we could hope for in that case is that

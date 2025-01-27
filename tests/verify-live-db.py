@@ -79,7 +79,7 @@ if __name__ == "__main__":
         result = False
     report()
 
-    print("Need max_cone_dim() >= 9 for Propositions 4 and 8... ", flush=True, end="")
+    print("Need max_cone_dim() >= 9 for Propositions 5 and 9... ", flush=True, end="")
     if mcd < 9:
         result = False
     report()
@@ -99,12 +99,12 @@ if __name__ == "__main__":
         result = False
     report()
 
-    print("Need max_cone_dim() >= 36 for Proposition 9... ", flush=True, end="")
+    print("Need max_cone_dim() >= 36 for Proposition 10... ", flush=True, end="")
     if mcd < 36:
         result = False
     report()
 
-    print("Need max_cone_dim() >= 39 for Proposition 7... ", flush=True, end="")
+    print("Need max_cone_dim() >= 39 for Proposition 8... ", flush=True, end="")
     if mcd < 39:
         result = False
     report()
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         result = False
     report()
 
-    print("Need max_lorentz_rank_dim() >= 39 for Proposition 7... ", flush=True, end="")
+    print("Need max_lorentz_rank_dim() >= 39 for Proposition 8... ", flush=True, end="")
     if mlrd < 39:
         result = False
     report()
