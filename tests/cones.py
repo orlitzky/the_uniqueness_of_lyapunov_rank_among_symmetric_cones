@@ -1209,10 +1209,19 @@ class DirectSum(SymmetricCone):
 # to a pair of 1d Lorentz cones.
 L._instance_cache[2] = DirectSum( (L(1),L(1)) )
 
-def random_irreducible_cone() -> SymmetricCone:
+def random_irreducible_cone(n_min : int = 1, n_max : int = 10) -> SymmetricCone:
     r"""
     Generate a random irreducible symmetric cone; that is, a
     :class:`SymmetricCone` that is not a :class:`DirectSum`.
+
+    Parameters
+    ----------
+
+    n_min : int, default=1
+      The smallest possible "size" for the cone.
+
+    n_max : int, default=10
+      The largest possible "size" for the cone.
 
     Returns
     -------
@@ -1227,11 +1236,15 @@ def random_irreducible_cone() -> SymmetricCone:
         >>> isinstance(random_irreducible_cone(), DirectSum)
         False
 
+        >>> K = random_irreducible_cone(10,10)
+        >>> K.dim >= 10
+        True
+
     """
     from random import choice, randint
 
     c = choice(SymmetricCone.irreducible_classes())
-    n = randint(1,10)
+    n = randint(n_min, n_max)
     if c == HO:
         # otherwise not symmetric
         n = min(3,n)
