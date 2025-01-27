@@ -114,7 +114,7 @@ def fix_floor(s):
 def lowerbound1(K):
     r"""
     The first of the three lower bounds on "n", used in the
-    proof of Lemma 3 and elsewhere.
+    proof of Lemma 4 and elsewhere.
 
     Parameters
     ----------
@@ -166,7 +166,7 @@ def lowerbound1(K):
 
 def lowerbound2(K):
     r"""
-    The second lower bound on "n" used in the proof of Lemma 4
+    The second lower bound on "n" used in the proof of Lemma 5
     and elsewhere.
 
     Parameters
@@ -215,7 +215,7 @@ def lowerbound2(K):
 
 def lowerbound3a(K : SymmetricCone) -> int:
     r"""
-    The third lower bound on "n", used in the proof of Lemma 2
+    The third lower bound on "n", used in the proof of Lemma 3
     and elsewhere (and later loosened to :func:`lowerbound3b`).
 
     Parameters
@@ -771,9 +771,9 @@ def test_theorem2() -> bool:
                  if K.dim <= max_cone_dim() )
 
 
-def test_lemma1() -> bool:
+def test_lemma2() -> bool:
     r"""
-    Test the statement of Lemma 1.
+    Test the statement of Lemma 2.
 
     Returns
     -------
@@ -785,7 +785,7 @@ def test_lemma1() -> bool:
 
     The result should hold::
 
-        >>> test_lemma1()
+        >>> test_lemma2()
         True
 
     """
@@ -915,9 +915,9 @@ def test_theorem3_example() -> bool:
     return result
 
 
-def test_lemma2() -> bool:
+def test_lemma3() -> bool:
     r"""
-    Test Lemma 2.
+    Test Lemma 3.
 
     Returns
     -------
@@ -929,7 +929,7 @@ def test_lemma2() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_lemma2()
+        >>> test_lemma3()
         True
 
     In the proof of this lemma, we average :func:`lowerbound1` and
@@ -992,9 +992,9 @@ def test_lemma2() -> bool:
     )
 
 
-def test_lemma3() -> bool:
+def test_lemma4() -> bool:
     r"""
-    Test Lemma 3.
+    Test Lemma 4.
 
     Returns
     -------
@@ -1006,7 +1006,7 @@ def test_lemma3() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_lemma3()
+        >>> test_lemma4()
         True
 
     """
@@ -1056,9 +1056,9 @@ def test_lemma3() -> bool:
 
 
 
-def test_lemma4() -> bool:
+def test_lemma5() -> bool:
     r"""
-    Test Lemma 4.
+    Test Lemma 5.
 
     Returns
     -------
@@ -1070,7 +1070,7 @@ def test_lemma4() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_lemma4()
+        >>> test_lemma5()
         True
 
     Check the symbolic identity for the derivative of the g-delta
@@ -1775,9 +1775,9 @@ def test_proposition9() -> bool:
     )
 
 
-def test_lemma5() -> bool:
+def test_lemma6() -> bool:
     r"""
-    Test Lemma 5.
+    Test Lemma 6.
 
     Returns
     -------
@@ -1789,7 +1789,7 @@ def test_lemma5() -> bool:
 
     The implication in the result should hold::
 
-        >>> test_lemma5()
+        >>> test_lemma6()
         True
 
     For ``n <= 2``, there shouldn't be any similacra in the first
@@ -1838,7 +1838,7 @@ def test_proposition10() -> bool:
         True
 
     In addition to the ``similacra`` check, we can also use our cached
-    partitions thanks to Lemma 5. This allows us to test all the way
+    partitions thanks to Lemma 6. This allows us to test all the way
     up to ``n == 100``.....
 
 

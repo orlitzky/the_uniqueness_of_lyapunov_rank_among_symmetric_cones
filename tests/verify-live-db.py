@@ -69,7 +69,7 @@ if __name__ == "__main__":
                 result = False
     report()
 
-    print("Need max_cone_dim() >= 4 for Lemma 5... ", flush=True, end="")
+    print("Need max_cone_dim() >= 4 for Lemma 6... ", flush=True, end="")
     if mcd < 4:
         result = False
     report()
