@@ -364,6 +364,19 @@
     referring to \cref{thm:direct sum decomposition} without having to
     redefine ``isomorphism'' for convex cones.
 
+    \begin{lemma}\label{lem:signatures determine isomorphism for irreducible}
+      If $K$ and $J$ are irreducible symmetric cones, then
+      $\signature{K} = \signature{J}$ if and only if $K$ and $J$ are
+      Jordan-isomorphic.
+      %
+      \begin{proof}
+        The full list of distinct cones is provided in
+        \cref{thm:direct sum decomposition}, and \cref{tab:signatures
+          of building blocks} can be used to verify that no two
+        distinct factors can have the same signature.
+      \end{proof}
+    \end{lemma}
+
     \begin{proposition}
       If $K$ is a symmetric cone in $V$, if $A : V \to W$ is linear
       and invertible, and if $A\of{K}$ is symmetric, then $K$ and
@@ -414,11 +427,8 @@
         either~\cite{rudolf-noyan-papp-alizadeh}. The question is
         therefore reduced to the following: are there two different
         (not Jordan-isomorphic) irreducible symmetric cones having the
-        same signature? The answer to this question is negative. The
-        full list of distinct cones is provided in \cref{thm:direct
-          sum decomposition}, and \cref{tab:signatures of building
-          blocks} can be used to verify that no two distinct factors
-        can have the same signature.
+        same signature? This question was answered negatively by
+        \cref{lem:signatures determine isomorphism for irreducible}.
       \end{proof}
     \end{proposition}
   \end{section}
