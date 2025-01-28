@@ -326,6 +326,108 @@ def lowerbound3b(K):
     return 5
 
 
+
+def test_lemma1():
+    r"""
+    Test the statement of Lemma 1.
+
+    We construct many random irreducible cones and checking that their
+    signatures match if and only if they are equal.
+
+    Examples
+    --------
+
+    The result should hold::
+
+        >>> test_lemma1()
+        True
+
+    The only cone of the same dimension as ``HO(3)`` is ``L(27)``, and
+    its Lyapunov rank is too large::
+
+        >>> HR(6).dim, HR(7).dim
+        (21, 28)
+        >>> HC(5).dim, HC(6).dim
+        (25, 36)
+        >>> HH(3).dim, HH(4).dim
+        (15, 28)
+        >>> L(27).rank
+        352
+
+    There are no members (``3``-by-``3`` or larger) of the matrix
+    families with matching signatures::
+
+        >>> from sympy import symbols, solve
+        >>> m,n = symbols("m,n", integer=True, positive=True)
+        >>> solve([fix_floor(HR(m).dim) - HC(n).dim, HR(m).rank - HC(n).rank], n)
+        []
+        >>> solve([fix_floor(HR(m).dim) - HC(n).dim, HR(m).rank - HC(n).rank], m)
+        []
+        >>> solve([fix_floor(HR(m).dim) - HH(n).dim, HR(m).rank - HH(n).rank], n)
+        []
+        >>> solve([fix_floor(HR(m).dim) - HH(n).dim, HR(m).rank - HH(n).rank], m)
+        []
+        >>> solve([HC(m).dim - HH(n).dim, HC(m).rank - HH(n).rank], m)
+        []
+        >>> solve([HC(m).dim - HH(n).dim, HC(m).rank - HH(n).rank], n)
+        []
+
+    We should actually be obtaining the solution ``m == n == 1`` for
+    all of these, but the formula (per Appendix A) for the Lyapunov
+    rank of ``HH(1)`` is wrong.  I don't know why the solution set is
+    empty for ``HR(1)`` and ``HC(1)``. We can easily verify::
+
+        >>> [HR(1).dim - HC(1).dim, HR(1).rank - HC(1).rank]
+        [0, 0]
+
+    If we allow ``m`` and ``n`` to be zero, the ``m == n == 1``
+    solution shows up indirectly::
+
+        >>> m,n = symbols("m,n", integer=True, nonnegative=True)
+        >>> solve([HR(m).dim - HC(n).dim, HR(m).rank - HC(n).rank], m)
+        [(-sqrt(2*n**2 - 1),), (sqrt(2*n**2 - 1),)]
+
+    However, only the latter of these is real and positive, and only
+    for ``n >= 1``. If we substitute ``m == sqrt(2*n**2 - 1)`` into
+    the equation relating the dimensions, we derive ``n == 1``, albeit
+    with no help from SymPy, who thinks that the equation
+    ``sqrt(2*n**2 - 1) == 1`` has no solutions::
+
+        >>> from sympy import sqrt
+        >>> eq = 2*(fix_floor(HR(sqrt(2*n**2 - 1)).dim) - HC(n).dim)
+        >>> eq
+        sqrt(2*n**2 - 1) - 1
+        >>> solve(eq, n)
+        []
+
+    Anyway, back to the argument: the signature of a Lorentz cone
+    matches that of an ``n``-by-``n`` matrix cone only for ``n <= 2``,
+    where they are isomorphic to Lorentz cones. Though note that the
+    formulas for Lyapunov rank (per Appendix A) are not even valid for
+    the matrix cones when ``n <= 1``::
+
+        >>> solve(fix_floor(L(HR(n).dim).rank - HR(n).rank), n)
+        [1, 2]
+        >>> solve(fix_floor(L(HC(n).dim).rank - HC(n).rank), n)
+        [1, 2]
+        >>> solve(fix_floor(L(HH(n).dim).rank - HH(n).rank), n)
+        [2]
+
+    """
+    # Use lists here to avoid quietly exhausting the generator in the
+    # "all" comprehension.
+    Ks = [ random_irreducible_cone(0,20) for _ in range(250) ]
+    Js = [ random_irreducible_cone(0,20) for _ in range(250) ]
+
+    return all(
+      (K.signature() == J.signature())
+      ==
+      (K == J)
+      for K in Ks
+      for J in Js
+    )
+
+
 def test_proposition3():
     r"""
     Test the statement of Proposition 3.
