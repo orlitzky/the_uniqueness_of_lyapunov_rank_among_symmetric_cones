@@ -256,16 +256,17 @@
     The Lyapunov rank of a proper cone---and in particular of a
     symmetric cone---is the dimension of the Lie algebra of its linear
     automorphism group~\cite{gowda-tao_-_rank}. For our purposes, it
-    is simply a number associated with the cone, and happens to be
-    additive on a direct sum. Given that Cartesian products and direct
-    sums are linearly isomorphic, this follows from Lemma~1 and
-    Proposition~9 of Rudolf, Noyan, Papp, and
+    is simply a number associated with the cone that happens to be
+    additive on a direct sum and invariant under linear
+    isomorphisms. The following combines Lemma~1 and Proposition~9 of
+    Rudolf, Noyan, Papp, and
     Alizadeh~\cite{rudolf-noyan-papp-alizadeh}.
 
     \begin{proposition}\label{prop:lyapunov rank is additive on direct sums}
-      If $K$ and $J$ are symmetric cones, then
-      $\lyapunovrank{\directsum{K}{J}} = \lyapunovrank{K} +
-      \lyapunovrank{J}$.
+      Suppose $K$ and $J$ are symmetric cones, and that $A$ is linear
+      and invertible. Then $\lyapunovrank{\directsum{K}{J}} =
+      \lyapunovrank{K} + \lyapunovrank{J}$, and $\lyapunovrank{A\of{K}}
+        = \lyapunovrank{K}$.
     \end{proposition}
 
     Taken together, we call the combination of dimension and Lyapunov
@@ -370,10 +371,16 @@
       Jordan-isomorphic.
       %
       \begin{proof}
-        The full list of distinct cones is provided in
-        \cref{thm:direct sum decomposition}, and \cref{tab:signatures
-          of building blocks} can be used to verify that no two
-        distinct factors can have the same signature.
+        Jordan isomorphisms are linear isomorphisms, so one
+        implication follows easily from \cref{prop:lyapunov rank is
+          additive on direct sums}. For the other, the full list of
+        distinct cones (up to Jordan isomorphism) is provided by
+        \cref{thm:direct sum decomposition}. According to
+        \cref{prop:lyapunov rank is additive on direct sums}, it
+        suffices to consider the signatures of only these
+        representatives.  With that in mind, \cref{tab:signatures of
+          building blocks} can be used to verify that no two distinct
+        irreducible factors can have the same signature.
       \end{proof}
     \end{lemma}
 
@@ -392,10 +399,10 @@
         \end{equation*}
         %
         And $A$ is invertible, so it preserves irreducibility: if
-        $A\of{K_{1}}$ were expressible as $\directsum{J_{1}}{J_{2}}$,
-        we could invert to obtain $K_{1} =
+        $A\of{K_{i}}$ were expressible as $\directsum{J_{1}}{J_{2}}$,
+        we could invert to obtain $K_{i} =
         \directsum{\inverse{A}\of{J_{1}}}{\inverse{A}\of{J_{2}}}$,
-        contradicting the irreducibility of $K_{1}$. It follows that
+        contradicting the irreducibility of $K_{i}$. It follows that
         %
         \begin{equation*}
           A\of{K}
@@ -421,13 +428,12 @@
 
         It remains only to show that $A$ does not change the
         Jordan-isomorphism class of any $K_{i}$. Obviously $A$ will
-        not change the dimension of $K_{i}$, and Lemma~1 of Rudolf,
-        Noyan, Papp, and Alizadeh states that $A$ will not change the
-        Lyapunov rank of $K_{i}$
-        either~\cite{rudolf-noyan-papp-alizadeh}. The question is
-        therefore reduced to the following: are there two different
-        (not Jordan-isomorphic) irreducible symmetric cones having the
-        same signature? This question was answered negatively by
+        not change the dimension of $K_{i}$, and \cref{prop:lyapunov
+          rank is additive on direct sums} states that $A$ will not
+        change its Lyapunov rank either. The question is therefore
+        reduced to the following: are there two different (not
+        Jordan-isomorphic) irreducible symmetric cones having the same
+        signature? This question was answered negatively by
         \cref{lem:signatures determine isomorphism for irreducible}.
       \end{proof}
     \end{proposition}
