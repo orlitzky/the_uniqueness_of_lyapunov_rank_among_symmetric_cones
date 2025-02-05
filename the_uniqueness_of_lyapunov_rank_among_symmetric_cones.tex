@@ -149,27 +149,34 @@
   \end{section}
 
   \begin{section}{Background}
-    Our main objects of interest are symmetric cones in finite
+    The main objects of interest are symmetric cones in finite
     dimensions. All such cones arise as the cone of squares in some
-    Euclidean Jordan algebra~\cite{faraut-koranyi}. They are
-    self-dual, and in particular, full-dimensional---they span the
-    ambient space. This will be important because if we are searching
-    for symmetric cones isomorphic to a given cone, it is a waste of
-    time to check inside spaces of higher/lower dimensions.
+    Euclidean Jordan algebra~\cite{faraut-koranyi}. Symmetric cones
+    are self-dual, and in particular \emph{proper}: closed, convex,
+    pointed, and solid. A convex cone is \emph{reducible} if it is the
+    direct sum of two nontrivial convex cones, and \emph{irreducible}
+    if not. Every proper cone can be expressed as a direct sum of
+    nontrivial irreducible cones, and this sum is unique up to the
+    order of its factors (Hauser and Güler~\cite{hauser-guler},
+    Theorem~4.3). This general result holds even in the absence of an
+    inner product. When we have an inner product, and when our cone is
+    symmetric, we can say much more: the decomposition will be
+    orthogonal, the factors will be symmetric, and all potential
+    factors have been classified up to isomorphism.
 
-    Every symmetric cone is the orthogonal direct sum of irreducible
-    symmetric cones (Faraut and Korányi~\cite{faraut-koranyi},
-    Proposition~III.4.5). Moreover, up to isomorphism, there are only
-    five families of irreducible factors. Chapter~V of Faraut and
-    Korányi classifies the simple Euclidean Jordan algebras; the
+    Chapter~V of Faraut and Korányi classifies the simple Euclidean
+    Jordan algebras up to isomorphism~\cite{faraut-koranyi}. The
     classification of irreducible symmetric cones then follows from
     the correspondence between symmetric cones and Euclidean Jordan
     algebras. Starting from a symmetric cone, one obtains a Euclidean
     Jordan algebra (Faraut and Korányi, Chapter~III) in which the
     given cone is the cone of squares. That algebra is the orthogonal
     direct sum of simple algebras by Proposition~III.4.4. In each of
-    those simple factors, the cone of squares is a symmetric cone,
-    which must be irreducible to avoid contradictions.
+    those simple factors, the cone of squares is a symmetric cone, and
+    it must be irreducible to avoid contradictions. The resulting
+    decomposition of a symmetric cone is Faraut and Korányi's
+    Proposition~III.4.5, which we now combine with the classification
+    of simple algebras.
 
     \begin{theorem}\label{thm:direct sum decomposition}
       % Take an empty sum to get K = {0}. This allows us to stipulate
