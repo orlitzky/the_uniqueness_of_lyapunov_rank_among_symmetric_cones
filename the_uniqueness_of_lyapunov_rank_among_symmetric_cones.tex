@@ -82,21 +82,16 @@
   \end{abstract}
 
   \begin{section}{Introduction}
-    The motivation for Lyapunov rank comes from linear programming:
-    the familiar complementary slackness condition $\ip{x}{s} = 0$ for
+    The motivation for Lyapunov rank comes from linear programming.
+    The familiar complementary slackness condition $\ip{x}{s} = 0$ for
     $x,s \in \Rnplus$ can be separated into $n$ equations
     $\setc{x_{i}s_{i} = 0}{i = 1,2,\ldots,n}$ using the nonnegativity
-    of the components. The idea is that these $n$ equations should be
-    easier to solve than the one equation we started
+    of the components, and these $n$ equations should be easier to
+    solve simultaneously than the one equation we started
     with. Complementary slackness is a necessary condition for
-    optimality, so this helps us find candidate solutions. In this
-    example, $n$ is the dimension of the space of all $n$-by-$n$
-    diagonal matrices. It is not terribly obvious, but that space is
-    the Lie algebra of $\Aut{\Rnplus}$.
-
-    Albeit under a different name, the study of Lyapunov rank goes
-    back to Rudolf, Noyan, Papp, and
-    Alizadeh~\cite{rudolf-noyan-papp-alizadeh} who realized that this
+    optimality, so being able to solve that system can lead us to
+    candidate solutions. Rudolf, Noyan, Papp, and
+    Alizadeh~\cite{rudolf-noyan-papp-alizadeh} realized that this
     scenario generalizes to a cone program over a proper cone $K$ and
     its dual $\dual{K}$. In a cone program, complementary slackness is
     still a necessary condition for optimality, and the the condition
