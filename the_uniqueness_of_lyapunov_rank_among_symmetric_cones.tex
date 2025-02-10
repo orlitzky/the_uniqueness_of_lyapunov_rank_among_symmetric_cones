@@ -556,21 +556,25 @@
 
         For $n = 3$, we first show that if $\Hnplus[3]\of{\Cn[1]}$ has
         a symmetric similacrum, then it has one with all Lorentz
-        factors. Recall that for $m \le 2$, each of the matrix cones
+        factors---working up to isomorphism, of course. Recall that
+        for $m \le 2$, each of the matrix cones
         $\Hnplus[m]\of{\Fn[1]}$ with $\Fn[1] \in \set{\Rn[1], \Cn[1],
-          \quaternions, \octonions}$ is isomorphic to a Lorentz cone
-        of an appropriate size. For $m \ge 3$, we saw in
-        \cref{prop:real psd similacra} that any
-        $\Hnplus[m]\of{\Rn[1]}$ factors can be replaced by Lorentz
-        cones, and none of the other options $\Hnplus[m]\of{\Cn[1]}$,
-        $\Hnplus[m]\of{\quaternions}$, or $\Hnplus[3]\of{\octonions}$
-        are small enough to fit (except for $\Hnplus[3]\of{\Cn[1]}$
-        itself, which obviously does not help). We may therefore
-        assume that all factors in any similacrum are Lorentz cones of
-        various sizes.
+          \quaternions, \octonions}$ is in fact a Lorentz cone of an
+        appropriate size. We may therefore limit our attention to
+        those factors with $m \ge 3$. Having done so,
+        $\Hnplus[3]\of{\Rn[1]}$ is the only candidate whose dimension
+        allows it to appear (and only once!) as a factor in a
+        similacrum of $\Hnplus[3]\of{\Cn[1]}$. But if
+        $\Hnplus[3]\of{\Cn[1]} \sim
+        \directsum{J}{\Hnplus[3]\of{\Rn[1]}}$, then \cref{prop:real
+          psd similacra} tells us that $\Hnplus[3]\of{\Cn[1]} \sim J
+        \oplus \Lnplus[4] \oplus \Lnplus[2]$ as well, and this is a
+        sum of Lorentz cones.
 
-        Since $\lyapunovrank{\Lnplus[m]} > 17$ for $m > 6$, we need
-        only consider $\Lnplus[m]$ factors with $m \le 6$. And
+        It now suffices to show that $\Hnplus[3]\of{\Cn[1]}$ does not
+        share its signature with a direct sum of Lorentz cones. Since
+        $\lyapunovrank{\Lnplus[m]} > 17$ for $m > 6$, we need only
+        consider $\Lnplus[m]$ factors with $m \le 6$. And
         $\lyapunovrank{\Lnplus[6]} = 16$, so if $\Lnplus[6]$ were one
         factor, then the other factors would have combined signature
         $\pair{3}{1}$, which is not possible. Thus, $m \le 5$ for all
