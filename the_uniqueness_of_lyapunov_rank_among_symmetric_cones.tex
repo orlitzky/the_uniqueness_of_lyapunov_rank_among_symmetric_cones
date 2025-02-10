@@ -971,24 +971,31 @@
       $J' \sim K$.
 
       \begin{proof}
-        The ``if'' case is obvious and doesn't require any conditions
-        on $n$. Likewise when $K = \set{0}$. In the other direction,
-        and with $\dim\of{K} \ge 1$, we will show that if $J \sim
-        \directsum{K}{\Lnplus}$ does not have an $\Lnplus$ factor,
-        then there exists some symmetric cone $H$ having $\dim\of{H} =
-        \dim\of{J}$ but $\lyapunovrank{J} \le \lyapunovrank{H} <
-        \lyapunovrank{\directsum{K}{\Lnplus}}$. This of course would
-        be a contradiction, because $J$ and $\directsum{K}{\Lnplus}$
-        share a signature.
+        The ``if'' direction and the case $K = \set{0}$ are obvious
+        and don't require any conditions on $n$. In the other
+        direction, the main difficulty is showing that $J$ must itself
+        have an $\Lnplus$ factor. To that end, suppose that $J \sim
+        \directsum{K}{\Lnplus}$. We conclude from \cref{lem:no bigger
+          factors} that none of the Lorentz factors in $J$ are larger
+        than $\Lnplus$, and \cref{lem:not all smaller factors}
+        moreover implies that $J$ cannot consist entirely of Lorentz
+        cones of dimension $n-1$ or less. It follows that if $J$ has
+        only Lorentz factors, then it has at least one $\Lnplus$
+        factor.
 
-        Suppose, for example, that $J \sim \directsum{K}{\Lnplus}$ and
-        that $J$ has an $\Hnplus[m]\of{\Cn[1]}$ factor with $m \ge
-        3$. We will ``replace'' this factor with a sum of Lorentz
-        cones. With \cref{lem:not all smaller factors} in mind, what
-        we would like to do is find a set of Lorentz cones each of
-        dimension strictly less than $n$ whose dimensions add up to
-        the dimension of $\Hnplus[m]\of{\Cn[1]}$ and whose combined
-        Lyapunov ranks exceed that of $\Hnplus[m]\of{\Cn[1]}$. Since
+        On the other hand, if $J$ contains non-Lorentz factors, we can
+        ``replace'' the non-Lorentz factors by sums of Lorentz cones,
+        each of dimension $n-1$ or less, to obtain a new symmetric
+        cone $H$. The idea is that this $H$ will have the same
+        dimension as $J$ and will satisfy $\lyapunovrank{J} \le
+        \lyapunovrank{H} < \lyapunovrank{\directsum{K}{\Lnplus}}$ per
+        \cref{lem:not all smaller factors} unless $\Lnplus$ is a
+        factor of $J$. Suppose, for example, $J$ has an
+        $\Hnplus[m]\of{\Cn[1]}$ factor with $m \ge 3$. What we would
+        like to do is find a set of Lorentz cones, each of dimension
+        $n-1$ or less, whose dimensions add up to the dimension of
+        $\Hnplus[m]\of{\Cn[1]}$ and whose combined Lyapunov ranks
+        exceed that of $\Hnplus[m]\of{\Cn[1]}$. Since
         $\Hnplus[m]\of{\Cn[1]}$ is a factor of $J$, and since
         $\dim\of{J} = n + \dim\of{K}$, we can say with certainty that
         %
@@ -1054,25 +1061,22 @@
         \coloneqq \directsum{I}{\bar{J}}$ where $I$ consists only of
         Lorentz factors of dimension less than $n$, and where
         $\bar{J}$ contains whatever Lorentz factors were in $J$ when
-        we started\footnote{If $J$ has no non-Lorentz factors, we set $H
-        \coloneqq \bar{J} \coloneqq J$ as step zero.}. By \cref{lem:no
-          bigger factors}, none of the factors in $\bar{J}$ are
-        larger than $\Lnplus$. And if the factors of $\bar{J}$ were
-        all smaller than $\Lnplus$, then every factor of $H$ would be
-        smaller than $\Lnplus$, and \cref{lem:not all smaller factors}
-        would show that $\lyapunovrank{H} <
-        \directsum{K}{\Lnplus}$. But that of course would be a
-        contradiction, since $\lyapunovrank{J} \le
-        \lyapunovrank{H}$. As a result, at least one of the Lorentz
-        factors remaining in $\bar{J}$ is $\Lnplus$, and it originated
-        from $J$.
+        we started. Recall that $J$ contains no Lorentz factors larger
+        than $\Lnplus$ by \cref{lem:no bigger factors}. As a result,
+        if $J$ contains no $\Lnplus$ factors, then all factors of $H$
+        are Lorentz cones of dimension $n-1$ or less. From this we
+        would conclude that $\lyapunovrank{J} \le \lyapunovrank{H} <
+        \lyapunovrank{\directsum{K}{\Lnplus}}$, but of course this is
+        not possible. The only other option is for $J$ to have an
+        $\Lnplus$ factor.
 
-        Take one of those $\Lnplus$ factors from within $J$, and write
-        $J \cong \directsum{J'}{\Lnplus}$. It should be clear that if
-        $J \sim \directsum{K}{\Lnplus}$, then the signatures of $J'$
-        and $K$ agree. Moreover, $J'$ and $K$ cannot be isomorphic;
-        for if they were, then $J$ and $\directsum{K}{\Lnplus}$ would
-        be isomorphic, and they are not.
+        Now that we know it exists, take one of the $\Lnplus$ factors
+        from within $J$, and write $J \cong
+        \directsum{J'}{\Lnplus}$. It should be clear that if $J \sim
+        \directsum{K}{\Lnplus}$, then the signatures of $J'$ and $K$
+        agree. Moreover, $J'$ and $K$ cannot be isomorphic; for if
+        they were, then $J$ and $\directsum{K}{\Lnplus}$ would be
+        isomorphic, and they are not.
       \end{proof}
     \end{theorem}
 
