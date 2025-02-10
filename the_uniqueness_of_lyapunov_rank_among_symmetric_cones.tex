@@ -820,8 +820,9 @@
     cones wherein each factor is smaller than $\Lnplus$.
 
     \begin{lemma}\label{lem:not all smaller factors}
-      If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
-      \cref{itm:condition1,itm:condition2,itm:condition3}, then
+      Suppose $K$ is a symmetric cone, that $n \in \Nn[1]$ satisfies
+      \cref{itm:condition1,itm:condition2,itm:condition3}, and that $k
+      \in \Nn[1]$. Then
       %
       \begin{equation*}
         \lyapunovrank{\directsummany{i=1}{k}{\Lnplus[n_{i}]}}
@@ -829,8 +830,9 @@
         \lyapunovrank{\directsum{K}{\Lnplus}}
       \end{equation*}
       %
-      for any $k \in \Nn[1]$ and any $n_{1},n_{2},\ldots,n_{k} < n$
-      such that $\sum_{i=1}^{k} n_{i} = \dim\of{K} + n$.
+      for all $n_{1},n_{2},\ldots,n_{k} < n$ such that
+      $\dim\of{\directsummany{i=1}{k}{\Lnplus[n_{i}]}} =
+      \dim\of{\directsum{K}{\Lnplus}}$.
 
       \begin{proof}
         Note that $k \ge 2$ since $n_{1} < n$. By rearranging the
