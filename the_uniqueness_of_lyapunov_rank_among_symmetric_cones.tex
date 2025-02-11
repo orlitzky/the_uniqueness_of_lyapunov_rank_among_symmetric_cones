@@ -1143,10 +1143,10 @@
           \end{center}
         \end{table}
         %
-        The total dimension of $J$ is therefore at most $21$, which
-        allows us to eliminate all but one non-Lorentz cone as
+        The total dimension of $J$ is therefore at most $21$. This
+        will allow us to eliminate all but one non-Lorentz cone as
         possible factors of $J$ and $K$. The only non-Lorentz,
-        irreducible cone of dimension $7$ or less is
+        irreducible symmetric cone of dimension $7$ or less is
         $\Hnplus[3]\of{\Rn[1]}$, so immediately we see that no other
         non-Lorentz factors can be present in $K$. If we allow
         dimensions of $21$ or less (for factors of $J$), then a few
@@ -1156,11 +1156,12 @@
         $\Hnplus[3]\of{\quaternions}$. However, each of these can be
         ruled out.
 
-        Recall that $\lyapunovrank{\directsum{K}{\Lnplus}} \ge
-        \lyapunovrank{\Lnplus} + \dim\of{K}$. If $J$ has an
-        $\Hnplus[3]\of{\Cn[1]}$ factor, then $\lyapunovrank{J} = 17 +
-        \lyapunovrank{J'} \le 17 + \lyapunovrank{\Lnplus[n + \dim\of{K}
-            - 9]}$ by \cref{prop:rank of lorentz is
+        Recall that $\lyapunovrank{\directsum{K}{\Lnplus}}$ is bounded
+        below by $\lyapunovrank{\Lnplus} + \dim\of{K}$, since $K =
+        \Rnplus[\dim\of{K}]$ minimizes the Lyapunov rank. If $J$ has
+        an $\Hnplus[3]\of{\Cn[1]}$ factor, then $\lyapunovrank{J} = 17
+        + \lyapunovrank{J'} \le 17 + \lyapunovrank{\Lnplus[n +
+            \dim\of{K} - 9]}$ by \cref{prop:rank of lorentz is
           maximal}. Subtracting and substituting the values of
         $\pair{n}{\dim\of{K}}$ from the table above, we find that
         %
@@ -1201,17 +1202,17 @@
         \begin{itemize}
           \begin{item}
             $\Hnplus[3]\of{\Rn[1]}$ cannot be a factor of $K$, because
-            if it were, then $K$ would be isomorphic to either be
+            if it were, then $K$ would be isomorphic to either
             $\Hnplus[3]\of{\Rn[1]}$ or
-            $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Roneplus}$. And in
-            either of those cases, \cref{itm:condition2} requires $n
-            \ge 15$.
+            $\directsum{\Hnplus[3]\of{\Rn[1]}}{\Roneplus}$. In either
+            of those cases, \cref{itm:condition2} requires $n \ge 15$.
           \end{item}
 
           \begin{item}
             $\Hnplus[3]\of{\Rn[1]}$ cannot be a factor of $J$ unless
             $n \ge 10$ and $\dim\of{K} \ge 6$ because, otherwise, the
-            Lyapunov rank of $J$ will be too small.
+            Lyapunov rank of $J$ will be too small (the same argument
+            we used a moment ago).
           \end{item}
 
           \begin{item}
@@ -1220,15 +1221,14 @@
           \end{item}
         \end{itemize}
         %
-        So at most we will have to worry about a single
-        $\Hnplus[3]\of{\Rn[1]}$ factor in $J$, and only when $n \ge
-        10$. For lack of a better approach, the remaining cases can be
-        checked by brute force. If we had only Lorentz factors in both
-        $K$ and $J$, we could enumerate the possibilities by
-        partitioning the integers $\dim\of{K}$ and $n + \dim\of{K}$
-        for $K$ and $J$ respectively. But as there may be an
-        $\Hnplus[3]\of{\Rn[1]}$ in $J$, the process gets a little more
-        complicated.
+        So at most we can have a single $\Hnplus[3]\of{\Rn[1]}$ factor
+        in $J$, and only when $n \ge 10$. For lack of a better
+        approach, the remaining cases can be checked by brute
+        force. If we had only Lorentz factors in both $K$ and $J$, we
+        could enumerate the possibilities by partitioning the integers
+        $\dim\of{K}$ and $n + \dim\of{K}$ for $K$ and $J$
+        respectively. But as there may be an $\Hnplus[3]\of{\Rn[1]}$
+        in $J$, the process gets a little more complicated.
 
         For $n \le 9$ a pure integer-partition comparison can be used.
         For each $n \ge 10$ and each associated $\dim\of{K}$ in the
@@ -1245,7 +1245,7 @@
         $\dim\of{K}$, we compare Lyapunov ranks. Keeping in mind that
         \cref{itm:condition1,itm:condition2} must be satisfied, it
         easy to see that the theorem holds because $J \nsim
-        \directsum{K}{\Lnplus}$ for all generated $K$ and $J$.
+        \directsum{K}{\Lnplus}$ for all valid $K,J$.
       \end{proof}
     \end{theorem}
 
