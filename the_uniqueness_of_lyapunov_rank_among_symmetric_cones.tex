@@ -275,15 +275,15 @@
     Taken together, we call the combination of dimension and Lyapunov
     rank the \emph{signature} of a cone.
 
-    \begin{definition}[signature, similacra]
+    \begin{definition}[signature, simulacra]
       Let $K$ be a closed convex cone. The \emph{signature} of $K$ is
       the pair $\signature{K} \coloneqq
       \pair{\dim\of{K}}{\lyapunovrank{K}}$. If $J$ is another closed
-      convex cone, we say that $J$ is a \emph{similacrum} of $K$ if
+      convex cone, we say that $J$ is a \emph{simulacrum} of $K$ if
       $\signature{K} = \signature{J}$ and if $K$ and $J$ are
-      non-isomorphic. The plural of similacrum is \emph{similacra}. As
+      non-isomorphic. The plural of simulacrum is \emph{simulacra}. As
       shorthand we write $K \sim J$ to indicate that $K$ and $J$ are
-      similacra of one another. If they are not, then instead we write
+      simulacra of one another. If they are not, then instead we write
       $K \nsim J$.
     \end{definition}
 
@@ -447,7 +447,7 @@
 
   \begin{section}{Irreducible symmetric cones}\label{sec:irreducible cones}
     As a starting point, we show that $\Lnplus$ has no symmetric
-    similacra, regardless of $n$. This is not too surprising; it
+    simulacra, regardless of $n$. This is not too surprising; it
     follows from the fact that the Lyapunov rank of $\Lnplus$ is
     strictly maximal in $n$ dimensions. The latter is known to most
     people working with Lyapunov rank, and the details can be worked
@@ -514,15 +514,15 @@
       \end{proof}
     \end{proposition}
 
-    \begin{corollary}\label{cor:lorentz cone has no similacra}
-      $\Lnplus$ has no symmetric similacra for any $n \ge 0$.
+    \begin{corollary}\label{cor:lorentz cone has no simulacra}
+      $\Lnplus$ has no symmetric simulacra for any $n \ge 0$.
     \end{corollary}
 
     Next we resolve the problem that prompted this inquiry by showing
     that Lyapunov rank cannot be used to identify Loewnerian cones.
 
-    \begin{proposition}\label{prop:real psd similacra}
-      $\Hnplus\of{\Rn[1]}$ has symmetric similacra for all $n \ge 3$.
+    \begin{proposition}\label{prop:real psd simulacra}
+      $\Hnplus\of{\Rn[1]}$ has symmetric simulacra for all $n \ge 3$.
       %
       \begin{proof}
         Compare the signature of $\Lnplus[n+1] \oplus
@@ -530,13 +530,13 @@
       \end{proof}
     \end{proposition}
 
-    Interestingly, the formula in \cref{prop:real psd similacra}
+    Interestingly, the formula in \cref{prop:real psd simulacra}
     produces a duplicate signature for $n=2$ as well. The resulting
     cone $\Lnplus[3]$ is however isomorphic to $\Hnplus[2]\of{\Rn[1]}$
-    and therefore not a similacrum.
+    and therefore not a simulacrum.
 
-    \begin{proposition}\label{prop:complex psd similacra}
-      $\Hnplus[n]\of{\Cn[1]}$ has symmetric similacra for $n \ge 4$,
+    \begin{proposition}\label{prop:complex psd simulacra}
+      $\Hnplus[n]\of{\Cn[1]}$ has symmetric simulacra for $n \ge 4$,
       but not for $n = 3$.
 
       \begin{proof}
@@ -551,11 +551,11 @@
                \oplus \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n-1 \text{ times}}.
         \end{equation*}
         %
-        This shows that $\Hnplus\of{\Cn[1]}$ has symmetric similacra
+        This shows that $\Hnplus\of{\Cn[1]}$ has symmetric simulacra
         for all $n \ge 4$.
 
         For $n = 3$, we first show that if $\Hnplus[3]\of{\Cn[1]}$ has
-        a symmetric similacrum, then it has one with all Lorentz
+        a symmetric simulacrum, then it has one with all Lorentz
         factors---working up to isomorphism, of course. Recall that
         for $m \le 2$, each of the matrix cones
         $\Hnplus[m]\of{\Fn[1]}$ with $\Fn[1] \in \set{\Rn[1], \Cn[1],
@@ -564,10 +564,10 @@
         those factors with $m \ge 3$. Having done so,
         $\Hnplus[3]\of{\Rn[1]}$ is the only candidate whose dimension
         allows it to appear (and then only once!) as a factor in a
-        similacrum of $\Hnplus[3]\of{\Cn[1]}$. But if
+        simulacrum of $\Hnplus[3]\of{\Cn[1]}$. But if
         $\Hnplus[3]\of{\Cn[1]} \sim
         \directsum{J}{\Hnplus[3]\of{\Rn[1]}}$ for some $J$, then
-        \cref{prop:real psd similacra} tells us that
+        \cref{prop:real psd simulacra} tells us that
         $\Hnplus[3]\of{\Cn[1]} \sim J \oplus \Lnplus[4] \oplus
         \Lnplus[2]$ as well. This is a sum of Lorentz cones.
 
@@ -582,7 +582,7 @@
         remaining factors have combined signature $\pair{4}{6}$. The
         Lyapunov ranks of $\Rnplus[4]$ and $\Lnplus[3] \oplus
         \Roneplus$ are too small, and that of $\Lnplus[4]$ is too
-        large. Thus, a similacrum cannot have $\Lnplus[5]$ factors.
+        large. Thus, a simulacrum cannot have $\Lnplus[5]$ factors.
         If $\Lnplus[4]$ is a factor, then the other factors have
         signature $\pair{5}{10}$. $\Lnplus[5]$ has already been ruled
         out as a factor, and the Lyapunov rank of $\Lnplus[4] \oplus
@@ -595,8 +595,8 @@
     \end{proposition}
 
 
-    \begin{proposition}\label{prop:quaternion psd similacra}
-      $\Hnplus\of{\quaternions}$ has symmetric similacra for all $n \ge 3$.
+    \begin{proposition}\label{prop:quaternion psd simulacra}
+      $\Hnplus\of{\quaternions}$ has symmetric simulacra for all $n \ge 3$.
 
       \begin{proof}
         The first few examples we find by trial and error:
@@ -631,8 +631,8 @@
     \end{proposition}
 
 
-    \begin{proposition}\label{prop:octonion psd similacra}
-      $\Hnplus[3]\of{\octonions}$ has symmetric similacra.
+    \begin{proposition}\label{prop:octonion psd simulacra}
+      $\Hnplus[3]\of{\octonions}$ has symmetric simulacra.
 
       \begin{proof}
         Compare the signature of $\Lnplus[11] \oplus \Lnplus[5] \oplus
@@ -645,7 +645,7 @@
 
     \begin{theorem}\label{thm:only irreducible factors}
       If $K$ is an irreducible symmetric cone having no symmetric
-      similacra, then either $K \cong \Hnplus[3]\of{\Cn[1]}$ or $K
+      simulacra, then either $K \cong \Hnplus[3]\of{\Cn[1]}$ or $K
       \cong \Lnplus$ for some $n \in \Nn[1]$.
     \end{theorem}
   \end{section}
@@ -653,17 +653,17 @@
   \begin{section}{Reducible cones}\label{sec:reducible cones}
     The problem becomes much more difficult when we venture beyond
     irreducible cones. We have already met several reducible cones
-    whose Lyapunov ranks are not unique---every similacrum we
+    whose Lyapunov ranks are not unique---every simulacrum we
     constructed in the previous section has at least one symmetric
-    similacrum, namely the irreducible cone we constructed it to be a
-    similacrum of. So in the general case, the best we can hope for is
+    simulacrum, namely the irreducible cone we constructed it to be a
+    simulacrum of. So in the general case, the best we can hope for is
     to narrow down the possibilities. In this section we will focus on
     reducing the general problem to smaller subproblems. It is worth
     investigating due to the following (rather obvious) result.
 
-    \begin{lemma}\label{lem:subcone similacra}
+    \begin{lemma}\label{lem:subcone simulacra}
       If any symmetric subcone of a symmetric cone $K$ has symmetric
-      similacra, then so does $K$.
+      simulacra, then so does $K$.
       %
       \begin{proof}
         If $K = \directsum{K_{1}}{K_{2}}$ and if $K_{2} \sim J_{2}$,
@@ -672,10 +672,10 @@
     \end{lemma}
 
     If we can determine which pairs of factors have symmetric
-    similacra, then those pairs cannot appear in any larger symmetric
-    cone without inducing symmetric similacra. This might be called a
+    simulacra, then those pairs cannot appear in any larger symmetric
+    cone without inducing symmetric simulacra. This might be called a
     ``bottom up'' approach. Or, suppose we can prove that
-    $\directsum{J}{K}$ has symmetric similacra if and only if $K$
+    $\directsum{J}{K}$ has symmetric simulacra if and only if $K$
     does. In that case our job has become easier, and if we are lucky,
     the process may be repeated. This would be the ``top down''
     approach.
@@ -683,12 +683,12 @@
     \begin{corollary}\label{cor:no multiple complex factors}
       If a symmetric cone contains more than one
       $\Hnplus[3]\of{\Cn[1]}$ factor (up to isomorphism), then it has
-      symmetric similacra.
+      symmetric simulacra.
       %
       \begin{proof}
         If the cone contains two or more $\Hnplus[3]\of{\Cn[1]}$
         factors, then it contains two $\Hnplus[3]\of{\Cn[1]}$ factors,
-        and for the purposes of \cref{lem:subcone similacra} we may use
+        and for the purposes of \cref{lem:subcone simulacra} we may use
         %
         \begin{equation*}
           \directsum{\Hnplus[3]\of{\Cn[1]}}{\Hnplus[3]\of{\Cn[1]}}
@@ -702,7 +702,7 @@
 
     \begin{theorem}\label{thm:two sufficient families}
       Up to isomorphism, every symmetric cone $K$ is either of, or has
-      similacra of the form
+      simulacra of the form
       %
       \begin{equation*}
         \alpha \Hnplus[3]\of{\Cn[1]}
@@ -717,12 +717,12 @@
       \end{equation*}
       %
       where $\alpha \in \set{0,1}$ and $k,n_{1},n_{2},\ldots,n_{k} \in
-      \Nn[1]$. If $K$ has no similacra, then $K$ itself is of this
+      \Nn[1]$. If $K$ has no simulacra, then $K$ itself is of this
       form.
 
       \begin{proof}
         \cref{thm:only irreducible factors} shows that the other
-        irreducible families have similacra involving
+        irreducible families have simulacra involving
         $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, and \cref{cor:no
           multiple complex factors} shows that we need (or can have)
         at most one $\Hnplus[3]\of{\Cn[1]}$ factor.
@@ -731,8 +731,8 @@
 
     This result can be interpreted as saying that every symmetric cone
     shares its signature with a direct sum of Lorentz cones and/or
-    $\Hnplus[3]\of{\Cn[1]}$. We caution however that similacra of this
-    form may not be unique. Consider the similacra,
+    $\Hnplus[3]\of{\Cn[1]}$. We caution however that simulacra of this
+    form may not be unique. Consider the simulacra,
     \begin{equation*}
       \Lnplus[4] \oplus \Lnplus[3] \oplus \Lnplus[3] \oplus \Lnplus[3]
       \sim
@@ -740,17 +740,17 @@
     \end{equation*}
     %
     This shows that a cone can be isomorphic to, \emph{and} have
-    similacra of the form in \cref{thm:two sufficient
+    simulacra of the form in \cref{thm:two sufficient
       families}. Moreover, when applied to \cref{prop:octonion psd
-      similacra}, it shows that one cone can have two different
-    similacra of the desired form.
+      simulacra}, it shows that one cone can have two different
+    simulacra of the desired form.
 
     \cref{thm:two sufficient families} suggests which irreducible
     factors may be interesting to pair up and analyze. Eventually we
     will look at both $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$ and
     $\directsum{\Lnplus[m]}{\Lnplus[n]}$, but to lay the groundwork,
     we first consider the general case of $\directsum{K}{\Lnplus}$. If
-    the problem is to find similacra of $\directsum{K}{\Lnplus}$, we
+    the problem is to find simulacra of $\directsum{K}{\Lnplus}$, we
     will impose three conditions on $n$,
     %
     \begin{enumerate}
@@ -1264,7 +1264,7 @@
     By taking $K \coloneqq \Lnplus[m]$ for $m \ge 5$, we can be sure
     that this remains a counterexample even when the other two
     conditions are satisfied. When $K = \Rnplus[2]$ and $n = 4$, only
-    the condition $n \ge 5$ is violated, and we get the similacra
+    the condition $n \ge 5$ is violated, and we get the simulacra
     $\Hnplus[3]\of{\Rn[1]} \sim \directsum{\Rnplus[2]}{\Lnplus[4]}$.
     Finally, when $K = \Hnplus[3]\of{\Cn[1]}$, \cref{itm:condition2}
     gives the bound $n \ge 31$. But for $n = 30$, the other two
@@ -1279,28 +1279,28 @@
     Each bound is therefore essential.
 
     \begin{corollary}\label{cor:HC(3)+L(n)}
-      If $K$ is a symmetric cone having no symmetric similacra and if
+      If $K$ is a symmetric cone having no symmetric simulacra and if
       $n \ge 5$ satisfies \cref{itm:condition1,itm:condition2}, then
-      $\directsum{K}{\Lnplus}$ has no symmetric similacra. In
+      $\directsum{K}{\Lnplus}$ has no symmetric simulacra. In
       particular, $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$ has no
-      symmetric similacra for $n \ge 31$.
+      symmetric simulacra for $n \ge 31$.
     \end{corollary}
 
-    To catalogue the similacra of
+    To catalogue the simulacra of
     $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$, it now suffices to
     check the first thirty values of $n$. And we need only consider
-    similacra the form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with
+    simulacra the form $\directsummany{i=1}{k}{\Lnplus[n_{i}]}$ with
     $n-1 \ge n_{1} \ge n_{2} \ge \cdots \ge n_{k}$ and $k \ge 2$. For
-    if a similacrum contains $\Hnplus[3]\of{\Cn[1]}$, then, by
+    if a simulacrum contains $\Hnplus[3]\of{\Cn[1]}$, then, by
     subtracting $\pair{9}{17}$ from both signatures, it also contains
-    a similacrum for $\Lnplus$, which is not possible by
-    \cref{cor:lorentz cone has no similacra}. And if a similacrum does
+    a simulacrum for $\Lnplus$, which is not possible by
+    \cref{cor:lorentz cone has no simulacra}. And if a simulacrum does
     not contain $\Hnplus[3]\of{\Cn[1]}$, then either it consists of
     only Lorentz factors, or the results in \cref{sec:irreducible
       cones} let us find another cone having the same signature and
     only Lorentz factors. Since we need only consider Lorentz factors,
     enumerating the possibilities is easily accomplished by
-    partitioning $9+n$. Absent rows indicate the absence of similacra.
+    partitioning $9+n$. Absent rows indicate the absence of simulacra.
     %
     \begin{table}[H]
       \begin{center}
@@ -1377,15 +1377,15 @@
             $453$ &
             $\Lnplus[29] \oplus \Lnplus[10]$\\
           \end{tabular}
-        \caption{Similacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}\label{tab:HC(3)+L(n) similacra}
+        \caption{Simulacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}\label{tab:HC(3)+L(n) simulacra}
       \end{center}
     \end{table}
 
     \begin{proposition}
-      $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric similacra
+      $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric simulacra
       if and only if $n \in \set{2,3,\ldots,10,15,18,21,22,30}$. If
       $K$ is a symmetric cone with an $\Hnplus[3]\of{\Cn[1]}$ factor
-      and no symmetric similacra, then
+      and no symmetric simulacra, then
       %
       \begin{equation*}
         K
@@ -1405,8 +1405,8 @@
       \setminus \set{2,3,\ldots,10,15,18,21,22,30}$.
       %
       \begin{proof}
-        With \cref{lem:subcone similacra} in mind, start from
-        \cref{thm:two sufficient families} and remove the known similacra
+        With \cref{lem:subcone simulacra} in mind, start from
+        \cref{thm:two sufficient families} and remove the known simulacra
         from the table.
       \end{proof}
     \end{proposition}
@@ -1414,12 +1414,12 @@
     \begin{proposition}
       If $m \ne 2$ and if $n \ge \qty{m^2 - 3m + 6}/2$, then
       $\directsum{\Lnplus[m]}{\Lnplus}$ has no symmetric
-      similacra. When $m = 2$, the only counterexample that arises is
+      simulacra. When $m = 2$, the only counterexample that arises is
       $\directsum{\Rnplus[2]}{\Lnplus[4]} \sim \Hnplus[3]\of{\Rn[1]}$.
       %
       \begin{proof}
         The $m = 0$ case is handled by \cref{cor:lorentz cone has no
-          similacra}, so we may assume that $m \ge 1$. The condition
+          simulacra}, so we may assume that $m \ge 1$. The condition
         $n \ge \qty{m^2 - 3m + 6}/2$ is thus \cref{itm:condition1}
         applied to $K \coloneqq \Lnplus[m]$.
 
@@ -1454,7 +1454,7 @@
         %
         All of these cases are of dimension nine or less, where
         $\Hnplus[3]\of{\Rn[1]}$ is the only non-Lorentz cone small
-        enough to appear in a similacrum. A priori, to check them all,
+        enough to appear in a simulacrum. A priori, to check them all,
         we would need to check all sums of Lorentz cones with/without
         an $\Hnplus[3]\of{\Rn[1]}$ factor. But there are some
         shortcuts we can take:
@@ -1462,7 +1462,7 @@
         \begin{itemize}
           \begin{item}
             $\directsum{\Lnplus[m]}{\Lnplus} \cong \Rnplus[m+n]$ has
-            no similacra when $m,n \le 2$.
+            no simulacra when $m,n \le 2$.
           \end{item}
           \begin{item}
             When $m,n >= 3$, there are only two factors in
@@ -1470,8 +1470,8 @@
             be isomorphic to any symmetric cone whose decomposition
             contains three or more factors; if
             $\directsum{\Lnplus[m]}{\Lnplus}$ shares its signature
-            with such a cone, they are similacra. From \cref{prop:real
-              psd similacra}, we know that $\Hnplus[3]\of{\Rn[1]} \sim
+            with such a cone, they are simulacra. From \cref{prop:real
+              psd simulacra}, we know that $\Hnplus[3]\of{\Rn[1]} \sim
             \directsum{\Rnplus[2]}{\Lnplus[4]}$ which has three
             factors, because $\Rnplus[2] \cong
             \directsum{\Lnplus[1]}{\Lnplus[1]}$. If
@@ -1481,7 +1481,7 @@
             \directsum{\directsum{\Rnplus[2]}{\Lnplus[4]}}{J}$ as
             well. And since the dimension of $J$ is too small to admit
             any non-Lorentz cones, $\directsum{\Lnplus[m]}{\Lnplus}$
-            has a similacrum consisting of only Lorentz cones. We may
+            has a simulacrum consisting of only Lorentz cones. We may
             therefore check these cases by partitioning the dimension
             and looking for sums of Lorentz cones of the appropriate
             Lyapunov rank.
@@ -1496,11 +1496,11 @@
 
     The last case that we will single out is
     $\directsum{\Lnplus}{\Lnplus}$, which typically will have
-    similacra except for a few small values of $n$.
+    simulacra except for a few small values of $n$.
 
     \begin{lemma}\label{lem:Ln-squared is easy to brute force}
-      If $\directsum{\Lnplus}{\Lnplus}$ has symmetric similacra, then it has
-      symmetric similacra of the form
+      If $\directsum{\Lnplus}{\Lnplus}$ has symmetric simulacra, then it has
+      symmetric simulacra of the form
       %
       \begin{equation*}
         \alpha \Hnplus[3]\of{\Cn[1]}
@@ -1520,7 +1520,7 @@
       \begin{proof}
         For $n \le 2$, the result holds vacuously because
         $\directsum{\Lnplus[n]}{\Lnplus[n]} \cong \Rnplus[2n]$ has no
-        similacra.
+        simulacra.
 
         So suppose $J \sim \directsum{\Lnplus}{\Lnplus}$ with $n \ge
         3$. If $J$ is not of the desired form, then the results in
@@ -1529,7 +1529,7 @@
         signature as $J$ that is of the desired form. We need only
         convince ourselves that this new cone is not isomorphic to
         $\directsum{\Lnplus}{\Lnplus}$. For that, we note that the
-        similacra constructed in \cref{sec:irreducible cones,cor:no
+        simulacra constructed in \cref{sec:irreducible cones,cor:no
           multiple complex factors} all have more than two Lorentz
         factors. $\directsum{\Lnplus}{\Lnplus}$ cannot be isomorphic
         to a direct sum of three or more factors when $n \ge 3$, so we
@@ -1539,7 +1539,7 @@
 
     \begin{proposition}
       Suppose $n \in \Nn[1]$. Then $\directsum{\Lnplus}{\Lnplus}$ has
-      symmetric similacra if and only if $n \notin
+      symmetric simulacra if and only if $n \notin
       \set{0,1,2,3,5,6,7,11,12,13,18}$.
 
       \begin{proof}
@@ -1618,16 +1618,16 @@
           subproblem reduction}, namely by partitioning the desired
         dimension and computing Lyapunov ranks. One would first
         partition $n-9$ assuming that $\Hnplus[3]\of{\Cn[1]}$ is
-        present in the similacra, searching for a Lyapunov rank of
+        present in the simulacra, searching for a Lyapunov rank of
         $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}} -
         \lyapunovrank{\Hnplus[3]\of{\Cn[1]}} = n^{2} - n - 15$. Should
         that fail\footnote{Partitioning $n-9$ is a subproblem of
         partitioning $n$, if you care to save the result.}, $n$ itself
         can be partitioned in hopes of finding
         $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}}$. In
-        \cref{sec:L(n)+L(n) similacra}, we have provided the similacra
+        \cref{sec:L(n)+L(n) simulacra}, we have provided the simulacra
         for all $n \notin \set{0,1,2,3,5,6,7,11,12,13,18}$. It remains
-        only to confirm the absence of similacra in those few cases.
+        only to confirm the absence of simulacra in those few cases.
       \end{proof}
     \end{proposition}
   \end{section}
@@ -1692,7 +1692,7 @@
     0$.
   \end{section}
 
-  \begin{section}{Similacra of $\directsum{\Lnplus}{\Lnplus}$}\label{sec:L(n)+L(n) similacra}
+  \begin{section}{Simulacra of $\directsum{\Lnplus}{\Lnplus}$}\label{sec:L(n)+L(n) simulacra}
 
     % reduce the horizontal padding set in the prologue
     % so that we don't overflow the margins
