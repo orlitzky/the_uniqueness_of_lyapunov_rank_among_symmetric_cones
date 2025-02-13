@@ -4,11 +4,11 @@ Compute results used in the paper. There are three main functions:
   * :func:`admissible_lorentz_ranks` computes all possible Lyapunov
     ranks arising from sums of Lorentz cones in a given dimension.
     This is rather fast (so we can compute a lot of them), but it is
-    only useful for proving that certain cones DO NOT have similacra.
+    only useful for proving that certain cones DO NOT have simulacra.
     It is however useless for determining whether or not, say,
-    ``L(m)+L(n)`` has similacra, because a priori we expect the
+    ``L(m)+L(n)`` has simulacra, because a priori we expect the
     Lyapunov rank of that cone to be in the list (put there by
-    itself). To ask questions about similacra, we would need to know
+    itself). To ask questions about simulacra, we would need to know
     _how many_ sums of Lorentz cones (up to isomorphism) had that same
     Lyapunov rank... but the function does not provide this
     information.
@@ -32,14 +32,14 @@ values of these functions as we can.
 
 There is one more function of interest in this module:
 
-  * :func:`compute_Ln_Ln_similacra` looks for similacra of
+  * :func:`compute_Ln_Ln_simulacra` looks for simulacra of
     ``L(n)+L(n)`` over a range of ``n`` and in parallel. From the
     paper we know that it suffices to consider only sums of Lorentz
     cones for this, and thus for performance this function operates
     on integer partitions rather than with cones. To catalogue the
-    similacra in the paper, you might run
+    simulacra in the paper, you might run
 
-        >>> compute_Ln_Ln_similacra(0, 100, 4)     # doctest: +SKIP
+        >>> compute_Ln_Ln_simulacra(0, 100, 4)     # doctest: +SKIP
 
     which would check ``n=0`` up to ``n=100`` using four processes.
     Afterwards, it prints the results to the console, and you don't
@@ -643,11 +643,11 @@ def dim_ranks_cones(n : int, sql : bool = False, db : str = sql.TEST_DATABASE, p
     return _dim_ranks_cones(n, d, db, progress)
 
 
-def _one_partition_similacra(p : list[int]) -> list[int] | None:
+def _one_partition_simulacra(p : list[int]) -> list[int] | None:
     r"""
-    Get the first similacra we can find for ``p``.
+    Get the first simulacra we can find for ``p``.
 
-    This is similar to :func:`partitions.partition_similacra`, but it
+    This is similar to :func:`partitions.partition_simulacra`, but it
     can make an optimization that destroys the uniqueness of the
     partitions because we are only returning one of them anyway.
 
@@ -655,7 +655,7 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
     ----------
 
     p : list[int]
-      The partition you want to find a similacra for.
+      The partition you want to find a simulacra for.
 
     Returns
     -------
@@ -667,22 +667,22 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
     --------
 
     The partition found by this function may not be the first
-    partition found by :func:`partitions.partition_similacra`, but it
+    partition found by :func:`partitions.partition_simulacra`, but it
     should _eventually_ be found by that function::
 
         >>> from random import choice, randint
-        >>> from partitions import partitions, partition_similacra
+        >>> from partitions import partitions, partition_simulacra
         >>> n = randint(0,30)
         >>> p = choice(tuple(partitions(n, include_two=False)))
-        >>> s = _one_partition_similacra(p)
-        >>> s is None or s in partition_similacra(p)
+        >>> s = _one_partition_simulacra(p)
+        >>> s is None or s in partition_simulacra(p)
         True
 
     """
     from partitions import partitions, partition_rank
     target_rank = partition_rank(p)
 
-    # All factors in a similacrum can't be less than or equal to the
+    # All factors in a simulacrum can't be less than or equal to the
     # smallest factor in the target. So if p[0] is the smallest factor
     # in the target, we might as well start partitioning assuming that
     # there's a p[0]+1 factor, then a p[0]+2 factor, then...
@@ -696,7 +696,7 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
         # Oh, we should exclude 2...
         k_start = 3
 
-    # Not a typo: psize+1 would have us checking for a similacra
+    # Not a typo: psize+1 would have us checking for a simulacra
     # of [psize], which is not possible.
     k_end = psize
     for k in range(k_start, k_end):
@@ -712,14 +712,14 @@ def _one_partition_similacra(p : list[int]) -> list[int] | None:
     return None
 
 
-def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
+def compute_Ln_Ln_simulacra(start : int, end : int, nprocs : int = 1):
     r"""
-    Compute similacra of ``L(n) + L(n)`` for all ``n`` between
+    Compute simulacra of ``L(n) + L(n)`` for all ``n`` between
     ``start`` and ``end``, possibly in parallel, and then print the
     result.
 
     This is a fairly trivial wrapper around
-    :func:`_one_partition_similacra` and the
+    :func:`_one_partition_simulacra` and the
     :class:`multiprocessing.Pool` class.
 
     Parameters
@@ -735,7 +735,7 @@ def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
     Examples
     --------
 
-        >>> compute_Ln_Ln_similacra(0,10,4)
+        >>> compute_Ln_Ln_simulacra(0,10,4)
         0: None
         1: None
         2: None
@@ -753,7 +753,7 @@ def compute_Ln_Ln_similacra(start : int, end : int, nprocs : int = 1):
     args = ( 2*[n] for n in ns )
 
     from multiprocessing import Pool
-    results = Pool(processes=nprocs).map(_one_partition_similacra, args)
+    results = Pool(processes=nprocs).map(_one_partition_simulacra, args)
     for (x,y) in zip(ns, results):
         print(f"{x}: {y}")
 

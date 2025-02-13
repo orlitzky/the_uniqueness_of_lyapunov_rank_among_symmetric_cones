@@ -144,7 +144,7 @@ def lowerbound1(K):
 
     We know some examples where this is the bound that's tight, and
     where ``K`` is big enough to ensure non-isomorphism (the existence
-    of a real similacrum, not just a matching signature)::
+    of a real simulacrum, not just a matching signature)::
 
         >>> m = 5
         >>> K = L(m)
@@ -290,7 +290,7 @@ def lowerbound3b(K):
         ...                 if n < lowerbound1(K) or n < lowerbound2(K):
         ...                     continue
         ...                 C = DirectSum([K, L(n)])
-        ...                 for s in C.similacra():
+        ...                 for s in C.simulacra():
         ...                     if L(n) not in s.factors():
         ...                         actual.append((C,s))
         ...     return actual
@@ -319,7 +319,7 @@ def lowerbound3b(K):
         True
         >>> from sql import max_cone_dim
         >>> skip = ( max_cone_dim() < (n + 2) )
-        >>> skip or HR(3) in DirectSum([K,L(n)]).similacra()
+        >>> skip or HR(3) in DirectSum([K,L(n)]).simulacra()
         True
 
     """
@@ -532,7 +532,7 @@ def test_proposition4() -> bool:
         True
 
     From the proof of Proposition 4, we know that for ``n >= 3``,
-    ``HR(n)`` has symmetric similacra with only Lorentz
+    ``HR(n)`` has symmetric simulacra with only Lorentz
     factors. Moreover when ``n < 3``, ``HR(n)`` _is_ a Lorentz
     cone. In either case, ``HR(n)`` should share its signature with a
     sum of Lorentz cones. We begin by computing the largest ``n`` for
@@ -551,7 +551,7 @@ def test_proposition4() -> bool:
         ... )
         True
 
-    In fact, we know the formula for at least one such similacrum::
+    In fact, we know the formula for at least one such simulacrum::
 
         >>> def check(n):
         ...     K1 = L(n+1)
@@ -566,7 +566,7 @@ def test_proposition4() -> bool:
     from sql import max_cone_dim
 
     # Figure out how big "n" can be if we want to use the database of
-    # cached cones (the ``similacra`` method uses it implicitly).
+    # cached cones (the ``simulacra`` method uses it implicitly).
     n_max = 0
     mcd = max_cone_dim()
     while HR(n_max).dim <= mcd:
@@ -578,7 +578,7 @@ def test_proposition4() -> bool:
         # No cached cones?
         return True
 
-    return all( HR(n).similacra() for n in range(n_min, n_max+1) )
+    return all( HR(n).simulacra() for n in range(n_min, n_max+1) )
 
 
 
@@ -600,7 +600,7 @@ def test_proposition5() -> bool:
         True
 
     From the proof of Proposition 5, we know that for ``n >= 4``,
-    ``HC(n)`` has symmetric similacra with only Lorentz
+    ``HC(n)`` has symmetric simulacra with only Lorentz
     factors. Moreover when ``n < 3``, ``HC(n)`` _is_ a Lorentz
     cone. In either case, ``HC(n)`` should share its signature with a
     sum of Lorentz cones. We begin by computing the largest ``n`` for
@@ -621,7 +621,7 @@ def test_proposition5() -> bool:
         ... )
         True
 
-    We know the similacra for ``n >= 4`` explicitly; they are given in
+    We know the simulacra for ``n >= 4`` explicitly; they are given in
     the proof of the proposition. There's a special case for ``n = 4``
     and then we handle ``n >= 5`` generically::
 
@@ -637,14 +637,14 @@ def test_proposition5() -> bool:
         ... )
         True
 
-    An example using the :meth:`SymmetricCone.similacra` method for
+    An example using the :meth:`SymmetricCone.simulacra` method for
     ``n = 4``::
 
         >>> from sql import max_cone_dim
         >>> K = DirectSum([L(5), L(5), L(4), RN(2)])
         >>> mcd = max_cone_dim()
         >>> skip = ( HC(4).dim > mcd )
-        >>> skip or K in HC(4).similacra()
+        >>> skip or K in HC(4).simulacra()
         True
 
     """
@@ -652,7 +652,7 @@ def test_proposition5() -> bool:
     from sql import max_cone_dim
 
     # Figure out how big "n" can be if we want to use the database of
-    # cached cones (the ``similacra`` method uses it implicitly).
+    # cached cones (the ``simulacra`` method uses it implicitly).
     n_max = 0
     mcd = max_cone_dim()
     if mcd >= 0:
@@ -663,9 +663,9 @@ def test_proposition5() -> bool:
         # No cached cones?
         return True
 
-    return ( not HC(3).similacra()
+    return ( not HC(3).simulacra()
              and
-             all(HC(n).similacra() for n in range(n_min, n_max+1)) )
+             all(HC(n).simulacra() for n in range(n_min, n_max+1)) )
 
 
 
@@ -687,7 +687,7 @@ def test_proposition6() -> bool:
         True
 
     From the proof of Proposition 6, we know that for ``n >= 3``,
-    ``HH(n)`` has symmetric similacra with only Lorentz factors (the
+    ``HH(n)`` has symmetric simulacra with only Lorentz factors (the
     convenient ``HC(n+1)`` factor can be replaced by Lorentz cones
     using Proposition 5). Moreover when ``n < 3``, ``HH(n)`` _is_ a
     Lorentz cone. In either case, ``HH(n)`` should share its signature
@@ -709,7 +709,7 @@ def test_proposition6() -> bool:
         ... )
         True
 
-    We know the formula for similacra explicitly; they are given in
+    We know the formula for simulacra explicitly; they are given in
     the proof of the proposition. There are special cases for ``n in
     [3,4,5]`` and then we handle ``n >= 6`` generically::
 
@@ -734,31 +734,31 @@ def test_proposition6() -> bool:
         True
 
     Further checks of the low-dimensional formulas using the
-    :meth:`SymmetricCone.similacra` method::
+    :meth:`SymmetricCone.simulacra` method::
 
         >>> from sql import max_cone_dim
         >>> mcd = max_cone_dim()
 
         >>> K = DirectSum([L(8), RN(7)])
         >>> skip = ( HH(3).dim > mcd )
-        >>> skip or K in HH(3).similacra()
+        >>> skip or K in HH(3).simulacra()
         True
 
         >>> K = DirectSum([L(10), RN(18)])
         >>> skip = ( HH(4).dim > mcd )
-        >>> skip or K in HH(4).similacra()
+        >>> skip or K in HH(4).simulacra()
         True
 
         >>> K = DirectSum([L(12), RN(33)])
         >>> skip = ( HH(5).dim > mcd )
-        >>> skip or K in HH(5).similacra()
+        >>> skip or K in HH(5).simulacra()
         True
 
     """
     from sql import max_cone_dim
 
     # Figure out how big "n" can be if we want to use the database of
-    # cached cones (the ``similacra`` method uses it implicitly).
+    # cached cones (the ``simulacra`` method uses it implicitly).
     n_max = 0
     mcd = max_cone_dim()
     while HH(n_max).dim <= mcd:
@@ -770,7 +770,7 @@ def test_proposition6() -> bool:
         # No cached cones?
         return True
 
-    return all( HH(n).similacra() for n in range(n_min, n_max+1) )
+    return all( HH(n).simulacra() for n in range(n_min, n_max+1) )
 
 
 def test_proposition7() -> bool:
@@ -791,7 +791,7 @@ def test_proposition7() -> bool:
         True
 
     From the proof of Proposition 7, we know that ``HO(3)`` has a
-    symmetric similacrum with only Lorentz factors. Moreover when ``n
+    symmetric simulacrum with only Lorentz factors. Moreover when ``n
     < 3``, ``HO(n)`` _is_ a Lorentz cone. In either case, ``HO(n)``
     should share its signature with a sum of Lorentz cones. We begin
     by computing the largest ``n`` for which we have the corresponding
@@ -811,17 +811,17 @@ def test_proposition7() -> bool:
         ... )
         True
 
-    We know the formula for one similacrum explicitly; it is given
+    We know the formula for one simulacrum explicitly; it is given
     in the proof of the proposition::
 
         >>> K = DirectSum([L(11),L(5),L(3),RN(8)])
         >>> K.signature() == HO(3).signature()
         True
 
-    Repeat with the cached similacra data::
+    Repeat with the cached simulacra data::
 
         >>> from sql import have_cone_dim
-        >>> (not have_cone_dim(HO(3).dim)) or K in HO(3).similacra()
+        >>> (not have_cone_dim(HO(3).dim)) or K in HO(3).simulacra()
         True
 
     """
@@ -831,7 +831,7 @@ def test_proposition7() -> bool:
         # no data
         return True
 
-    return not (not HO(3).similacra())
+    return not (not HO(3).simulacra())
 
 
 def test_theorem2() -> bool:
@@ -866,7 +866,7 @@ def test_theorem2() -> bool:
     """
     from sql import max_cone_dim
     Ks = ( random_irreducible_cone() for _ in range(100) )
-    return all ( not (not K.similacra())
+    return all ( not (not K.simulacra())
                  or K == HC(3)
                  or isinstance(K,L)
                  for K in Ks
@@ -895,9 +895,9 @@ def test_lemma2() -> bool:
     Ks = ( random_cone() for _ in range(100) )
 
     return all(
-      K.similacra()
+      K.simulacra()
       or
-      all(not K_i.similacra() for K_i in K.factors())
+      all(not K_i.simulacra() for K_i in K.factors())
       for K in Ks
       if K.dim <= max_cone_dim()
     )
@@ -925,7 +925,7 @@ def test_corollary2() -> bool:
 
     Ks = ( random_cone() for _ in range(100) )
     return all(
-      not (not K.similacra())
+      not (not K.simulacra())
       for K in Ks
       if K.dim <= max_cone_dim()
       and K.factors().count(HC(3)) > 1
@@ -993,7 +993,7 @@ def test_theorem3_example() -> bool:
     """
     result = True
 
-    # The two similacra of HC(3) mentioned in the example
+    # The two simulacra of HC(3) mentioned in the example
     K1 = DirectSum([L(11),L(3)] + [L(5),RN(8)])
     K2 = DirectSum([L(11),L(3)] + [L(4)] + 3*[L(3)])
 
@@ -1002,17 +1002,17 @@ def test_theorem3_example() -> bool:
     result &= ( K1.signature() == K2.signature() )
     result &= ( K1.signature() == HO(3).signature() )
 
-    # And repeat using cached similacra if possible
+    # And repeat using cached simulacra if possible
     from sql import have_cone_dim
     if have_cone_dim(HO(3).dim):
-        result &= K1 in K2.similacra()
-        result &= K2 in K1.similacra()
+        result &= K1 in K2.simulacra()
+        result &= K2 in K1.simulacra()
 
-        result &= K1 in HO(3).similacra()
-        result &= HO(3) in K1.similacra()
+        result &= K1 in HO(3).simulacra()
+        result &= HO(3) in K1.simulacra()
 
-        result &= K2 in HO(3).similacra()
-        result &= HO(3) in K2.similacra()
+        result &= K2 in HO(3).simulacra()
+        result &= HO(3) in K2.simulacra()
 
     return result
 
@@ -1404,19 +1404,19 @@ def test_theorem5() -> bool:
         >>> rank_too_small(X)
         True
 
-    The two cases that we argue via similacra::
+    The two cases that we argue via simulacra::
 
         >>> from sql import max_cone_dim
         >>> mcd = max_cone_dim()
         >>> skip = ( HR(5).dim > mcd )
         >>> ( skip
         ...   or
-        ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).similacra() )
+        ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).simulacra() )
         True
         >>> skip = ( HR(6).dim > mcd )
         >>> ( skip
         ...   or
-        ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).similacra() )
+        ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).simulacra() )
         True
 
     Rule out multiple ``HR(3)`` factors to simplify the argument::
@@ -1439,14 +1439,14 @@ def test_theorem5() -> bool:
 
     One of the last statements in the proof is that the conclusion is
     easy to verify for the "new" cases because there simply aren't any
-    new similacra (so we don't even have to worry about whether or not
-    "J" has the stated form). We're checking that a list of similacra
+    new simulacra (so we don't even have to worry about whether or not
+    "J" has the stated form). We're checking that a list of simulacra
     is empty, so there is no need to check the dimension of our cone
     against :func:`sql.max_cone_dim`; if we exceed it, we'll get back
-    empty lists of similacra anyway::
+    empty lists of simulacra anyway::
 
         >>> from sql import all_cones_of_dim
-        >>> all( not DirectSum([K,L(n)]).similacra()
+        >>> all( not DirectSum([K,L(n)]).simulacra()
         ...      for n in range(5,15)
         ...      for d in range(1,max_dimK(n)+1)
         ...      for K in all_cones_of_dim(d)
@@ -1577,7 +1577,7 @@ def test_theorem5() -> bool:
 
     # Explained in the docstring. We don't _really_ have to stop where
     # L(n)+K will have the max cached dim, because anything larger
-    # will appear to have no similacra, and (for the sake of the
+    # will appear to have no simulacra, and (for the sake of the
     # theorem) that's fine. But we do have to stop _somewhere_, so we
     # might as well stop here?
     max_d = (max_cone_dim() - 2) // 2
@@ -1593,13 +1593,13 @@ def test_theorem5() -> bool:
                 if n < lowerbound2(K): continue
                 if n < lowerbound3b(K): continue
                 lhs = DirectSum([K,L(n)])
-                for J in lhs.similacra():
+                for J in lhs.simulacra():
                     fs = list(J.factors())
                     # remove() raises an error if L(n) isn't a factor,
                     # so this guarantees that L(n) is one.
                     fs.remove(L(n))
                     J_prime = DirectSum(fs)
-                    result &= J_prime in K.similacra()
+                    result &= J_prime in K.simulacra()
 
     return result
 
@@ -1628,13 +1628,13 @@ def test_corollary3() -> bool:
         >>> n_min = 31
         >>> n_max = 0
         >>> n_max = max_cone_dim() - 9
-        >>> all( not DirectSum([HC(3),L(n)]).similacra()
+        >>> all( not DirectSum([HC(3),L(n)]).simulacra()
         ...      for n in range(n_min, n_max+1) )
         True
 
     If you think hard about it, or consult an earlier version of the
     paper, you will conclude that only sums of Lorentz cones need to
-    be checked for similacra of ``HC(3) + L(n)``. Here we repeat the
+    be checked for simulacra of ``HC(3) + L(n)``. Here we repeat the
     check above using our cached Lorentz ranks (which are easier to
     compute)::
 
@@ -1669,11 +1669,11 @@ def test_corollary3() -> bool:
                 # dimensions we have cached, so skip this cone.
                 continue
 
-            if not K.similacra():
+            if not K.simulacra():
                 # the corollary says that L(n)+K should have no
-                # similacra
+                # simulacra
                 n = randint(min_n, max_n)
-                result &= not DirectSum([K,L(n)]).similacra()
+                result &= not DirectSum([K,L(n)]).simulacra()
 
     return result
 
@@ -1736,15 +1736,15 @@ def test_proposition8() -> bool:
     """
     from sql import max_cone_dim
 
-    # the list of "n" where we expect to find similacra
+    # the list of "n" where we expect to find simulacra
     expected_n = [2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 18, 21, 22, 30]
 
-    # We're going to be calling similacra() on L(n)+HC(3), so make
+    # We're going to be calling simulacra() on L(n)+HC(3), so make
     # sure we don't make "n" so large that we exceed what is cached.
     n_max = max_cone_dim() - 9
 
     return all(
-      (not DirectSum([HC(3),L(n)]).similacra())
+      (not DirectSum([HC(3),L(n)]).simulacra())
       or
       (n in expected_n)
       for n in range(n_max+1)
@@ -1769,7 +1769,7 @@ def test_proposition9() -> bool:
         True
 
     Verify the cases mentioned explicitly in the proof. First, the
-    ``m != 2`` cases where there are no similacra::
+    ``m != 2`` cases where there are no simulacra::
 
         >>> from sql import max_cone_dim
         >>> mcd = max_cone_dim()
@@ -1780,7 +1780,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, True)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1791,7 +1791,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1799,7 +1799,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1810,7 +1810,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, False, False)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1818,7 +1818,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, True, False)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1826,7 +1826,7 @@ def test_proposition9() -> bool:
         >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
         (True, True, False)
         >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).similacra()
+        ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1841,12 +1841,12 @@ def test_proposition9() -> bool:
         >>> lowerbound1(K)
         2
         >>> if K.dim + 2 <= mcd:
-        ...     DirectSum([K,L(2)]).similacra()
+        ...     DirectSum([K,L(2)]).simulacra()
         ... else:
         ...     ()
         ()
         >>> if K.dim + 3 <= mcd:
-        ...     DirectSum([K,L(3)]).similacra()
+        ...     DirectSum([K,L(3)]).simulacra()
         ... else:
         ...     ()
         ()
@@ -1854,7 +1854,7 @@ def test_proposition9() -> bool:
         >>> expected = (HR(3),)
         >>> J = DirectSum([K,L(4)])
         >>> skip = ( J.dim > max_cone_dim() )
-        >>> skip or (J.similacra() == expected)
+        >>> skip or (J.simulacra() == expected)
         True
 
    Confirm that the stated bound actually comes from
@@ -1870,7 +1870,7 @@ def test_proposition9() -> bool:
     mcd = max_cone_dim()
 
     return all(
-      not DirectSum([L(m),L(n)]).similacra()
+      not DirectSum([L(m),L(n)]).simulacra()
       for m in range(1, mcd + 1)
       for n in range(lowerbound1(L(m)), mcd - m)
       if m != 2
@@ -1894,12 +1894,12 @@ def test_lemma6() -> bool:
         >>> test_lemma6()
         True
 
-    For ``n <= 2``, there shouldn't be any similacra in the first
+    For ``n <= 2``, there shouldn't be any simulacra in the first
     place::
 
         >>> from sql import max_cone_dim
         >>> mcd = max_cone_dim()
-        >>> [ K.similacra() if 2*n <= mcd else ()
+        >>> [ K.simulacra() if 2*n <= mcd else ()
         ...   for n in range(3)
         ...   if (K := DirectSum(2*[L(n)])) ]
         [(), (), ()]
@@ -1907,15 +1907,15 @@ def test_lemma6() -> bool:
     """
     from sql import all_cones_of_dim, max_cone_dim
 
-    # For ALL cones with similacra, there EXISTS a similacrum, such
+    # For ALL cones with simulacra, there EXISTS a simulacrum, such
     # that ALL of its factors are HC(3) or Lorentz cones.
     n_max = max_cone_dim() // 2
     return all(
-      not K.similacra()
+      not K.simulacra()
       or
       any(
         all( f == HC(3) or isinstance(f,L) for f in J.factors() )
-        for J in K.similacra()
+        for J in K.simulacra()
       )
       for n in range(n_max+1)
       if (K := DirectSum(2*[L(n)]))
@@ -1939,7 +1939,7 @@ def test_proposition10() -> bool:
         >>> test_proposition10()
         True
 
-    In addition to the ``similacra`` check, we can also use our cached
+    In addition to the ``simulacra`` check, we can also use our cached
     partitions thanks to Lemma 6. This allows us to test all the way
     up to ``n == 100``.....
 
@@ -1967,7 +1967,7 @@ def test_proposition10() -> bool:
         True
 
     Finally, we check the dimension and Lyapunov rank of our
-    similacrum symbolically::
+    simulacrum symbolically::
 
         >>> from sympy import expand, symbols
         >>> from partitions import f
@@ -1987,27 +1987,27 @@ def test_proposition10() -> bool:
     Since the target cone has exactly two factors, it suffices (per
     the proof) to check partitions with/without an ``HC(3)`` offset.
     We do this only up to ``n == 18`` because all greater ``n`` lead
-    to similacra, and the existence of a similacra is much easier to
+    to simulacra, and the existence of a simulacra is much easier to
     verify by just writing down its factors::
 
-        >>> from partitions import partition_rank, partition_similacra
+        >>> from partitions import partition_rank, partition_simulacra
         >>> n_max = 18
-        >>> n_without_similacra = []
+        >>> n_without_simulacra = []
         >>> for n in range(n_max+1):
         ...     p = [n,n]
-        ...     simcount = len(list(partition_similacra(p)))
+        ...     simcount = len(list(partition_simulacra(p)))
         ...     f = lambda q: partition_rank(q) == (partition_rank(p) - 17)
         ...     if n >= 5:
         ...         simcount += len(list(
         ...           filter(f, partitions(2*n - 9, include_two=False))
         ...         ))
         ...     if simcount == 0:
-        ...         n_without_similacra.append(n)
-        >>> n_without_similacra
+        ...         n_without_simulacra.append(n)
+        >>> n_without_simulacra
         [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
 
-    Finally, we demonstrate similacra for all ``n`` between ``0`` and
-    ``100`` that are not in the no-similacra list::
+    Finally, we demonstrate simulacra for all ``n`` between ``0`` and
+    ``100`` that are not in the no-simulacra list::
 
         >>> d = {
         ...   4: [1, 2, 5],
@@ -2104,7 +2104,7 @@ def test_proposition10() -> bool:
         >>> all(
         ...   K.rank == partition_rank(d[n])
         ...   for n in range(101)
-        ...   if not n in n_without_similacra
+        ...   if not n in n_without_simulacra
         ...   if (K := DirectSum(2*[L(n)]))
         ... )
         True
@@ -2112,10 +2112,10 @@ def test_proposition10() -> bool:
     """
     from sql import max_cone_dim
     n_max = max_cone_dim() // 2
-    n_without_similacra = [
+    n_without_simulacra = [
       n for n in range(n_max+1)
       if (K := DirectSum([L(n)]*2))
-      and not K.similacra()
+      and not K.simulacra()
     ]
 
     # We have to filter the expected result based on the
@@ -2123,4 +2123,4 @@ def test_proposition10() -> bool:
     expected = [ e for e in [0, 1, 2, 3, 5, 6, 7, 11, 12, 13, 18]
                  if e <= n_max ]
 
-    return (n_without_similacra == expected)
+    return (n_without_simulacra == expected)

@@ -193,9 +193,9 @@ def all_cones_of_dim(n : int, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, 
     return result
 
 
-def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, ...]:
+def simulacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCone, ...]:
     r"""
-    Return all similacra of the given cone.
+    Return all simulacra of the given cone.
 
     Since this does not modify the database, we use the live database
     by default.
@@ -204,7 +204,7 @@ def similacra(K : SymmetricCone, db : str = LIVE_DATABASE) -> tuple[SymmetricCon
     ----------
 
     K : SymmetricCone
-      The cone whose similacra you want.
+      The cone whose simulacra you want.
 
     db : str, default=LIVE_DATABASE
       The name of the SQLite database to use.

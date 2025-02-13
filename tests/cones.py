@@ -75,7 +75,7 @@ isomorphism, but you will see for example in :class:`HR` that we set::
 Meaning that, when you ask for ``HR(2)``, you get ``L(3)``. When all
 is said and done, with a great deal of care, we are able to work "up
 to isomorphism," without which we would not directly be able to test
-for similacra.
+for simulacra.
 
 Finally, this module provides two "random cone" functions,
 
@@ -534,13 +534,13 @@ class SymmetricCone:
         return self._serial
 
 
-    def similacra(self) -> tuple[SymmetricCone, ...]:
+    def simulacra(self) -> tuple[SymmetricCone, ...]:
         r"""
-        Return all similacra of this cone.
+        Return all simulacra of this cone.
 
         This relies implicitly on the live database of cones
         containing the necessary (pre-computed) data -- otherwise the
-        computation would be much too slow. If you ask for similacra
+        computation would be much too slow. If you ask for simulacra
         in a dimension not present in the database, a ``ValueError``
         will be raised.
 
@@ -556,46 +556,46 @@ class SymmetricCone:
         Examples from the paper::
 
             >>> try:
-            ...     HR(3).similacra()
+            ...     HR(3).simulacra()
             ... except ValueError:
             ...     # missing data, just print the right answer
             ...     (DirectSum([L(1),L(1),L(4)]),)
             (L(1) + L(1) + L(4),)
 
         Examples from an earlier version of the paper where we computed
-        similacra for multiple copies of ``HC(3)`` explicitly::
+        simulacra for multiple copies of ``HC(3)`` explicitly::
 
             >>> K2 = DirectSum([L(7),L(3), RN(8)])
             >>> try:
-            ...     K2 in DirectSum([HC(3)]*2).similacra()
+            ...     K2 in DirectSum([HC(3)]*2).simulacra()
             ... except ValueError:
             ...     # missing data, just print the right answer
             ...     True
             True
             >>> K3 = DirectSum([L(8),L(4), RN(15)])
             >>> try:
-            ...     K3 in DirectSum([HC(3)]*3).similacra()
+            ...     K3 in DirectSum([HC(3)]*3).simulacra()
             ... except ValueError:
             ...     # missing data, just print the right answer
             ...     True
             True
 
-        A cone is never its own similacrum::
+        A cone is never its own simulacrum::
 
             >>> import sql
             >>> K = random_cone()
             >>> try:
-            ...     K in K.similacra()
+            ...     K in K.simulacra()
             ... except ValueError:
             ...     # missing data, just print the right answer
             ...     False
             False
 
         """
-        from sql import have_cone_dim, similacra
+        from sql import have_cone_dim, simulacra
         if not have_cone_dim(self.dim):
             raise ValueError(f"no cone data for dimension {self.dim}")
-        return similacra(self)
+        return simulacra(self)
 
 
 def RN(n : int) -> SymmetricCone:
@@ -791,7 +791,7 @@ class HC(SymmetricCone):
     --------
 
     The direct sum of ``m >= 2`` copies of the 3-by-3 cone has
-    similacra. This used to be a Lemma in the paper, but it has
+    simulacra. This used to be a Lemma in the paper, but it has
     been superseded.
 
         >>> K2 = DirectSum([

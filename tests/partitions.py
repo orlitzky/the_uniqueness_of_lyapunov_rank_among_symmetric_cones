@@ -31,7 +31,7 @@ results. Here's a quick summary of this module's functions:
   * :func:`partition_rank` computes the Lyapunov rank of the cone
     associated with a given partition.
 
-  * :func:`partition_similacra` computes all similacra (represented as
+  * :func:`partition_simulacra` computes all simulacra (represented as
     partitions) of the given cone (represented as a partition).
 
 """
@@ -352,7 +352,7 @@ def partition_rank(p):
     return sum( map(f,p) )
 
 
-def partition_similacra(p : list[int]) -> Generator[list[int], None, None]:
+def partition_simulacra(p : list[int]) -> Generator[list[int], None, None]:
     r"""
     Find all partitions of the same integer as the given
     partition that have the same :func:`partitions.partition_rank` but
@@ -380,7 +380,7 @@ def partition_similacra(p : list[int]) -> Generator[list[int], None, None]:
     ----------
 
     p : list[int]
-      The partition whose similacra you want. It should be SORTED,
+      The partition whose simulacra you want. It should be SORTED,
       and should NOT CONTAIN ``2``.
 
     Returns
@@ -393,41 +393,41 @@ def partition_similacra(p : list[int]) -> Generator[list[int], None, None]:
     Examples
     --------
 
-    The nonnegative orthant will never have similacra::
+    The nonnegative orthant will never have simulacra::
 
-        >>> list(partition_similacra([0]))
+        >>> list(partition_simulacra([0]))
         []
-        >>> list(partition_similacra([1]))
+        >>> list(partition_simulacra([1]))
         []
-        >>> list(partition_similacra([1,1,1,1,1]))
+        >>> list(partition_simulacra([1,1,1,1,1]))
         []
 
     All other partitions of ``4`` have ranks that are too small (you
     can just try them all in your head)::
 
-        >>> list(partition_similacra([4]))
+        >>> list(partition_simulacra([4]))
         []
 
-    The two similacra from Example 1::
+    The two simulacra from Example 1::
 
-        >>> next(partition_similacra([3,3,3,4]))
+        >>> next(partition_simulacra([3,3,3,4]))
         [1, 1, 1, 1, 1, 1, 1, 1, 5]
-        >>> sims = partition_similacra([1, 1, 1, 1, 1, 1, 1, 1, 5])
+        >>> sims = partition_simulacra([1, 1, 1, 1, 1, 1, 1, 1, 5])
         >>> _ = next(sims); next(sims)
         [3, 3, 3, 4]
 
     If you ignore the warning and provide an unsorted partition or a
     partition containing ``2``, you may get wrong answers. Lack of
-    sorting can eliminate valid similacra::
+    sorting can eliminate valid simulacra::
 
-        >>> len(list(partition_similacra([3,3,3,4])))
+        >>> len(list(partition_simulacra([3,3,3,4])))
         2
-        >>> len(list(partition_similacra([4,3,3,3])))
+        >>> len(list(partition_simulacra([4,3,3,3])))
         1
 
     And including ``2`` can produce equivalent partitions::
 
-        >>> list(partition_similacra([2,5,13]))
+        >>> list(partition_simulacra([2,5,13]))
         [[1, 1, 5, 13], [10, 10]]
 
     """
