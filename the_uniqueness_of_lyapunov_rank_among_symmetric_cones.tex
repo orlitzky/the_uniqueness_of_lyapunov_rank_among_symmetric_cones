@@ -540,19 +540,16 @@
       but not for $n = 3$.
 
       \begin{proof}
-        If $n = 4$, then $\Hnplus[4]\of{\Cn[1]} \sim \Lnplus[5] \oplus
-        \Lnplus[5] \oplus \Lnplus[4] \oplus \Rnplus[2]$. And if $n \ge 5$,
+        If $n \ge 4$, then
         %
         \begin{equation*}
           \Hnplus\of{\Cn[1]}
           \sim \Lnplus[n+1]
                \oplus \Lnplus[n+1]
-               \oplus \Rnplus[n^{2} - 5n + 1]
-               \oplus \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n-1 \text{ times}}.
+               \oplus \Rnplus[n^{2} - 5n + 6]
+               \oplus \Lnplus[4]
+               \oplus \underbrace{\Lnplus[3] \oplus \cdots \oplus \Lnplus[3]}_{n-4 \text{ times}}.
         \end{equation*}
-        %
-        This shows that $\Hnplus\of{\Cn[1]}$ has symmetric simulacra
-        for all $n \ge 4$.
 
         For $n = 3$, we first show that if $\Hnplus[3]\of{\Cn[1]}$ has
         a symmetric simulacrum, then it has one with all Lorentz
