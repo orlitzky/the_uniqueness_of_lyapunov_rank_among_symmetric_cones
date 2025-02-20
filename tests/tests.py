@@ -738,6 +738,7 @@ def test_proposition6() -> bool:
         >>> skip = ( HH(5).dim > mcd )
         >>> skip or K in HH(5).simulacra()
         True
+
     """
     from sql import max_cone_dim
 
