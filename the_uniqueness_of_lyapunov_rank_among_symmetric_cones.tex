@@ -599,32 +599,15 @@
       $\Hnplus\of{\quaternions}$ has symmetric simulacra for all $n \ge 3$.
 
       \begin{proof}
-        The first few examples we find by trial and error:
-        %
-        \begin{align*}
-          \Hnplus[3]\of{\quaternions}
-            &\sim
-            \directsum{\Lnplus[8]}{\Rnplus[7]},\\
-          \Hnplus[4]\of{\quaternions}
-            &\sim
-            \Lnplus[10] \oplus \Rnplus[18],\\
-            \Hnplus[5]\of{\quaternions}
-            &\sim
-            % The weirdest fucking thing happens if you un-brace the
-            % "3" in "33".
-            \directsum{\Lnplus[12]}{\Rnplus[{3}3]}.
-        \end{align*}
-        %
-        For $n \ge 6$, witness:
+        For $n \ge 3$, witness:
         %
         \begin{equation*}
           \Hnplus[n]\of{\quaternions}
           \sim
-          \Hnplus[n+1]\of{\Cn[1]}
-               \oplus \Lnplus[n+1]
-               \oplus \Lnplus[n+1]
-               \oplus \Rnplus[\qty{n^{2} - 5n - 3}].
-               \qedhere
+          \Lnplus[2n+2]
+          \oplus
+          \Rnplus[\qty{2n^{2} - 3n - 2}].
+          \qedhere
         \end{equation*}
         %
       \end{proof}
