@@ -687,13 +687,11 @@ def test_proposition6() -> bool:
         True
 
     From the proof of Proposition 6, we know that for ``n >= 3``,
-    ``HH(n)`` has symmetric simulacra with only Lorentz factors (the
-    convenient ``HC(n+1)`` factor can be replaced by Lorentz cones
-    using Proposition 5). Moreover when ``n < 3``, ``HH(n)`` _is_ a
-    Lorentz cone. In either case, ``HH(n)`` should share its signature
-    with a sum of Lorentz cones. We begin by computing the largest
-    ``n`` for which we have the corresponding sum-of-Lorentz-cone data
-    cached::
+    ``HH(n)`` has symmetric simulacra with only Lorentz
+    factors. Moreover when ``n < 3``, ``HH(n)`` _is_ a Lorentz
+    cone. In either case, ``HH(n)`` should share its signature with a
+    sum of Lorentz cones. We begin by computing the largest ``n`` for
+    which we have the corresponding sum-of-Lorentz-cone data cached::
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_max = -1
@@ -710,26 +708,13 @@ def test_proposition6() -> bool:
         True
 
     We know the formula for simulacra explicitly; they are given in
-    the proof of the proposition. There are special cases for ``n in
-    [3,4,5]`` and then we handle ``n >= 6`` generically::
-
-        >>> K = DirectSum([L(8), RN(7)])
-        >>> K.signature() == HH(3).signature()
-        True
-
-        >>> K = DirectSum([L(10), RN(18)])
-        >>> K.signature() == HH(4).signature()
-        True
-
-        >>> K = DirectSum([L(12), RN(33)])
-        >>> K.signature() == HH(5).signature()
-        True
+    the proof of the proposition::
 
         >>> all(
         ...   HH(n).signature() == K.signature()
-        ...   for n in range(6,100)
-        ...   if (K3 := RN(n**2 - 5*n - 3))
-        ...   and (K := DirectSum([HC(n+1)] + 2*[L(n+1)] + [K3]))
+        ...   for n in range(3,100)
+        ...   if (K3 := RN(2*n**2 - 3*n - 2))
+        ...   and (K := DirectSum([L(2*n+2), K3]))
         ... )
         True
 
@@ -753,7 +738,6 @@ def test_proposition6() -> bool:
         >>> skip = ( HH(5).dim > mcd )
         >>> skip or K in HH(5).simulacra()
         True
-
     """
     from sql import max_cone_dim
 
