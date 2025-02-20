@@ -622,18 +622,13 @@ def test_proposition5() -> bool:
         True
 
     We know the simulacra for ``n >= 4`` explicitly; they are given in
-    the proof of the proposition. There's a special case for ``n = 4``
-    and then we handle ``n >= 5`` generically::
-
-        >>> K = DirectSum(2*[L(5)] + [L(4), RN(2)])
-        >>> K.signature() == HC(4).signature()
-        True
+    the proof of the proposition::
 
         >>> all(
         ...   HC(n).signature() == K.signature()
-        ...   for n in range(5,100)
-        ...   if (K2 := RN(n**2 - 5*n + 1))
-        ...   and (K := DirectSum(2*[L(n+1)] + [K2] + (n-1)*[L(3)]))
+        ...   for n in range(4,100)
+        ...   if (K2 := RN(n**2 - 5*n + 6))
+        ...   and (K := DirectSum(2*[L(n+1)] + [K2, L(4)] + (n-4)*[L(3)]))
         ... )
         True
 
