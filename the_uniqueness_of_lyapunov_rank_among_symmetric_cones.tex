@@ -853,95 +853,62 @@
           \end{gathered}
         \end{equation}
 
-        We split the proof into two cases based on the dimension of
-        the largest factor, $n_{1}$. In each case we will see that
-        $\sum_{i=1}^{k}f\of{n_{i}}$ is too small.
 
-        \begin{pcases}
-          \begin{case}[$n_{1} \le \dim\of{K}$]
-            Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$, and define
-            $\smallestidx$ to be the smallest index such that
-            $S\of{\smallestidx} > \dim\of{K}$. Since $S\of{k} = n +
-            \dim\of{K} > \dim\of{K}$, this is well-defined. From
-            \cref{lem:condition4} we have that $n > \dim\of{K}$,
-            which moreover implies that $\smallestidx < k$. Applying
-            \cref{ineq:f is superadditive} repeatedly, we find that
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              =
-              \sum_{i=1}^{\smallestidx}f\of{n_{i}}
-              +
-              \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
-              \le
-              f\of{S\of{\smallestidx}}
-                + f\of{n + \dim\of{K}
-                - S\of{\smallestidx}}.
-            \end{equation*}
-            %
-            Let $\delta \coloneqq S\of{\smallestidx} - \dim\of{K} -
-            1$. Then $\delta \ge 0$ by the definition of
-            $\smallestidx$, and $\dim\of{K} + 1 + \delta =
-            S\of{\smallestidx} \le 2\dim\of{K}$ because
-            $S\of{\smallestidx - 1} \le \dim\of{K}$ and
-            $n_{\smallestidx} \le \dim\of{K}$. Thus by
-            \cref{lem:condition4}, $\dim\of{K} + 1 + \delta < n$,
-            which is what we need to replace $S\of{\smallestidx}$ by
-            $\delta$ and apply \cref{impl:growth inequality for f
-              pt2}. Doing so,
-            %
-            \begin{align*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              &\le
-              f\of{1 + \dim\of{K} + \delta} + f\of{n - 1 - \delta}\\
-              &\le
-              f\of{n-1} + f\of{1 + \dim\of{K}}.
-            \end{align*}
-            %
-            Finally, using \cref{eq:f of n - 1}, we arrive at
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k}f\of{n_{i}}
-              \le
-              f\of{n} - \qty{n-1}+ f\of{1 + \dim\of{K}},
-            \end{equation*}
-            %
-            which, by \cref{itm:condition2}, is strictly less than
-            $f\of{n} + \lyapunovrank{K}$.
-          \end{case}
+        Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$, and define
+        $\smallestidx$ to be the smallest index such that
+        $S\of{\smallestidx} > \dim\of{K}$. Since $S\of{k} = n +
+        \dim\of{K} > \dim\of{K}$, this is well-defined. From
+        \cref{lem:condition4} we have that $n > \dim\of{K}$,
+        which moreover implies that $\smallestidx < k$. Applying
+        \cref{ineq:f is superadditive} repeatedly, we find that
+        %
+        \begin{equation*}
+          \sum_{i=1}^{k}f\of{n_{i}}
+          =
+          \sum_{i=1}^{\smallestidx}f\of{n_{i}}
+          +
+          \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
+          \le
+          f\of{S\of{\smallestidx}}
+            + f\of{n + \dim\of{K}
+            - S\of{\smallestidx}}.
+        \end{equation*}
+        %
+        Let $\delta \coloneqq S\of{\smallestidx} - \dim\of{K} -
+        1$. Then $\delta \ge 0$ by the definition of $\smallestidx$,
+        and $\dim\of{K} + 1 + \delta = S\of{\smallestidx}$. To apply
+        \cref{impl:growth inequality for f pt2}, we would like to know
+        that $S\of{\smallestidx} \le n - 1$. Using
+        \cref{lem:condition4}: if $n_{1} > \dim\of{K}$, then
+        $\smallestidx = 1$ and $S\of{\smallestidx} = n_{1} < n$ by
+        assumption; if $n_{1} \le \dim\of{K}$, then
+        $S\of{\smallestidx} = S\of{\smallestidx - 1} +
+        n_{\smallestidx} \le 2\dim\of{K} < n$.
 
-          \begin{case}[$n_{1} > \dim\of{K}$]
-            Recall that $n_{1} \le n-1$, and let $\delta \coloneqq n -
-            1 - n_{1} \ge 0$. Then $n_{1} = n - 1 - \delta$ and
-            $\sum_{i=2}^{k} n_{i} = 1 + \dim\of{K} + \delta$, so using
-            \cref{ineq:f is superadditive},
-            %
-            \begin{equation*}
-              \sum_{i=1}^{k} f\of{n_{i}}
-              \le
-              f\of{n - 1 - \delta} + f\of{1 + \dim\of{K} + \delta}.
-            \end{equation*}
-            %
-            By assumption we can apply \cref{impl:growth inequality
-              for f pt2}, and then use \cref{eq:f of n - 1} on the
-            result:
-            %
-            \begin{align*}
-              \sum_{i=1}^{k} f\of{n_{i}}
-              &\le
-              f\of{n - 1} + f\of{1 + \dim\of{K}}\\
-              &=
-              f\of{n} - \qty{n - 1} + f\of{1 + \dim\of{K}}.
-            \end{align*}
-            %
-            \cref{itm:condition2} now gives $\sum_{i=1}^{k}f\of{n_{i}} <
-            f\of{n} + \lyapunovrank{K}$ as in the previous case.
-            \qedhere
-          \end{case}
-        \end{pcases}
+        We may now replace $S\of{\smallestidx}$ by $\dim\of{K} + 1 +
+        \delta$ and apply \cref{impl:growth inequality for f
+          pt2}:
+        %
+        \begin{align*}
+          \sum_{i=1}^{k}f\of{n_{i}}
+          &\le
+          f\of{1 + \dim\of{K} + \delta} + f\of{n - 1 - \delta}\\
+          &\le
+          f\of{n-1} + f\of{1 + \dim\of{K}}.
+        \end{align*}
+        %
+        Finally, using \cref{eq:f of n - 1}, we arrive at
+        %
+        \begin{equation*}
+          \sum_{i=1}^{k}f\of{n_{i}}
+          \le
+          f\of{n} - \qty{n-1}+ f\of{1 + \dim\of{K}},
+        \end{equation*}
+        %
+        which, by \cref{itm:condition2}, is strictly less than
+        $f\of{n} + \lyapunovrank{K}$.
       \end{proof}
     \end{lemma}
-
 
     \begin{theorem}\label{thm:subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \in \Nn[1]$
