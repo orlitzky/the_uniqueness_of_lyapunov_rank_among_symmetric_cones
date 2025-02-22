@@ -27,6 +27,8 @@ def max_dimK(n):
 
     Check the table in Theorem 5::
 
+        >>> max_dimK(3)
+        2
         >>> max_dimK(5)
         3
         >>> max_dimK(6)
@@ -1340,14 +1342,15 @@ def test_theorem5() -> bool:
     K.dim`` is at least large enough to hold a particular factor,
     otherwise we might get false positives::
 
+        >>> from itertools import chain
         >>> from sympy import symbols
         >>> n,d = symbols("n,d", integer=True, positive=True)
         >>> f = lambda x: (x**2 - x + 2)/2   # no integer division... sympy
         >>> def rank_too_small(X):
         ...     g = f(n) + d - X.rank - f(n+d-X.dim)
         ...     return all( g.subs({n:i,d:j}) > 0
-        ...                 for i in range(5,15)
-        ...                 for j in range(1, max_dimK(i)+1)
+        ...                 for i in chain(range(0,4), range(5,15))
+        ...                 for j in range(max_dimK(i)+1)
         ...                 if i+j-X.dim >= 0 )
 
     The argument we use to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``,
@@ -1396,10 +1399,12 @@ def test_theorem5() -> bool:
 
         >>> X = HR(3)
         >>> g = f(n) + d - X.rank - f(n+d-X.dim)
-        >>> all( g.subs({n:i,d:j}) > 0
-        ...      for i in range(5,15)
-        ...      for j in range(1, max_dimK(i)+1)
-        ...      if (i < 10 or j < 6) )
+        >>> all(
+        ...   g.subs({n:i,d:j}) > 0
+        ...   for i in chain(range(0,4), range(5,15))
+        ...   for j in range(max_dimK(i)+1)
+        ...   if (i+j-X.dim >= 0) and (i < 10 or j < 6)
+        ... )
         True
 
     One of the last statements in the proof is that the conclusion is
@@ -1412,8 +1417,8 @@ def test_theorem5() -> bool:
 
         >>> from sql import all_cones_of_dim
         >>> all( not DirectSum([K,L(n)]).simulacra()
-        ...      for n in range(5,15)
-        ...      for d in range(1,max_dimK(n)+1)
+        ...      for n in chain(range(0,4), range(5,15))
+        ...      for d in range(max_dimK(n)+1)
         ...      for K in all_cones_of_dim(d)
         ...      if  n >= max(lowerbound1(K),lowerbound2(K)) )
         True
@@ -1433,20 +1438,24 @@ def test_theorem5() -> bool:
         >>> # reimplement the lower bounds in terms of partitions
         >>> lb1 = lambda p: 2 + partition_rank(p) - sum(p)
         >>> lb2 = lambda p: 2 + f(1+sum(p)) - partition_rank(p)
-        >>> lb3 = lambda p: 5
         >>>
-        >>> for n in range(5,10):
-        ...     for d in range(1,max_dimK(n)+1):
+        >>> for n in chain(range(0,4), range(5,10)):
+        ...     # start at d=1 to avoid getting [0,n] ~ [n]
+        ...     for d in range(1, max_dimK(n)+1):
         ...         for K in partitions(d, include_two=False):
         ...             if n < lb1(K): continue
         ...             if n < lb2(K): continue
-        ...             if n < lb3(K): continue
         ...             Ln_K_rank = f(n) + partition_rank(K)
         ...             for J in partitions(d+n, include_two=False):
         ...                 if (partition_rank(J) == Ln_K_rank):
         ...                         # n is guaranteed to be larger than d,
-        ...                         # so we know it goes at the end.
-        ...                         Ln_K = K + [n]
+        ...                         # so we know it goes at the end. Special
+        ...                         # case to avoid inserting zero at the
+        ...                         # beginning of a partition.
+        ...                         if K == [0]:
+        ...                             Ln_K = [n]
+        ...                         else:
+        ...                             Ln_K = K + [n]
         ...                         if not J == Ln_K:
         ...                             matches.append( (Ln_K, J) )
         >>> matches
@@ -1461,13 +1470,13 @@ def test_theorem5() -> bool:
 
         >>> matches = []
         >>> for n in range(10,15):
-        ...     for d in range(1,max_dimK(n)+1):
+        ...     # start at d=1 to avoid getting [0,n] ~ [n]
+        ...     for d in range(1, max_dimK(n)+1):
         ...         Ks = []
         ...         for p in partitions(d, include_two=False):
         ...             # K is pure Lorentz, per the theorem
         ...             if n < lb1(p): continue
         ...             if n < lb2(p): continue
-        ...             if n < lb3(p): continue
         ...             Ks.append( (0,p) )
         ...
         ...         # Always include pure-Lorentz J
@@ -1480,8 +1489,12 @@ def test_theorem5() -> bool:
         ...
         ...         for K in Ks:
         ...             # n is guaranteed to be larger than d, so we know it
-        ...             # goes at the end.
-        ...             Ln_K = (K[0], K[1] + [n])
+        ...             # goes at the end. Special case to avoid inserting
+        ...             # zero at the beginning of a partition.
+        ...             if K[1] == [0]:
+        ...                 Ln_K = (K[0], [n])
+        ...             else:
+        ...                 Ln_K = (K[0], K[1] + [n])
         ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3) here
         ...
         ...             for J in Js:
@@ -1548,15 +1561,13 @@ def test_theorem5() -> bool:
     max_d = (max_cone_dim() - 2) // 2
 
     for d in range(1, max_d+1):
-        min_n = max(lowerbound1(RN(d)),
-                    lowerbound2(L(d)),
-                    lowerbound3b(L(d)))
+        min_n = max(lowerbound1(RN(d)), lowerbound2(L(d)))
         max_n = max_cone_dim() - d
         for n in range(min_n, max_n+1):
+            if n == 4: continue
             for K in all_cones_of_dim(d):
                 if n < lowerbound1(K): continue
                 if n < lowerbound2(K): continue
-                if n < lowerbound3b(K): continue
                 lhs = DirectSum([K,L(n)])
                 for J in lhs.simulacra():
                     fs = list(J.factors())
