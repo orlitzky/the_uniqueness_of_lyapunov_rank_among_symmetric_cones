@@ -1235,69 +1235,54 @@ def test_theorem4() -> bool:
         True
 
     In the proof of this theorem, we "replace" the non-Lorentz
-    irreducible factors with sums of Lorentz cones. Here we confirm
-    that those sums have the correct dimensions, and Lyapunov ranks
-    that dominates the Lyapunov ranks of the things they replace. The
-    first example we give is for the complex PSD cones::
+    irreducible factors with sums of Lorentz cones. The replacements
+    should agree in dimension, and have a dominant Lyapunov rank. The
+    first example we give is for the 3x3 complex PSD cone::
 
-        >>> from sympy import symbols
-        >>> m = symbols("m", integer=True, positive=True)
-        >>> I_even = DirectSum(2*[L(m**2/2)], False)
-        >>> I_even.dim == HC(m).dim
+        >>> L(9).dim == HC(3).dim
         True
-        >>> [(I_even.rank - HC(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-        [3, -3, 27, 237, 867, 2253]
-        >>> I_odd  = DirectSum(2*[L((m**2 - 1)/2)] + [L(1)], False)
-        >>> I_odd.dim == HC(m).dim
-        True
-        >>> [(I_odd.rank - HC(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-        [2, -2, 86, 458, 1402, 3302]
-        >>> I_three = L(9)
-        >>> I_three.dim == HC(3).dim
-        True
-        >>> I_three.rank > HC(3).rank
+        >>> L(9).rank > HC(3).rank
         True
 
-    We can do the same for the real PSD cones, based on whether or not
-    ``(m**2 + m) / 2`` is even or odd, again with a special case for
-    ``m == 3``::
+    For all other non-Lorentz factors, we verify explicitly that any
+    of their all-Lorentz simulacra will have no factor of dimension
+    ``n`` or greater::
 
-        >>> I_even = DirectSum(2*[L((m**2 + m)/4)], False)
-        >>> I_even.dim == fix_floor(HR(m).dim)
-        True
-        >>> [(I_even.rank - HR(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-        [2, -2, 6, 64, 244, 630]
-        >>> I_odd = DirectSum(2*[L( ((m**2 + m)/2 - 1)/2 )] + [L(1)], False)
-        >>> I_odd.dim == fix_floor(HR(m).dim)
-        True
-        >>> [(I_odd.rank - HR(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-        [2, -4, 20, 122, 384, 904]
-        >>> I_three = L(6)
-        >>> I_three.dim == HR(3).dim
-        True
-        >>> I_three.rank > HR(3).rank
+        >>> from sql import max_cone_dim
+        >>> K = random_cone()
+        >>> min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3a(K))
+        >>> max_n = max_cone_dim() - K.dim
+        >>> all(
+        ...   (not isinstance(f,L)) or f.dim < n
+        ...   for n in range(min_n, max_n)
+        ...   for J in DirectSum([K,L(n)]).simulacra()
+        ...   for I in J.factors()
+        ...   if (not isinstance(I,L)) and I.dim >= n
+        ...   for I_prime in I.simulacra()
+        ...   for f in I_prime.factors()
+        ... )
         True
 
-    And the quaternion PSD cones::
+    As part of the argument, we claim that all non-Lorentz irreducible
+    factors ``I`` satisfy the bound ``I.dim >= I.rank/3``. We confirm
+    this with a random sample of irreducible cones, and set ``n``
+    large enough to ensure that the factors we generate are not
+    isomorphic to Lorentz cones::
 
-        >>> I_even = DirectSum(2*[L((2*m**2 - m)/2)], False)
-        >>> I_even.dim == fix_floor(HH(m).dim)
+        >>> all(
+        ...   K.dim >= K.rank/3
+        ...   for _ in range(100)
+        ...   if (K := random_irreducible_cone(3,20))
+        ...   and not isinstance(K, L)
+        ... )
         True
-        >>> [(I_even.rank - HH(m).rank).subs({m:k}) for k in [0,2,4,6,8,10]]
-        [2, -8, 120, 914, 3286, 8532]
-        >>> I_odd = DirectSum(2*[L((2*m**2 - m - 1)/2)] + [L(1)], False)
-        >>> I_odd.dim == fix_floor(HH(m).dim)
+
+    We also claim that ``L(n).rank >= 6*n`` as part of the argument.
+    This holds under our assumption that ``n >= 15``, but it would
+    still hold under the lighter assumption that ``n >= 13``::
+
+        >>> all( L(n).rank >= 6*n for n in range(13, 100) )
         True
-        >>> [(I_odd.rank - HH(m).rank).subs({m:k}) for k in [1,3,5,7,9,11]]
-        [-1, 9, 365, 1787, 5379, 12629]
-
-    Finally, the 3x3 octonion cone::
-
-       >>> I = DirectSum(3*[L(9)], False)
-       >>> I.dim == HO(3).dim
-       True
-       >>> I.rank > HO(3).rank
-       True
 
     """
     return True
