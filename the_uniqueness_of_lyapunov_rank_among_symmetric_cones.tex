@@ -1017,7 +1017,7 @@
     a finite number of these, and computation shows that
     $\Hnplus[3]\of{\Rn[1]} \sim \directsum{\Lnplus[4]}{\Rnplus[2]}$ is
     the sole counterexample at $n = 4$. As a result, we can get away
-    with requiring $n \ge 5$ instead of $n \ge 15$.
+    with requiring $n \ne 4$ instead of $n \ge 15$.
 
     In the proof of this result, we will use integer partitioning to
     enumerate sums of Lorentz cones, a strategy we employ several
@@ -1035,7 +1035,7 @@
     of time.
 
     \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
-      Suppose that $K,J$ are symmetric cones and that $n \ge 5$
+      Suppose that $K,J$ are symmetric cones and that $n \ne 4$
       satisfies \cref{itm:condition1,itm:condition2}. Then $J \sim
       \directsum{K}{\Lnplus}$ if and only if there exists a symmetric
       $J'$ such that $J \cong \directsum{J'}{\Lnplus}$ and $J' \sim
@@ -1046,7 +1046,7 @@
         the ``if'' direction was obvious and required no conditions on
         $n$. For the other direction, as just discussed, we must check
         the cones $K$ satisfying $\dim\of{K}\qty{\dim\of{K} - 1} \le
-        4n - 10$ for each $n \in \set{5,6,\ldots,14}$. We begin by
+        4n - 10$ for each $n \in \set{3,5,6,\ldots,14}$. We begin by
         computing the maximum value of $\dim\of{K}$ corresponding to
         each $n$.
         %
@@ -1055,6 +1055,7 @@
             \begin{tabular}{l l}
               $n$ & $\dim\of{K}$\\
               \midrule
+              $3$ & $1,2$\\
               $5$ & $1,2,3$\\
               $6,7$ & $1,2,3,4$\\
               $8,9$ & $1,2,3,4,5$\\
