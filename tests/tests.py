@@ -1744,6 +1744,22 @@ def test_proposition9() -> bool:
         >>> test_proposition9()
         True
 
+    Find the pairs of ``m`` and ``n`` that aren't a corollary of
+    Theorem 5. The cases where ``m == 0`` are trivial::
+
+        >>> [
+        ...   (m,n)
+        ...   for m in range(1,100)
+        ...   for n in range(100)
+        ...   if (
+        ...     n < lowerbound1(L(m))
+        ...     or n < lowerbound2(L(m))
+        ...     or n == 4
+        ...   )
+        ...   and n >= (m**2 - 3*m + 6)/2
+        ... ]
+        [(1, 2), (1, 4), (2, 2), (2, 3), (2, 4), (3, 3), (3, 4), (4, 5)]
+
     Verify the cases mentioned explicitly in the proof. First, the
     ``m != 2`` cases where there are no simulacra::
 
@@ -1753,7 +1769,7 @@ def test_proposition9() -> bool:
         >>> m = 4
         >>> K = L(m)
         >>> n = 5
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (True, False, True)
         >>> if K.dim + n <= mcd:
         ...     DirectSum([K,L(n)]).simulacra()
@@ -1764,7 +1780,7 @@ def test_proposition9() -> bool:
         >>> m = 3
         >>> K = L(m)
         >>> n = 4
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (True, False, False)
         >>> if K.dim + n <= mcd:
         ...     DirectSum([K,L(n)]).simulacra()
@@ -1772,8 +1788,8 @@ def test_proposition9() -> bool:
         ...     ()
         ()
         >>> n = 3
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-        (True, False, False)
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
+        (True, False, True)
         >>> if K.dim + n <= mcd:
         ...     DirectSum([K,L(n)]).simulacra()
         ... else:
@@ -1783,23 +1799,15 @@ def test_proposition9() -> bool:
         >>> m = 1
         >>> K = L(m)
         >>> n = 2
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-        (True, False, False)
-        >>> if K.dim + n <= mcd:
-        ...     DirectSum([K,L(n)]).simulacra()
-        ... else:
-        ...     ()
-        ()
-        >>> n = 3
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
-        (True, True, False)
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
+        (True, False, True)
         >>> if K.dim + n <= mcd:
         ...     DirectSum([K,L(n)]).simulacra()
         ... else:
         ...     ()
         ()
         >>> n = 4
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (True, True, False)
         >>> if K.dim + n <= mcd:
         ...     DirectSum([K,L(n)]).simulacra()
@@ -1814,18 +1822,20 @@ def test_proposition9() -> bool:
         >>> mcd = max_cone_dim()
         >>> m = 2
         >>> K = L(m)
-        >>> lowerbound1(K)
-        2
-        >>> if K.dim + 2 <= mcd:
-        ...     DirectSum([K,L(2)]).simulacra()
-        ... else:
-        ...     ()
-        ()
-        >>> if K.dim + 3 <= mcd:
-        ...     DirectSum([K,L(3)]).simulacra()
-        ... else:
-        ...     ()
-        ()
+        >>> ns = [2, 3]
+        >>> any( n < lowerbound1(K) for n in ns )  # not violated
+        False
+        >>> all( n < lowerbound2(K) for n in ns )  # violated
+        True
+        >>> sims = []
+        >>> for n in ns:
+        ...     if K.dim + n <= mcd:
+        ...         sims.append(DirectSum([K,L(n)]).simulacra())
+        ...     else:
+        ...         sims.append(())
+        >>> sims
+        [(), ()]
+
         >>> from sql import max_cone_dim
         >>> expected = (HR(3),)
         >>> J = DirectSum([K,L(4)])
