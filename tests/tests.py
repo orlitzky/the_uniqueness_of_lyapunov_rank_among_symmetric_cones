@@ -1836,10 +1836,25 @@ def test_proposition9() -> bool:
    Confirm that the stated bound actually comes from
    :func:`lowerbound1`::
 
-       >>> from sympy import symbols
-       >>> m = symbols("m", integer=True, positive=True)
-       >>> fix_floor(lowerbound1(L(m))) == (m**2 - 3*m + 6)/2
-       True
+        >>> from sympy import symbols
+        >>> m = symbols("m", integer=True, positive=True)
+        >>> fix_floor(lowerbound1(L(m))) == (m**2 - 3*m + 6)/2
+        True
+
+    The ``L(m) + L(n)`` cases with ``m,n <= 2`` are singled out in
+    a bullet point::
+
+        >>> all(
+        ...   not list(partition_simulacra(p))
+        ...   for k in range(5)
+        ...   for p in partitions(k)
+        ... )
+        True
+
+    The ``L(3) + L(2)`` case is also singled out in a bullet point::
+
+        >>> list(partition_simulacra([3,2]))
+        []
 
     """
     from sql import max_cone_dim
