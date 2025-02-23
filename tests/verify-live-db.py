@@ -89,7 +89,7 @@ if __name__ == "__main__":
         result = False
     report()
 
-    print("Need max_cone_dim() >= 21 for lowerbound3b() and Theorem 5... ", flush=True, end="")
+    print("Need max_cone_dim() >= 21 for Theorem 5... ", flush=True, end="")
     if mcd < 21:
         result = False
     report()
