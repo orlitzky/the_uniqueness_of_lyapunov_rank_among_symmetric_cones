@@ -153,7 +153,7 @@ def lowerbound1(K):
         >>> n = lowerbound1(K) - 1
         >>> n >= lowerbound2(K)
         True
-        >>> n >= lowerbound3b(K)
+        >>> n != 4
         True
         >>> J1 = DirectSum([K, L(n)])
         >>> J2 = DirectSum([RN(K.dim - 1), L(n+1)])
@@ -203,7 +203,7 @@ def lowerbound2(K):
         >>> n = lowerbound2(K) - 1
         >>> n >= lowerbound1(K)
         True
-        >>> n >= lowerbound3b(K)
+        >>> n != 4
         True
         >>> J1 = DirectSum([K,L(n)])
         >>> J2 = DirectSum([L(29),L(10)])
@@ -215,10 +215,10 @@ def lowerbound2(K):
     return 2 + f(1 + K.dim) - K.rank
 
 
-def lowerbound3a(K : SymmetricCone) -> int:
+def lowerbound3(K : SymmetricCone) -> int:
     r"""
     The third lower bound on "n", used in the proof of Lemma 3
-    and elsewhere (and later loosened to :func:`lowerbound3b`).
+    and elsewhere (and later loosened to ``n != 4``).
 
     Parameters
     ----------
@@ -238,95 +238,11 @@ def lowerbound3a(K : SymmetricCone) -> int:
 
     Yup::
 
-        >>> lowerbound3a(random_cone())
+        >>> lowerbound3(random_cone())
         15
 
     """
     return 15
-
-
-def lowerbound3b(K):
-    r"""
-    The fourth and final precondition on ``n`` that we can use
-    for Theorem 4, obtained near the end of the paper by loosening
-    :func:`lowerbound3a`.
-
-    Parameters
-    ----------
-
-    K : SymmetricCone
-      The cone for which you want the lower bound (this parameter is
-      essentially ignored).
-
-    Returns
-    -------
-
-    int
-      This lower bound is always 5.
-
-    Examples
-    --------
-
-    Test the claim that if we drop the ``n >= 15`` condition, then the
-    only counterexample we get is HR(3) ~ L(4) + L(2). We have to
-    assume that ``n >= 3``, because that is implied by the first two
-    bounds (just add them), but for ``n == 4`` we do get one
-    counterexample. Thus the real bound is ``n >= 5``, for which we
-    get no counterexamples::
-
-        >>> from sql import all_cones_of_dim, max_cone_dim
-        >>> from math import floor
-        >>>
-        >>> # skip check if not enough data; the largest dimension
-        >>> # we need is 21 when n=14 and d=7.
-        >>> skip = ( max_cone_dim() < 21 )
-        >>>
-        >>> def check(n_start):
-        ...     if skip:
-        ...         return []
-        ...
-        ...     actual = []
-        ...     for n in range(n_start, 15):
-        ...         for d in range(1, max_dimK(n)+1):
-        ...             for K in all_cones_of_dim(d):
-        ...                 if n < lowerbound1(K) or n < lowerbound2(K):
-        ...                     continue
-        ...                 C = DirectSum([K, L(n)])
-        ...                 for s in C.simulacra():
-        ...                     if L(n) not in s.factors():
-        ...                         actual.append((C,s))
-        ...     return actual
-        >>>
-        >>> expected = [ (DirectSum([L(2),L(4)]), HR(3)) ]
-        >>> if skip:
-        ...     expected = []
-        >>>
-        >>> check(3) == expected
-        True
-        >>> check(4) == expected
-        True
-        >>>
-        >>> # this should be empty even if we have data in the db
-        >>> check(5)
-        []
-
-    This bound cannot be lowered independent of the other two, which
-    are both satisfied for the counterexample HR(3) ~ L(4) + L(2)::
-
-        >>> K = RN(2)
-        >>> n = lowerbound3b(K) - 1
-        >>> n >= lowerbound1(K)
-        True
-        >>> n >= lowerbound2(K)
-        True
-        >>> from sql import max_cone_dim
-        >>> skip = ( max_cone_dim() < (n + 2) )
-        >>> skip or HR(3) in DirectSum([K,L(n)]).simulacra()
-        True
-
-    """
-    return 5
-
 
 
 def test_lemma1():
@@ -1021,7 +937,7 @@ def test_lemma3() -> bool:
     set that new lower bound greater than ``2*K.dim``. This leads to a
     quadratic inequality (which we call ``g`` below) that can easily
     be solved, and will hold for ``K.dim >= 8``. The ``K.dim < 7``
-    cases follow trivially from :func:`lowerbound3a`. Below we let the
+    cases follow trivially from :func:`lowerbound3`. Below we let the
     symbols ``d`` and ``r`` stand for ``K.dim`` and ``K.rank``::
 
         >>> from sympy import expand, floor, symbols
@@ -1071,7 +987,7 @@ def test_lemma3() -> bool:
     return all(
       (n > 2*K.dim) or any([n < lowerbound1(K),
                             n < lowerbound2(K),
-                            n < lowerbound3a(K)])
+                            n < lowerbound3(K)])
       for (K,n) in K_n_pairs
     )
 
@@ -1205,7 +1121,7 @@ def test_lemma5() -> bool:
         # may crash the machine. Keep in mind that we're partitioning
         # n + dim(K), and that this is multiplied (at worst) by the
         # length of Ks!
-        min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3a(K))
+        min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3(K))
         max_n = 60 - K.dim
 
         if min_n > max_n:
@@ -1252,7 +1168,7 @@ def test_theorem4() -> bool:
 
         >>> from sql import max_cone_dim
         >>> K = random_cone()
-        >>> min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3a(K))
+        >>> min_n = max(lowerbound1(K), lowerbound2(K), lowerbound3(K))
         >>> max_n = max_cone_dim() - K.dim
         >>> all(
         ...   (not isinstance(f,L)) or f.dim < n
@@ -1307,20 +1223,44 @@ def test_theorem5() -> bool:
         >>> test_theorem5()
         True
 
-    For a given ``K.dim``, :func:`lowerbound3b` is constant,
-    :func:`lowerbound1` is minimized by the nonnegative orthant (with
-    value ``n >= 2``), and :func:`lowerbound2` is minimized by the
-    Lorentz cone with value ``K.dim + 2`` (proof: we are either
-    maximizing beta(K) or minimizing the Lyapunov rank in fixed
-    dimensions). The second bound is therefore increasing with
-    ``K.dim`` and obviously dominates the first. As a result, we can
-    use :func:`lowerbound2` to determine the first potentially valid
-    ``n`` corresponding to any ``K.dim``. Moreover we can use this to
-    compute the first ``K.dim`` such that ``n + K.dim`` will exceed
-    the largest dimension we have cached: basically we just add
-    ``K.dim`` to the bound and set it greater than the largest
-    dimension we have cached, i.e. we solve ``K.dim + 2 + K.dim >
-    max_cone_dim()``::
+    Test the claim that if we drop the ``n >= 15`` condition on
+    Theorem 4, then the only new counterexample we get is ``HR(3) ~
+    L(4) + L(2)`` at ``n == 4``. Thus the real condition is ``n !=
+    4``, for which we get no counterexamples::
+
+        >>> from sql import all_cones_of_dim, max_cone_dim
+        >>> actual = []
+        >>> # skip check if not enough data; the largest dimension
+        >>> # we need is 21 when n=14 and d=7.
+        >>> skip = ( max_cone_dim() < 21 )
+        >>> if not skip:
+        ...     for n in range(15):
+        ...         for d in range(max_dimK(n)+1):
+        ...             for K in all_cones_of_dim(d):
+        ...                 if n < lowerbound1(K) or n < lowerbound2(K):
+        ...                     continue
+        ...                 C = DirectSum([K, L(n)])
+        ...                 for s in C.simulacra():
+        ...                     if L(n) not in s.factors():
+        ...                         actual.append( (n, (C,s)) )
+        >>>
+        >>> expected = [ (4, (DirectSum([L(2),L(4)]), HR(3))) ]
+        >>> skip or (actual == expected)
+        True
+
+    For a given ``K.dim``, :func:`lowerbound1` is minimized by the
+    nonnegative orthant (with value ``n >= 2``), and
+    :func:`lowerbound2` is minimized by the Lorentz cone with value
+    ``K.dim + 2`` (proof: we are either maximizing beta(K) or
+    minimizing the Lyapunov rank in fixed dimensions). The second
+    bound is therefore increasing with ``K.dim`` and obviously
+    dominates the first. As a result, we can use :func:`lowerbound2`
+    to determine the first potentially valid ``n`` corresponding to
+    any ``K.dim``. Moreover we can use this to compute the first
+    ``K.dim`` such that ``n + K.dim`` will exceed the largest
+    dimension we have cached: basically we just add ``K.dim`` to the
+    bound and set it greater than the largest dimension we have
+    cached, i.e. we solve ``K.dim + 2 + K.dim > max_cone_dim()``::
 
         >>> lowerbound1(RN(3))
         2
@@ -1517,10 +1457,10 @@ def test_theorem5() -> bool:
         >>> from random import randint
         >>> m = randint(5,20)
         >>> K = L(m)
-        >>> lowerbound3b(K) < lowerbound2(K) < lowerbound1(K)
+        >>> lowerbound2(K) < lowerbound1(K)
         True
         >>> n = lowerbound1(K) - 1
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (False, True, True)
         >>> ( DirectSum([L(m), L(n)]).signature()
         ...   ==
@@ -1529,24 +1469,23 @@ def test_theorem5() -> bool:
 
         >>> K = RN(2)
         >>> n = 4
-        >>> lowerbound1(K) < lowerbound2(K) < lowerbound3b(K)
+        >>> lowerbound1(K) < lowerbound2(K)
         True
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (True, True, False)
         >>> DirectSum([K,L(n)]).signature() == HR(3).signature()
         True
 
         >>> K = HC(3)
-        >>> lowerbound3b(K) < lowerbound1(K) < lowerbound2(K)
+        >>> lowerbound1(K) < lowerbound2(K)
         True
         >>> n = 30
-        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n >= lowerbound3b(K))
+        >>> (n >= lowerbound1(K), n >= lowerbound2(K), n != 4)
         (True, False, True)
         >>> ( DirectSum([K,L(n)]).signature()
         ...   ==
         ...   DirectSum([L(29),L(10)]).signature() )
         True
-
     """
     # Use cached data so that we can go beyond the n=15 case
     # and check the result for Theorem 4, too.
@@ -1639,16 +1578,21 @@ def test_corollary3() -> bool:
     for d in range(1, max_d+1):
         max_n = max_cone_dim() - d  # leave room for K
         for K in all_cones_of_dim(d):
-            min_n = max(lowerbound1(K),lowerbound2(K),lowerbound3b(K))
+            min_n = max(lowerbound1(K),lowerbound2(K))
             if min_n > max_n:
                 # The dimension of L(n)+K is guaranteed to exceed the
                 # dimensions we have cached, so skip this cone.
                 continue
-
+            if min_n == 4 and max_n == 4:
+                # We're gonne get stuck generating random 4s (because
+                # 4 is not a valid value for n) forever
+                continue
             if not K.simulacra():
+                n = 4
+                while n == 4:
+                    n = randint(min_n, max_n)
                 # the corollary says that L(n)+K should have no
                 # simulacra
-                n = randint(min_n, max_n)
                 result &= not DirectSum([K,L(n)]).simulacra()
 
     return result
