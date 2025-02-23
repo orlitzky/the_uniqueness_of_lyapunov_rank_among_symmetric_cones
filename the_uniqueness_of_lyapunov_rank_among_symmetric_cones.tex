@@ -1345,32 +1345,29 @@
         $n \ge \qty{m^2 - 3m + 6}/2$ is thus \cref{itm:condition1}
         applied to $K \coloneqq \Lnplus[m]$.
 
-        For $m \ge 5$, \cref{itm:condition1} dominates the other two,
-        so this is a corollary of \cref{thm:improved subproblem
-          reduction} in that case. The remaining pairs of $m,n$ that
-        satisfy $m \ge 1$ and $n \ge \qty{m^2 - 3m + 6}/2$ but
-        \emph{not} the prerequisites for \cref{thm:improved subproblem
-          reduction} are,
+        When $m \ge 5$, \cref{itm:condition1} dominates
+        \cref{itm:condition2} for $K \coloneqq \Lnplus[m]$ and
+        moreover implies that $n \ge 5$, so this is a corollary of
+        \cref{thm:improved subproblem reduction} in that case. The
+        remaining pairs of $m,n$ that satisfy $m \ge 1$ and $n \ge
+        \qty{m^2 - 3m + 6}/2$ but \emph{not} the prerequisites for
+        \cref{thm:improved subproblem reduction} are,
 
         \begin{itemize}
           \begin{item}
-            $m = 4$ and $n = 5$, which violates \cref{itm:condition2}.
+            $m = 4$, where \cref{itm:condition2} is violated for $n = 5$.
           \end{item}
           \begin{item}
-            $m = 3$ and $n \in \set{3,4}$, which satisfies neither
-            \cref{itm:condition2} nor $n \ge 5$.
+            $m = 3$, where \cref{itm:condition2} is violated for $n
+            \in \set{3,4}$.
           \end{item}
           \begin{item}
-            $m = 2$ and $n = 4$, where only $n \ge 5$ is violated.
+            $m = 2$, where $n \ne 4$ is violated for $n = 4$ and
+            \cref{itm:condition2} is violated for $n \in \set{2,3}$.
           \end{item}
           \begin{item}
-            $m = 2$ and $n \in \set{2,3}$, where \cref{itm:condition2}
-            and $n \ge 5$ are both violated.
-          \end{item}
-          \begin{item}
-            $m = 1$ where $n \ge 5$ is violated for $n \in
-            \set{2,3,4}$ and \cref{itm:condition2} is violated for
-            $n=2$.
+            $m = 1$, where \cref{itm:condition2} is violated for $n =
+            2$ and $n \ne 4$ is violated for $n = 4$.
           \end{item}
         \end{itemize}
         %
@@ -1387,10 +1384,11 @@
             no simulacra when $m,n \le 2$.
           \end{item}
           \begin{item}
-            $\directsum{\Lnplus[3]}{\Lnplus[2]}$ has no
-            simulacra. Given that neither $\Lnplus[5]$ nor any
-            $\Rnplus[k]$ has similacra, the only candidate would be
-            $\directsum{\Lnplus[4]}{\Lnplus[1]}$.
+            $\directsum{\Lnplus[3]}{\Lnplus[2]}$ and
+            $\directsum{\Lnplus[4]}{\Lnplus[1]}$ have no
+            simulacra. Neither $\Lnplus[5]$ nor any $\Rnplus[k]$ has
+            simulacra, so they would have to be simulacra of each
+            other (they aren't).
           \end{item}
           \begin{item}
             When $m,n \ge 3$, there are only two factors in
