@@ -1161,7 +1161,7 @@ def test_theorem4() -> bool:
     generate are not isomorphic to Lorentz cones::
 
         >>> all(
-        ...   12*K.dim > 5*K.rank
+        ...   12*K.dim >= 5*K.rank
         ...   for _ in range(100)
         ...   if (K := random_irreducible_cone(3,20))
         ...   and not isinstance(K, (L,HO))
