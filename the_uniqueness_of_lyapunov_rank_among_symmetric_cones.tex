@@ -743,7 +743,7 @@
         $n \ge 2 + \lyapunovrank{K} - \dim\of{K}$,
       \end{item}
       \begin{item}\label[condition]{itm:condition2}
-        $n \ge 2 + \lyapunovrank{\Lnplus[1 + \dim\of{K}]} - \lyapunovrank{K}$,
+        $n \ge 2 + \lyapunovrank{\Lnplus[\dim\of{K} + 1]} - \lyapunovrank{K}$,
       \end{item}
       \begin{item}\label[condition]{itm:condition3}
         $n \ge 12$.
@@ -824,30 +824,31 @@
         To maximize the Lyapunov rank on the left we can consult
         \cref{prop:rank of lorentz is maximal} and then take as many
         $\Lnplus[n-1]$ factors as will fit in dimension $\dim\of{K} +
-        n$. We know at least one $\Lnplus[n-1]$ will fit because
-        $\dim\of{K} + n \ge n-1$, but from \cref{lem:condition4} we
-        also know that $n \ge \dim\of{K} + 2 \iff 2\qty{n - 1} \ge
-        \dim\of{K} + n$. So at most two such factors fit, and in any
-        case we obtain
+        n$. We know that at least one $\Lnplus[n-1]$ factor will fit
+        because $\dim\of{K} + n \ge n-1$. But from
+        \cref{lem:condition4} we also know that $n \ge \dim\of{K} + 2
+        \iff 2\qty{n - 1} \ge \dim\of{K} + n$. So at most, two such
+        factors fit, and in any case we obtain
         %
         \begin{equation*}
           \lyapunovrank{\directsummany{i=1}{k}{\Lnplus[n_{i}]}}
           \le
-          \lyapunovrank{\directsum{\Lnplus[n-1]}{\Lnplus[d+1]}},
+          \lyapunovrank{\directsum{\Lnplus[n-1]}{\Lnplus[\dim\of{K}+1]}},
         \end{equation*}
         %
-        where $d + 1 = d + n - \qty{n-1}$ represents the ``left over''
-        dimensions. To reach the desired conclusion we wish for this
-        to be strictly less than
-        $\lyapunovrank{\directsum{K}{\Lnplus}}$. Rearranging, we want
+        where $\dim\of{K} + 1 = \dim\of{K} + n - \qty{n-1}$ represents
+        the ``left over'' dimensions. To reach the desired conclusion
+        we wish for this to be strictly less than
+        $\lyapunovrank{\directsum{K}{\Lnplus}}$. After converting to
+        non-strict inequality and rearranging a bit, we want
         %
         \begin{equation*}
-          \lyapunovrank{\Lnplus[n-1]} + \lyapunovrank{\Lnplus[d+1]}
-          <
-          \lyapunovrank{K} + \lyapunovrank{\Lnplus}.
+          \lyapunovrank{\Lnplus} - \lyapunovrank{\Lnplus[n-1]}
+          \ge
+          1 + \lyapunovrank{\Lnplus[\dim\of{K}+1]} - \lyapunovrank{K}.
         \end{equation*}
         %
-        This is precisely \cref{itm:condition2}.
+        This is \cref{itm:condition2}.
       \end{proof}
     \end{lemma}
 
