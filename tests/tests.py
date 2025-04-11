@@ -244,7 +244,7 @@ def lowerbound3(K : SymmetricCone) -> int:
     -------
 
     int
-      This lower bound is always 12.
+      This lower bound is always 10.
 
     Examples
     --------
@@ -252,10 +252,10 @@ def lowerbound3(K : SymmetricCone) -> int:
     Yup::
 
         >>> lowerbound3(random_cone())
-        12
+        10
 
     """
-    return 12
+    return 10
 
 
 def test_lemma1():
