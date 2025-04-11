@@ -212,7 +212,7 @@ def lowerbound2(K):
         >>> J1 == J2
         False
 
-    This lower bound is exactly what is needed in Lemma 4::
+    This lower bound is exactly what is needed in Lemma 5::
 
         >>> from sympy import expand, symbols
         >>> n,d,r = symbols("n,d,r", integer=True, positive=True)
