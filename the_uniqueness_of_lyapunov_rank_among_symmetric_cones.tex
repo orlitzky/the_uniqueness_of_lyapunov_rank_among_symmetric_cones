@@ -755,17 +755,12 @@
 
     \begin{lemma}\label{lem:condition4}
       If $K$ is a symmetric cone and if $n \in \Nn[1]$ satisfies
-      \cref{itm:condition1,itm:condition2,itm:condition3}, then $n \ge
-      \dim\of{K} + 2$.
+      \cref{itm:condition2}, then $n \ge \dim\of{K} + 2$.
 
       \begin{proof}
-        From the assumption that $n \ge 10$, the conclusion is
-        obviously true whenever $\dim\of{K} \le 8$. Averaging
-        \cref{itm:condition1,itm:condition2}, we obtain a quadratic
-        function of $\dim\of{K}$ that serves as another lower bound on
-        $n$. One can set this new bound to dominate $\dim\of{K} + 2$
-        and solve the quadratic to see that $\dim\of{K} \ge 5$ implies
-        $n \ge \dim\of{K} + 2$.
+        % Note: K = {0} is a special case
+        Fix $\dim\of{K}$, and minimize \cref{itm:condition2} using
+        \cref{prop:rank of lorentz is maximal}.
       \end{proof}
     \end{lemma}
 
