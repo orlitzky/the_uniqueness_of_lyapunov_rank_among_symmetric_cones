@@ -35,16 +35,10 @@
 \usepackage[capitalize,nameinlink,noabbrev,nosort]{cleveref}
 \newcommand{\creflastconjunction}{, and\nobreakspace}
 
-% Support for "inequality", "implication", "condition", and "form"
-% references in addition to the usual "equation" references.
-\crefname{inequality}{Inequality}{Inequalities}
-\creflabelformat{inequality}{#2\textup{(#1)}#3}
-\crefname{implication}{Implication}{Implications}
-\creflabelformat{implication}{#2\textup{(#1)}#3}
+% Support for "condition" references in addition to the usual
+% "equation" references.
 \crefname{condition}{Condition}{Conditions}
 \creflabelformat{condition}{#2\textup{(#1)}#3}
-\crefname{form}{Form}{Forms}
-\creflabelformat{form}{#2\textup{(#1)}#3}
 
 % amsthm must be loaded BEFORE cleveref, but the \newtheorem goes AFTER
 \theoremstyle{plain}
@@ -55,8 +49,6 @@
 
 % The signature of its argument.
 \newcommand*{\signature}[1]{ \sigma\of{#1} }
-
-\newcommand*{\smallestidx}[0]{\iota}
 
 \begin{document}
   \title{
@@ -725,6 +717,7 @@
     shares its signature with a direct sum of Lorentz cones and/or
     $\Hnplus[3]\of{\Cn[1]}$. We caution however that simulacra of this
     form may not be unique. Consider the simulacra,
+    %
     \begin{equation*}
       \Lnplus[4] \oplus \Lnplus[3] \oplus \Lnplus[3] \oplus \Lnplus[3]
       \sim
@@ -828,97 +821,33 @@
       \dim\of{\directsum{K}{\Lnplus}}$.
 
       \begin{proof}
-        Note that $k \ge 2$ if $n_{1} < n$. By rearranging the
-        factors, we may assume that $n_{1} \ge n_{2} \ge \cdots \ge
-        n_{k}$. To simplify the notation, we let
+        To maximize the Lyapunov rank on the left we can consult
+        \cref{prop:rank of lorentz is maximal} and then take as many
+        $\Lnplus[n-1]$ factors as will fit in dimension $\dim\of{K} +
+        n$. We know at least one $\Lnplus[n-1]$ will fit because
+        $\dim\of{K} + n \ge n-1$, but from \cref{lem:condition4} we
+        also know that $n \ge \dim\of{K} + 2 \iff 2\qty{n - 1} \ge
+        \dim\of{K} + n$. So at most two such factors fit, and in any
+        case we obtain
         %
         \begin{equation*}
-          f\of{x} \coloneqq \lyapunovrank{\Lnplus[x]},
-        \end{equation*}
-        %
-        and notice that, by \cref{prop:rank of lorentz is maximal},
-        %
-        \begin{equation}\label[inequality]{ineq:f is superadditive}
-          f\of{x} + f\of{y} \le f\of{x + y}.
-        \end{equation}
-        %
-        It is also easy to see for $n \ge 2$, which is guaranteed by
-        \cref{itm:condition3}, that
-        %
-        \begin{equation}\label{eq:f of n - 1}
-          f\of{n - 1} = f\of{n} - \qty{n - 1}.
-        \end{equation}
-        %
-        If we fix $\delta \ge 0$, then $g_{\delta}\of{x} \coloneqq
-        f\of{x} - f\of{x - \delta}$ is nondecreasing since
-        $g_{\delta}'\of{x} = \delta$. In particular, $g_{\delta}\of{n
-          - 1} \ge g_{\delta}\of{1 + \dim\of{K} + \delta}$ whenever $n
-        - 1 \ge 1 + \dim\of{K} + \delta$. In other words,
-        %
-        \begin{equation}\label[implication]{impl:growth inequality for f pt2}
-          \begin{gathered}
-            n - 1 \ge 1 + \dim\of{K} + \delta\\
-            \implies\\
-            f\of{n - 1} + f\of{1 + \dim\of{K}}
-            \ge
-            f\of{n - 1 - \delta} + f\of{1 + \dim\of{K} + \delta}.
-          \end{gathered}
-        \end{equation}
-
-
-        Let $S\of{j} \coloneqq \sum_{i=1}^{j}n_{i}$, and define
-        $\smallestidx$ to be the smallest index such that
-        $S\of{\smallestidx} > \dim\of{K}$. Since $S\of{k} = n +
-        \dim\of{K} > \dim\of{K}$, this is well-defined. From
-        \cref{lem:condition4} we have that $n > \dim\of{K}$,
-        which moreover implies that $\smallestidx < k$. Applying
-        \cref{ineq:f is superadditive} repeatedly, we find that
-        %
-        \begin{equation*}
-          \sum_{i=1}^{k}f\of{n_{i}}
-          =
-          \sum_{i=1}^{\smallestidx}f\of{n_{i}}
-          +
-          \sum_{i=\smallestidx+1}^{k}f\of{n_{i}}
+          \lyapunovrank{\directsummany{i=1}{k}{\Lnplus[n_{i}]}}
           \le
-          f\of{S\of{\smallestidx}}
-            + f\of{n + \dim\of{K}
-            - S\of{\smallestidx}}.
+          \lyapunovrank{\directsum{\Lnplus[n-1]}{\Lnplus[d+1]}},
         \end{equation*}
         %
-        Let $\delta \coloneqq S\of{\smallestidx} - \dim\of{K} -
-        1$. Then $\delta \ge 0$ by the definition of $\smallestidx$,
-        and $\dim\of{K} + 1 + \delta = S\of{\smallestidx}$. To apply
-        \cref{impl:growth inequality for f pt2}, we would like to know
-        that $S\of{\smallestidx} \le n - 1$. Using
-        \cref{lem:condition4}: if $n_{1} > \dim\of{K}$, then
-        $\smallestidx = 1$ and $S\of{\smallestidx} = n_{1} < n$ by
-        assumption; if $n_{1} \le \dim\of{K}$, then
-        $S\of{\smallestidx} = S\of{\smallestidx - 1} +
-        n_{\smallestidx} \le 2\dim\of{K} < n$.
-
-        We may now replace $S\of{\smallestidx}$ by $\dim\of{K} + 1 +
-        \delta$ and apply \cref{impl:growth inequality for f
-          pt2}:
-        %
-        \begin{align*}
-          \sum_{i=1}^{k}f\of{n_{i}}
-          &\le
-          f\of{1 + \dim\of{K} + \delta} + f\of{n - 1 - \delta}\\
-          &\le
-          f\of{n-1} + f\of{1 + \dim\of{K}}.
-        \end{align*}
-        %
-        Finally, using \cref{eq:f of n - 1}, we arrive at
+        where $d + 1 = d + n - \qty{n-1}$ represents the ``left over''
+        dimensions. To reach the desired conclusion we wish for this
+        to be strictly less than
+        $\lyapunovrank{\directsum{K}{\Lnplus}}$. Rearranging, we want
         %
         \begin{equation*}
-          \sum_{i=1}^{k}f\of{n_{i}}
-          \le
-          f\of{n} - \qty{n-1}+ f\of{1 + \dim\of{K}},
+          \lyapunovrank{\Lnplus[n-1]} + \lyapunovrank{\Lnplus[d+1]}
+          <
+          \lyapunovrank{K} + \lyapunovrank{\Lnplus}.
         \end{equation*}
         %
-        which, by \cref{itm:condition2}, is strictly less than
-        $f\of{n} + \lyapunovrank{K}$.
+        This is precisely \cref{itm:condition2}.
       \end{proof}
     \end{lemma}
 

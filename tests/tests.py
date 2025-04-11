@@ -211,6 +211,19 @@ def lowerbound2(K):
         True
         >>> J1 == J2
         False
+
+    This lower bound is exactly what is needed in Lemma 4::
+
+        >>> from sympy import expand, symbols
+        >>> n,d,r = symbols("n,d,r", integer=True, positive=True)
+        >>> K = SymmetricCone(0)
+        >>> K.dim = d
+        >>> K.rank = r
+        >>> ineq1 = f(n) - f(n-1) + 1 >= 2 + f(K.dim + 1) - K.rank
+        >>> ineq1 = expand(fix_floor(ineq1))
+        >>> ineq1 == expand(fix_floor(n >= lowerbound2(K)))
+        True
+
     """
     return 2 + f(1 + K.dim) - K.rank
 
