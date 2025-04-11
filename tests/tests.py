@@ -1195,25 +1195,27 @@ def test_theorem4() -> bool:
         True
 
     As part of the argument, we claim that all non-Lorentz irreducible
-    factors ``I`` satisfy the bound ``I.dim >= I.rank/3``. We confirm
+    factors ``I`` satisfy the bound ``I.dim > I.rank/3``. We confirm
     this with a random sample of irreducible cones, and set ``n``
     large enough to ensure that the factors we generate are not
     isomorphic to Lorentz cones::
 
         >>> all(
-        ...   K.dim >= K.rank/3
+        ...   3*K.dim > K.rank
         ...   for _ in range(100)
         ...   if (K := random_irreducible_cone(3,20))
         ...   and not isinstance(K, L)
         ... )
         True
 
-    We also claim that ``L(n).rank >= 6*n`` as part of the argument.
-    This holds under our assumption that ``n >= 15``, but it would
-    still hold under the lighter assumption that ``n >= 13``::
+    We also claim that ``L(n).rank >= 6*n - 6`` as part of the
+    argument.  This holds under our assumption that ``n >= 12``, and
+    no smaller bound will work::
 
-        >>> all( L(n).rank >= 6*n for n in range(13, 100) )
+        >>> all( L(n).rank >= 6*n - 6 for n in range(12, 100) )
         True
+        >>> L(11).rank >= 6*11 - 6
+        False
 
     """
     return True
