@@ -934,32 +934,33 @@ def test_lemma3() -> bool:
 
     In the proof of this lemma, we average :func:`lowerbound1` and
     :func:`lowerbound2` to obtain a new lower bound on ``n``, and then
-    set that new lower bound greater than ``2*K.dim``. This leads to a
-    quadratic inequality (which we call ``g`` below) that can easily
-    be solved, and will hold for ``K.dim >= 8``. The ``K.dim < 7``
-    cases follow trivially from :func:`lowerbound3`. Below we let the
-    symbols ``d`` and ``r`` stand for ``K.dim`` and ``K.rank``::
+    set that new lower bound greater than or equal to ``K.dim +
+    2``. This leads to a quadratic inequality (which we call ``g``
+    below) that can easily be solved, and will hold for ``K.dim >=
+    5``. The ``K.dim <= 10`` cases follow trivially from
+    :func:`lowerbound3`. Below we let the symbols ``d`` and ``r``
+    stand for ``K.dim`` and ``K.rank``::
 
         >>> from sympy import expand, floor, symbols
         >>> d,r = symbols("d,r", integer=True, positive=True)
         >>> K = SymmetricCone(0)
         >>> K.dim = d
         >>> K.rank = r
-        >>> g = (lowerbound1(K) + lowerbound2(K))/2 - 2*d
+        >>> g = (lowerbound1(K) + lowerbound2(K))/2 - (d + 2)
 
-    We want ``g`` to be positive, i.e. for the new average bound to be
-    strictly greater than ``2*d``. We can multiply it by ``4`` without
-    changing when it is positive. Again we have to strip the symbolic
-    ``floor`` ourselves because sympy doesn't know that ``d**2 + d``
-    is even::
+    We want ``g`` to be nonnegative, i.e. for the new average bound to
+    be greater than or equal to ``d + 2``. We can multiply it by ``4``
+    without changing when it is positive. Again we have to strip the
+    symbolic ``floor`` ourselves because sympy doesn't know that
+    ``d**2 + d`` is even::
 
         >>> g = 4*g
         >>> fix_floor(expand(g))
-        d**2 - 9*d + 10
+        d**2 - 5*d + 2
 
     Since ``g`` is an upwards-facing parabola, it will be nonpositive
     on an interval, and positive everywhere else. We see that for ``d
-    >= 8``, ``g`` will be positive::
+    >= 5``, ``g`` will be positive::
 
         >>> def sgn(x):
         ...     if x < 0: return -1
@@ -968,26 +969,25 @@ def test_lemma3() -> bool:
         >>> for i in range(12):
         ...     print(f"d = {i : >2}, sgn(g(d)) = {sgn(g.subs({d:i})) : >2}")
         d =  0, sgn(g(d)) =  1
-        d =  1, sgn(g(d)) =  1
+        d =  1, sgn(g(d)) = -1
         d =  2, sgn(g(d)) = -1
         d =  3, sgn(g(d)) = -1
         d =  4, sgn(g(d)) = -1
-        d =  5, sgn(g(d)) = -1
-        d =  6, sgn(g(d)) = -1
-        d =  7, sgn(g(d)) = -1
+        d =  5, sgn(g(d)) =  1
+        d =  6, sgn(g(d)) =  1
+        d =  7, sgn(g(d)) =  1
         d =  8, sgn(g(d)) =  1
         d =  9, sgn(g(d)) =  1
         d = 10, sgn(g(d)) =  1
         d = 11, sgn(g(d)) =  1
-
     """
     from random import randint
     K_n_pairs = ( (random_cone(),randint(0,1000))
                   for _ in range(100) )
     return all(
-      (n > 2*K.dim) or any([n < lowerbound1(K),
-                            n < lowerbound2(K),
-                            n < lowerbound3(K)])
+      (n >= K.dim + 2) or any([n < lowerbound1(K),
+                               n < lowerbound2(K),
+                               n < lowerbound3(K)])
       for (K,n) in K_n_pairs
     )
 
