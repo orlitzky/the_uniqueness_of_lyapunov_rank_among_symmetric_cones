@@ -1208,6 +1208,28 @@ def test_theorem4() -> bool:
         ... )
         True
 
+    ...Although, this is easier to just check::
+
+        >>> from sympy import symbols
+        >>> n = symbols("n", integer=True, positive=True)
+        >>> K = SymmetricCone(0)
+        >>> # HR(n)
+        >>> K.dim = n**2
+        >>> K.dim = (n**2 + n)/2
+        >>> K.rank = n**2
+        >>> 12*K.dim - 5*K.rank
+        n**2 + 6*n
+        >>> # HC(n)
+        >>> K.dim = n**2
+        >>> K.rank = 2*n**2 - 1
+        >>> 12*K.dim - 5*K.rank
+        2*n**2 + 5
+        >>> # HH(n)
+        >>> K.dim = 2*n**2 - n
+        >>> K.rank = 4*n**2
+        >>> 12*K.dim - 5*K.rank
+        4*n**2 - 12*n
+
     We also claim that ``5*L(n).rank >= 12*(2*n - 1)`` as part of the
     argument.  This holds under our assumption that ``n >= 10``, and
     no smaller bound will work::
