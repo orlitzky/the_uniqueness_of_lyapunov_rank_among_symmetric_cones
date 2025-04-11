@@ -1194,29 +1194,28 @@ def test_theorem4() -> bool:
         ... )
         True
 
-    As part of the argument, we claim that all non-Lorentz irreducible
-    factors ``I`` satisfy the bound ``I.dim > I.rank/3``. We confirm
-    this with a random sample of irreducible cones, and set ``n``
-    large enough to ensure that the factors we generate are not
-    isomorphic to Lorentz cones::
+    As part of the argument, we claim that all real, complex, and
+    quaternion PSD factors ``I`` satisfy the bound ``12*I.dim >=
+    5*I.rank``. We confirm this with a random sample of irreducible
+    cones, and set ``n`` large enough to ensure that the factors we
+    generate are not isomorphic to Lorentz cones::
 
         >>> all(
-        ...   3*K.dim > K.rank
+        ...   12*K.dim > 5*K.rank
         ...   for _ in range(100)
         ...   if (K := random_irreducible_cone(3,20))
-        ...   and not isinstance(K, L)
+        ...   and not isinstance(K, (L,HO))
         ... )
         True
 
-    We also claim that ``L(n).rank >= 6*n - 6`` as part of the
-    argument.  This holds under our assumption that ``n >= 12``, and
+    We also claim that ``5*L(n).rank >= 12*(2*n - 1)`` as part of the
+    argument.  This holds under our assumption that ``n >= 10``, and
     no smaller bound will work::
 
-        >>> all( L(n).rank >= 6*n - 6 for n in range(12, 100) )
+        >>> all( 5*L(n).rank >= 12*(2*n - 1) for n in range(10, 100) )
         True
-        >>> L(11).rank >= 6*11 - 6
+        >>> 5*L(9).rank >= 12*(2*9 - 1)
         False
-
     """
     return True
 

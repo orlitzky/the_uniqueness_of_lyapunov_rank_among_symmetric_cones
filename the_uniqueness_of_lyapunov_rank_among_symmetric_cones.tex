@@ -877,40 +877,44 @@
         the same dimension as $J$ and will satisfy $\lyapunovrank{J}
         \le \lyapunovrank{H} < \lyapunovrank{\directsum{K}{\Lnplus}}$
         per \cref{lem:not all smaller factors} unless $\Lnplus$ is a
-        factor of $J$. Refer back to \cref{tab:signatures of building
-          blocks}: if $J$ contains an irreducible, non-Lorentz factor
-        $I$, then $I$ satisfies $\dim\of{I} > \lyapunovrank{I}/3$.
-        And either $I \cong \Hnplus[3]\of{\Cn[1]}$, or, using the
-        results in \cref{sec:irreducible cones}, $I$ has a simulacrum
-        $I'$ all of whose factors are Lorentz cones. Now, consider
-        each non-Lorentz factor $I$ of $J$, one at a time. If $I \cong
-        \Hnplus[3]\of{\Cn[1]}$, replace it by $\Lnplus[9]$, and note
-        that $9 < n$ by \cref{itm:condition3}. If $I \ncong
-        \Hnplus[3]\of{\Cn[1]}$, replace it by its all-Lorentz
-        simulacrum $I'$. We claim that none of the Lorentz factors in
-        $I'$ are of dimension $n$ or greater. If $I'$ contains an
-        $\Lnplus[n+k]$ factor where $k \ge 0$, then
+        factor of $J$. Consider each non-Lorentz factor $I$ of $J$,
+        one at a time. If $I \cong \Hnplus[3]\of{\Cn[1]}$, replace it
+        with $\Lnplus[9]$, and note that $9 < n$ by
+        \cref{itm:condition3}. Similarly, if $I \cong
+        \Hnplus[3]\of{\octonions}$, replace it with $\Lnplus[9] \oplus
+        \Lnplus[9] \oplus \Lnplus[9]$.
+
+        For any other $I \cong \Hnplus[m]\of{\Fn[1]}$ with $\Fn[1] \in
+        \set{\Rn[1], \Cn[1], \quaternions}$ and $m \ge 3$, the results
+        in \cref{sec:irreducible cones} show that $I$ has a simulacrum
+        $I'$ consisting only of Lorentz cones. Refer back to
+        \cref{tab:signatures of building blocks}, and check that each
+        remaining $I \cong \Hnplus[m]\of{\Fn[1]}$ satisfies
+        $12\dim\of{\Hnplus[m]\of{\Fn[1]}} \ge
+        5\lyapunovrank{\Hnplus[m]\of{\Fn[1]}}$. Any simulacrum $I'$
+        must then satisfy the same relationship. Now, replace $I$ it
+        by its all-Lorentz simulacrum $I'$. We claim that none of the
+        Lorentz factors in $I'$ are of dimension $n$ or greater. If
+        $I'$ contains an $\Lnplus[n+k]$ factor where $k \ge 0$, then
         %
         \begin{equation*}
-          \dim\of{\directsum{\Lnplus}{K}}
+          12\dim\of{\directsum{\Lnplus}{K}}
           \ge
-          \dim\of{I'}
-          >
-          \frac{1}{3}\lyapunovrank{I'}
+          12\dim\of{I'}
           \ge
-          \frac{1}{3}\lyapunovrank{\Lnplus[n+k]}
+          5\lyapunovrank{I'}
           \ge
-          \frac{1}{3}\lyapunovrank{\Lnplus[n]}
+          5\lyapunovrank{\Lnplus[n]}
           \ge
-          2n - 2,
+          12\qty{2n - 1},
         \end{equation*}
         %
         where the last inequality is due to
-        \cref{itm:condition3}. Subtracting $n$ from both sides we
-        would obtain $\dim\of{K} > n - 2$ in contradiction of
-        \cref{lem:condition4}. Thus all Lorentz factors of $I'$ are of
-        dimension $n-1$ or less. Proceeding in this manner, we
-        construct the cone $H$ which consists of:
+        \cref{itm:condition3}. After dividing by $12$ and subtracting
+        $n$ from both sides, we obtain $\dim\of{K} > n - 2$ in
+        contradiction of \cref{lem:condition4}. Thus all Lorentz
+        factors of $I'$ are of dimension $n-1$ or less. Proceeding in
+        this manner, we construct the cone $H$ which consists of:
         %
         \begin{itemize}
           \begin{item}
@@ -921,8 +925,12 @@
             in $J$,
           \end{item}
           \begin{item}
-            A direct sum of Lorentz cones, all of dimension $n-1$ or less,
-            for every non-Lorentz $I \ncong \Hnplus[3]\of{\Cn[1]}$ in $J$.
+            An $\Lnplus[9] \oplus \Lnplus[9] \oplus \Lnplus[9]$ for
+            every $I \cong \Hnplus[3]\of{\octonions}$ in $J$,
+          \end{item}
+          \begin{item}
+            A direct sum of Lorentz cones, all of dimension $n-1$ or
+            less, for every other non-Lorentz $I$ in $J$.
           \end{item}
         \end{itemize}
         %
