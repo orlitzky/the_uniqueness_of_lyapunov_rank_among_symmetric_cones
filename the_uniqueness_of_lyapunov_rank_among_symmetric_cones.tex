@@ -1102,83 +1102,29 @@
       cones} let us find another cone having the same signature and
     only Lorentz factors. Since we need only consider Lorentz factors,
     enumerating the possibilities is easily accomplished by
-    partitioning $9+n$. Absent rows indicate the absence of simulacra.
+    partitioning $9+n$. Absent $n$ indicate the absence of simulacra.
     %
     \begin{table}[H]
       \begin{center}
-        \begin{tabular}{c ccc}
-          $K$ & $\dim\of{K}$ & $\lyapunovrank{K}$ & $\sim$\\
+        \begin{tabular}{rl  rl  rl}
+          $n$ & $\operatorname{partition}\of{9+n}$
+          & $n$ & $\operatorname{partition}\of{9+n}$\\
           \midrule
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[2]}$ &
-            $11$ &
-            $19$ &
-            $\Lnplus[5] \oplus \Lnplus[3] \oplus \Lnplus[3]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[3]}$ &
-            $12$ &
-            $21$ &
-            $\Lnplus[4] \oplus \Lnplus[4] \oplus \Lnplus[4]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[4]}$ &
-            $13$ &
-            $24$ &
-            $\Lnplus[6] \oplus \Lnplus[3] \oplus \Rnplus[4]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[5]}$ &
-            $14$ &
-            $28$ &
-            $\Lnplus[6] \oplus \Lnplus[4] \oplus \Lnplus[3] \oplus \Roneplus$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[6]}$ &
-            $15$ &
-            $33$ &
-            $\Lnplus[5] \oplus \Lnplus[5] \oplus \Lnplus[5]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[7]}$ &
-            $16$ &
-            $39$ &
-            $\Lnplus[6] \oplus \Lnplus[6] \oplus \Lnplus[4]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[8]}$ &
-            $17$ &
-            $46$ &
-            $\Lnplus[9] \oplus \Lnplus[3] \oplus \Rnplus[5]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[9]}$ &
-            $18$ &
-            $54$ &
-            $\Lnplus[10] \oplus \Rnplus[8]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[10]}$ &
-            $19$ &
-            $63$ &
-          $\Lnplus[9] \oplus \Lnplus[7] \oplus \Lnplus[3]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[15]}$ &
-            $24$ &
-            $123$ &
-          $\Lnplus[14] \oplus \Lnplus[8] \oplus \Rnplus[2]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[18]}$ &
-            $27$ &
-            $171$ &
-            $\Lnplus[14] \oplus \Lnplus[13]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[21]}$ &
-            $30$ &
-            $228$ &
-            $\Lnplus[19] \oplus \Lnplus[11]$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[22]}$ &
-            $31$ &
-            $249$ &
-            $\Lnplus[21] \oplus \Lnplus[9] \oplus \Roneplus$\\
-          %
-          $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus[30]}$ &
-            $39$ &
-            $453$ &
-            $\Lnplus[29] \oplus \Lnplus[10]$\\
-          \end{tabular}
+          2  & $\set{3,3,5}$ &
+          9  & $\set{1,2,7,8}$\\
+          3  & $\set{4,4,4}$ &
+          10 & $\set{3,7,9}$\\
+          4  & $\set{2,2,3,6}$ &
+          15 & $\set{2,8,14}$\\
+          5  & $\set{1,3,4,6}$ &
+          18 & $\set{13,14}$\\
+          6  & $\set{5,5,5}$ &
+          21 & $\set{11,19}$\\
+          7  & $\set{4,6,6}$ &
+          22 & $\set{1,9,21}$\\
+          8  & $\set{1,2,2,3,9}$ &
+          30 & $\set{10,29}$
+        \end{tabular}
         \caption{Simulacra of $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$}
       \end{center}
     \end{table}

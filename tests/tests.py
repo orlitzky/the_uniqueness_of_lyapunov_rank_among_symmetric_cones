@@ -1467,11 +1467,9 @@ def test_corollary3() -> bool:
         ...      for n in range(n_min, n_max+1) )
         True
 
-    If you think hard about it, or consult an earlier version of the
-    paper, you will conclude that only sums of Lorentz cones need to
-    be checked for simulacra of ``HC(3) + L(n)``. Here we repeat the
-    check above using our cached Lorentz ranks (which are easier to
-    compute)::
+    The paper notes that only sums of Lorentz cones need to be checked
+    for simulacra of ``HC(3) + L(n)``. Here we repeat the check above
+    using our cached Lorentz ranks (which are easier to compute)::
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>> n_min = 31
@@ -1535,27 +1533,27 @@ def test_proposition8() -> bool:
         >>> test_proposition8()
         True
 
-    Confirm the table for ``n <= 30`` using sums of Lorentz cones. If
-    you think hard enough about it (or read an earlier version of the
-    paper), this suffices::
+    Confirm the table for ``n <= 30`` using sums of Lorentz cones
+    (this suffices)::
 
         >>> from sql import admissible_lorentz_ranks, max_lorentz_rank_dim
         >>>
         >>> d = {
-        ...   2:  [5,3,3],
+        ...   2:  [3,3,5],
         ...   3:  [4,4,4],
-        ...   4:  [6,3,1,1,1,1],
-        ...   5:  [6,4,3,1],
-        ...   6:  [7,4,1,1,1,1],
-        ...   7:  [8,3,3,1,1],
-        ...   8:  [9,3,1,1,1,1,1],
-        ...   9:  [10,1,1,1,1,1,1,1,1],
-        ...   10: [9,7,3],
-        ...   15: [14,8,1,1],
-        ...   18: [14,13],
-        ...   21: [19,11],
-        ...   22: [21,9,1],
-        ...   30: [29,10] }
+        ...   4:  [2,2,3,6],
+        ...   5:  [1,3,4,6],
+        ...   6:  [5,5,5],
+        ...   7:  [4,6,6],
+        ...   8:  [1,2,2,3,9],
+        ...   9:  [1,2,7,8],
+        ...   10: [3,7,9],
+        ...   15: [2,8,14],
+        ...   18: [13,14],
+        ...   21: [11,19],
+        ...   22: [1,9,21],
+        ...   30: [10,29]
+        ... }
         >>>
         >>> def check(n):
         ...     J = DirectSum([ HC(3), L(n) ])
