@@ -1194,10 +1194,14 @@ def test_theorem4() -> bool:
     argument.  This holds under our assumption that ``n >= 10``, and
     no smaller bound will work::
 
-        >>> all( 5*L(n).rank >= 12*(2*n - 1) for n in range(10, 100) )
+        >>> all(
+        ...   5*L(n).rank >= 12*(2*n - 1)
+        ...   for n in range(10, 100)
+        ... )
         True
         >>> 5*L(9).rank >= 12*(2*9 - 1)
         False
+
     """
     return True
 
