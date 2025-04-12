@@ -1308,6 +1308,14 @@ def test_theorem5() -> bool:
         >>> rank_too_small(X)
         True
 
+    The list above is comprehensive::
+
+        >>> [ c(n)
+        ...   for c in [HR, HC, HH]
+        ...   for n in [3,4,5]
+        ...   if c(n).dim <= 14 ]
+        [HR(3), HR(4), HC(3)]
+
     One of the last statements in the proof is that the conclusion is
     easy to verify for the "new" cases because there simply aren't any
     new simulacra (so we don't even have to worry about whether or not
