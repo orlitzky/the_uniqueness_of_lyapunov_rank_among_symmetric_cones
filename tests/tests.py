@@ -1223,7 +1223,7 @@ def test_theorem5() -> bool:
         >>> test_theorem5()
         True
 
-    Test the claim that if we drop the ``n >= 15`` condition on
+    Test the claim that if we drop the ``n >= 10`` condition on
     Theorem 4, then the only new counterexample we get is ``HR(3) ~
     L(4) + L(2)`` at ``n == 4``. Thus the real condition is ``n !=
     4``, for which we get no counterexamples::
@@ -1231,10 +1231,10 @@ def test_theorem5() -> bool:
         >>> from sql import all_cones_of_dim, max_cone_dim
         >>> actual = []
         >>> # skip check if not enough data; the largest dimension
-        >>> # we need is 21 when n=14 and d=7.
-        >>> skip = ( max_cone_dim() < 21 )
+        >>> # we need is 14 when n=9 and d=5.
+        >>> skip = ( max_cone_dim() < 14 )
         >>> if not skip:
-        ...     for n in range(15):
+        ...     for n in range(10):
         ...         for d in range(max_dimK(n)+1):
         ...             for K in all_cones_of_dim(d):
         ...                 if n < lowerbound1(K) or n < lowerbound2(K):
@@ -1289,14 +1289,14 @@ def test_theorem5() -> bool:
         >>> def rank_too_small(X):
         ...     g = f(n) + d - X.rank - f(n+d-X.dim)
         ...     return all( g.subs({n:i,d:j}) > 0
-        ...                 for i in chain(range(0,4), range(5,15))
+        ...                 for i in chain(range(0,4), range(5,10))
         ...                 for j in range(max_dimK(i)+1)
         ...                 if i+j-X.dim >= 0 )
 
-    The argument we use to rule out ``HC(3)``, ``HR(4)``, ``HC(4)``,
-    and ``HH(3)`` factors::
+    The argument we use to rule out ``HR(3)``, ``HR(4)``, and
+    ``HC(3)`` factors::
 
-        >>> X = HC(3)
+        >>> X = HR(3)
         >>> rank_too_small(X)
         True
 
@@ -1304,47 +1304,8 @@ def test_theorem5() -> bool:
         >>> rank_too_small(X)
         True
 
-        >>> X = HC(4)
+        >>> X = HC(3)
         >>> rank_too_small(X)
-        True
-
-        >>> X = HH(3)
-        >>> rank_too_small(X)
-        True
-
-    The two cases that we argue via simulacra::
-
-        >>> from sql import max_cone_dim
-        >>> mcd = max_cone_dim()
-        >>> skip = ( HR(5).dim > mcd )
-        >>> ( skip
-        ...   or
-        ...   DirectSum([HC(3),L(3),L(3)]) in HR(5).simulacra() )
-        True
-        >>> skip = ( HR(6).dim > mcd )
-        >>> ( skip
-        ...   or
-        ...   DirectSum([HC(3),L(4),L(4),L(3),L(1)]) in HR(6).simulacra() )
-        True
-
-    Rule out multiple ``HR(3)`` factors to simplify the argument::
-
-        >>> X = DirectSum(2*[HR(3)])
-        >>> rank_too_small(X)
-        True
-
-    A single ``HR(3)`` is only viable as a factor of ``J`` when ``n >=
-    10`` and ``K.dim >= 6`` (to check this, we partially reimplement
-    ``rank_too_small`` to restrict ``n`` and ``K.dim`` accordingly)::
-
-        >>> X = HR(3)
-        >>> g = f(n) + d - X.rank - f(n+d-X.dim)
-        >>> all(
-        ...   g.subs({n:i,d:j}) > 0
-        ...   for i in chain(range(0,4), range(5,15))
-        ...   for j in range(max_dimK(i)+1)
-        ...   if (i+j-X.dim >= 0) and (i < 10 or j < 6)
-        ... )
         True
 
     One of the last statements in the proof is that the conclusion is
@@ -1357,16 +1318,14 @@ def test_theorem5() -> bool:
 
         >>> from sql import all_cones_of_dim
         >>> all( not DirectSum([K,L(n)]).simulacra()
-        ...      for n in chain(range(0,4), range(5,15))
+        ...      for n in chain(range(0,4), range(5,10))
         ...      for d in range(max_dimK(n)+1)
         ...      for K in all_cones_of_dim(d)
         ...      if  n >= max(lowerbound1(K),lowerbound2(K)) )
         True
 
     Finally, we check the proof using the low-tech method that we have
-    described: partitions, possibly offset by one ``HR(3)``
-    factor. First, the small ``n`` where there are no ``HR(3)``
-    factors to worry about. There are many matching signatures, but
+    described: partitions. There are many matching signatures, but
     they're all from isomorphic cones once you consider that ``L(2) ==
     RN(2)``::
 
@@ -1398,54 +1357,6 @@ def test_theorem5() -> bool:
         ...                             Ln_K = K + [n]
         ...                         if not J == Ln_K:
         ...                             matches.append( (Ln_K, J) )
-        >>> matches
-        []
-
-    Now things get a bit ugly, since we have to (potentially) include
-    ``HR(3)`` in ``J``, which is always big enough to hold
-    one. Whereas before we represented a cone as a partition, we now
-    represent it as an ``(j, p)`` pair, where ``j`` is either zero or
-    one, indicating the presence of an ``HR(3)`` factor, and ``p`` is
-    a partition representing its Lorentz factors::
-
-        >>> matches = []
-        >>> for n in range(10,15):
-        ...     # start at d=1 to avoid getting [0,n] ~ [n]
-        ...     for d in range(1, max_dimK(n)+1):
-        ...         Ks = []
-        ...         for p in partitions(d, include_two=False):
-        ...             # K is pure Lorentz, per the theorem
-        ...             if n < lb1(p): continue
-        ...             if n < lb2(p): continue
-        ...             Ks.append( (0,p) )
-        ...
-        ...         # Always include pure-Lorentz J
-        ...         Js = [ (0,p) for p in partitions(d+n, include_two=False) ]
-        ...
-        ...         # And since d+n is always >= 6, always include HR(3)
-        ...         # with a partition of whatever's left.
-        ...         for q in partitions(d + n - HR(3).dim, include_two=False):
-        ...             Js.append( (1,q) )
-        ...
-        ...         for K in Ks:
-        ...             # n is guaranteed to be larger than d, so we know it
-        ...             # goes at the end. Special case to avoid inserting
-        ...             # zero at the beginning of a partition.
-        ...             if K[1] == [0]:
-        ...                 Ln_K = (K[0], [n])
-        ...             else:
-        ...                 Ln_K = (K[0], K[1] + [n])
-        ...             Ln_K_rank = partition_rank(Ln_K[1])  # no HR(3) here
-        ...
-        ...             for J in Js:
-        ...                 J_rank = partition_rank(J[1]) + HR(3).rank*J[0]
-        ...                 if J_rank == Ln_K_rank:
-        ...                     # These two conditions aren't perfect, but
-        ...                     # they're enough to eliminate all matches.
-        ...                     if J[0] != Ln_K[0]:
-        ...                         matches.append( (Ln_K,J) )
-        ...                     if not Ln_K[1] == J[1]:
-        ...                         matches.append( (Ln_K,J) )
         >>> matches
         []
 
@@ -1486,6 +1397,7 @@ def test_theorem5() -> bool:
         ...   ==
         ...   DirectSum([L(29),L(10)]).signature() )
         True
+
     """
     # Use cached data so that we can go beyond the n=15 case
     # and check the result for Theorem 4, too.
