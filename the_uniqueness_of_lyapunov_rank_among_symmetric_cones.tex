@@ -813,14 +813,22 @@
       \dim\of{\directsum{K}{\Lnplus}}$.
 
       \begin{proof}
-        To maximize the Lyapunov rank on the left we can consult
-        \cref{prop:rank of lorentz is maximal} and then take as many
-        $\Lnplus[n-1]$ factors as will fit in dimension $\dim\of{K} +
-        n$. We know that at least one $\Lnplus[n-1]$ factor will fit
-        because $\dim\of{K} + n \ge n-1$. But from
-        \cref{lem:condition4} we also know that $n \ge \dim\of{K} + 2
-        \iff 2\qty{n - 1} \ge \dim\of{K} + n$. So at most, two such
-        factors fit, and in any case we obtain
+        We begin by noticing that if $a \ge b \ge c \ge 0$, then
+        %
+        \begin{equation*}
+          \lyapunovrank{\Lnplus[a+c]} + \lyapunovrank{\Lnplus[b-c]}
+          \ge
+          \lyapunovrank{\Lnplus[a]} + \lyapunovrank{\Lnplus[b]}.
+        \end{equation*}
+        %
+        This is stronger than \cref{prop:rank of lorentz is maximal},
+        and allows us to maximize the Lyapunov rank in the statement
+        of the lemma by taking as many $\Lnplus[n-1]$ factors as will
+        fit in dimension $\dim\of{K} + n$. We know that at least one
+        $\Lnplus[n-1]$ factor will fit because $\dim\of{K} + n \ge
+        n-1$. But from \cref{lem:condition4} we also know that $n \ge
+        \dim\of{K} + 2 \iff 2\qty{n - 1} \ge \dim\of{K} + n$. So at
+        most, two such factors fit, and in any case we obtain
         %
         \begin{equation*}
           \lyapunovrank{\directsummany{i=1}{k}{\Lnplus[n_{i}]}}
