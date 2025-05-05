@@ -969,21 +969,6 @@
     the sole counterexample at $n = 4$. As a result, we can get away
     with requiring $n \ne 4$ instead of $n \ge 10$.
 
-    In the proof of this result, we will use integer partitioning to
-    enumerate sums of Lorentz cones, a strategy we employ several
-    times. There are fast algorithms to compute partitions; for
-    example, the accelerated integer partitioning scheme of Kelleher
-    and O'Sullivan~\cite{kelleher-osullivan}. Most partitioning
-    schemes sort the entries to avoid duplication, so no ambiguity
-    arises in the order of our Lorentz factors. The partitions $1 + 1$
-    and $2$ however correspond to isomorphic cones---we do not need to
-    consider both. Fortunately, as the entries of each partition are
-    already sorted, it is easy to detect when a partition contains $2$
-    and omit it from the result. For every partition containing $2$
-    that we omit, there will be a partition with $1+1$ in its place,
-    so we do not lose any cones. This can save a considerable amount
-    of time.
-
     \begin{theorem}[Improved \cref{thm:subproblem reduction}]\label{thm:improved subproblem reduction}
       Suppose that $K,J$ are symmetric cones and that $n \ne 4$
       satisfies \cref{itm:condition1,itm:condition2}. Then $J \sim
@@ -1097,12 +1082,27 @@
     subtracting $\pair{9}{17}$ from both signatures, it also contains
     a simulacrum for $\Lnplus$, which is not possible by
     \cref{cor:lorentz cone has no simulacra}. And if a simulacrum does
-    not contain $\Hnplus[3]\of{\Cn[1]}$, then either it consists of
-    only Lorentz factors, or the results in \cref{sec:irreducible
-      cones} let us find another cone having the same signature and
-    only Lorentz factors. Since we need only consider Lorentz factors,
-    enumerating the possibilities is easily accomplished by
-    partitioning $9+n$. Absent $n$ indicate the absence of simulacra.
+    not contain $\Hnplus[3]\of{\Cn[1]}$, then either it consists
+    entirely of Lorentz factors, or the results in
+    \cref{sec:irreducible cones} let us find another cone having the
+    same signature and only Lorentz factors.
+
+    Since only Lorentz factors are required, simulacra of
+    $\directsum{\Hnplus[3]\of{\Cn[1]}}{\Lnplus}$ will correspond to
+    partitions of the integer $9+n$. There are fast algorithms to
+    compute integer partitions; for example, the accelerated scheme of
+    Kelleher and O'Sullivan~\cite{kelleher-osullivan}. Most
+    partitioning schemes sort the entries to avoid duplication, so no
+    ambiguity arises in the order of our Lorentz factors. The
+    partitions $1 + 1$ and $2$ however correspond to isomorphic cones,
+    and we do not need to consider both. Fortunately, as the entries
+    of each partition are already sorted, it is easy to detect when a
+    partition contains $2$ and omit it from the result. For every
+    partition containing $2$ that we omit, there will be a partition
+    with $1+1$ in its place, so we do not lose any cones. This can
+    save a considerable amount of time.
+
+    In the table below, absent $n$ indicate the absence of simulacra.
     %
     \begin{table}[H]
       \begin{center}
@@ -1129,7 +1129,7 @@
       \end{center}
     \end{table}
 
-    \begin{proposition}
+    \begin{proposition}\label{prop:simulacra of HC(3)+L(n)}
       $\Hnplus[3]\of{\Cn[1]} \oplus \Lnplus$ has symmetric simulacra
       if and only if $n \in \set{2,3,\ldots,10,15,18,21,22,30}$. If
       $K$ is a symmetric cone with an $\Hnplus[3]\of{\Cn[1]}$ factor
@@ -1366,14 +1366,14 @@
         For $n < 100$, we must once again resort to brute-force
         enumeration. From \cref{lem:Ln-squared is easy to brute
           force}, we know however that this can be done (relatively)
-        easily using the same strategy we used in \cref{thm:improved
-          subproblem reduction}, namely by partitioning the desired
-        dimension and computing Lyapunov ranks. One would first
-        partition $2n-9$ assuming that $\Hnplus[3]\of{\Cn[1]}$ is
-        present in the simulacra, searching for a Lyapunov rank of
+        easily using the same strategy we used in \cref{prop:simulacra
+          of HC(3)+L(n)}, namely by partitioning the desired dimension
+        and computing Lyapunov ranks. One first partitions $2n-9$
+        assuming that $\Hnplus[3]\of{\Cn[1]}$ is present in the
+        simulacra, searching for a Lyapunov rank of
         $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}} -
-        \lyapunovrank{\Hnplus[3]\of{\Cn[1]}} = n^{2} - n - 15$. Should
-        that fail\footnote{Partitioning $2n-9$ is a subproblem of
+        \lyapunovrank{\Hnplus[3]\of{\Cn[1]}} = n^{2} - n - 15$. If
+        that fails\footnote{Partitioning $2n-9$ is a subproblem of
         partitioning $2n$, if you care to save the result.}, $2n$
         itself can be partitioned in hopes of finding
         $\lyapunovrank{\directsum{\Lnplus}{\Lnplus}}$. In
