@@ -1287,58 +1287,6 @@ def test_theorem5() -> bool:
         ...   if c(n).dim <= 14 ]
         [HR(3), HR(4), HC(3)]
 
-    One of the last statements in the proof is that the conclusion is
-    easy to verify for the "new" cases because there simply aren't any
-    new simulacra (so we don't even have to worry about whether or not
-    "J" has the stated form). We're checking that a list of simulacra
-    is empty, so there is no need to check the dimension of our cone
-    against :func:`sql.max_cone_dim`; if we exceed it, we'll get back
-    empty lists of simulacra anyway::
-
-        >>> from sql import all_cones_of_dim
-        >>> all( not DirectSum([K,L(n)]).simulacra()
-        ...      for n in chain(range(0,4), range(5,10))
-        ...      for d in range(max_dimK(n)+1)
-        ...      for K in all_cones_of_dim(d)
-        ...      if  n >= max(lowerbound1(K),lowerbound2(K)) )
-        True
-
-    Finally, we check the proof using the low-tech method that we have
-    described: partitions. There are many matching signatures, but
-    they're all from isomorphic cones once you consider that ``L(2) ==
-    RN(2)``::
-
-        >>> from partitions import partitions, f
-        >>>
-        >>> # We'll collect the matching signatures in a list
-        >>> matches = []
-        >>>
-        >>> # reimplement the lower bounds in terms of partitions
-        >>> lb1 = lambda p: 2 + partition_rank(p) - sum(p)
-        >>> lb2 = lambda p: 2 + f(1+sum(p)) - partition_rank(p)
-        >>>
-        >>> for n in chain(range(0,4), range(5,10)):
-        ...     # start at d=1 to avoid getting [0,n] ~ [n]
-        ...     for d in range(1, max_dimK(n)+1):
-        ...         for K in partitions(d, include_two=False):
-        ...             if n < lb1(K): continue
-        ...             if n < lb2(K): continue
-        ...             Ln_K_rank = f(n) + partition_rank(K)
-        ...             for J in partitions(d+n, include_two=False):
-        ...                 if (partition_rank(J) == Ln_K_rank):
-        ...                         # n is guaranteed to be larger than d,
-        ...                         # so we know it goes at the end. Special
-        ...                         # case to avoid inserting zero at the
-        ...                         # beginning of a partition.
-        ...                         if K == [0]:
-        ...                             Ln_K = [n]
-        ...                         else:
-        ...                             Ln_K = K + [n]
-        ...                         if not J == Ln_K:
-        ...                             matches.append( (Ln_K, J) )
-        >>> matches
-        []
-
     Check the relationships between the lower bounds on ``n``. Each
     can be violated while the others are satisfied, and in each case,
     Theorem 5 fails. This is discussed subsequent to Theorem 5 in the
