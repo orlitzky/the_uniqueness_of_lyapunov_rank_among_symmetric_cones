@@ -1,3 +1,7 @@
+# Journal files
+export TEXINPUTS := $(TEXINPUTS):./oms
+export BSTINPUTS := $(BSTINPUTS):./oms
+
 #
 # Example makefile using mjotex and a BibTeX references database.
 #
@@ -44,7 +48,7 @@ BIBS = local-references.bib
 #
 MJOTEX  = mjo-algebra.tex mjo-arrow.tex mjo-common.tex mjo-cone.tex
 MJOTEX += mjo-font.tex mjo-hurwitz.tex mjo-linear_algebra.tex
-MJOTEX += mjo-proof_by_cases.tex mjo-set.tex mjo-theorem.tex mjo.bst
+MJOTEX += mjo-proof_by_cases.tex mjo-set.tex mjo-theorem.tex
 
 # Use kpsewhich (from the kpathsea suite) to find the absolute paths
 # of the bibtex/mjotex files listed in in $(BIBS)/$(MJOTEX). The SRCS
@@ -70,7 +74,7 @@ SRCS += $(MJOTEX)
 # over the old one. But if the two differ, then we repeat this process
 # in a loop until the just-built PDF is identical to the one from the
 # previous iteration.
-$(PN).pdf: $(SRCS) $(BUILDDIR)/$(PN).bbl $(INDEX_DSTS)
+$(PN).pdf: $(SRCS) $(BUILDDIR)/$(PN).bbl
 	$(LATEX) $(PN).tex
 
 	if [ -f $@ ]; then \
@@ -161,7 +165,7 @@ JUNK_EXTENSIONS += snm spl toc xml
 clean:
 	for ext in $(JUNK_EXTENSIONS); do rm -f *.$$ext; done;
 	rm -rf dist/ $(BUILDDIR)/
-	rm -f $(SAGE_LISTING_DSTS) $(INDEX_SRCS) $(INDEX_DSTS)
+	rm -f $(SAGE_LISTING_DSTS)
 
 # If this document will be published, the publisher isn't going to
 # have your BibTeX database or your mjotex files. So, you need to
