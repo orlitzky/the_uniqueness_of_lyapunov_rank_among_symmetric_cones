@@ -69,6 +69,8 @@
 \AddToHook{env/lemma/begin}{\crefalias{theorem}{lemma}}
 \AddToHook{env/proposition/begin}{\crefalias{theorem}{proposition}}
 
+% Another hack to force the correct label on appendix sections
+\crefname{app}{Appendix}{Appendices}
 
 % \Rnplus[1], but with a visible "1"
 \newcommand*{\Roneplus}[0]{ \mathbb{R}^{1}_{+} }
@@ -1492,7 +1494,7 @@
     0$.
   \end{section}
 
-  \begin{section}{Simulacra of $\directsum{\Lnplus}{\Lnplus}$}\label{sec:L(n)+L(n) simulacra}
+  \begin{section}{Simulacra of $\directsum{\Lnplus}{\Lnplus}$}\label[app]{sec:L(n)+L(n) simulacra}
 
     % reduce the horizontal padding set in the prologue
     % so that we don't overflow the margins
