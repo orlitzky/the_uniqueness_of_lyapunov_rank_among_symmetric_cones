@@ -48,7 +48,7 @@ BIBS = local-references.bib
 #
 MJOTEX  = mjo-algebra.tex mjo-arrow.tex mjo-common.tex mjo-cone.tex
 MJOTEX += mjo-font.tex mjo-hurwitz.tex mjo-linear_algebra.tex
-MJOTEX += mjo-proof_by_cases.tex mjo-set.tex mjo-theorem.tex
+MJOTEX += mjo-proof_by_cases.tex mjo-set.tex
 
 # Use kpsewhich (from the kpathsea suite) to find the absolute paths
 # of the bibtex/mjotex files listed in in $(BIBS)/$(MJOTEX). The SRCS

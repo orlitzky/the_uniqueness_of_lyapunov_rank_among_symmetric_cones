@@ -1,6 +1,11 @@
-\documentclass{article}
+\documentclass{interact}
 
-\usepackage{amsmath, mathtools}
+% natbib settings from the journal template example
+\usepackage[numbers,sort&compress]{natbib}
+\bibpunct[, ]{[}{]}{,}{n}{,}{,}
+\renewcommand\bibfont{\fontsize{10}{12}\selectfont}
+
+\usepackage{mathtools}
 
 % Force the tables to appear where they should
 \usepackage{float}
@@ -16,8 +21,7 @@
   citecolor=blue
 }
 
-% The cone rank/dim table.
-\usepackage{booktabs}
+% Table settings (booktabs is included as part of the journal class)
 \renewcommand{\arraystretch}{1.5} % for the vertical padding
 \setlength{\tabcolsep}{1em} % for the horizontal padding
 
@@ -29,7 +33,18 @@
 \input{mjo-hurwitz}
 \input{mjo-proof_by_cases}
 \input{mjo-set}
-\input{mjo-theorem}
+
+% Theorem environments used by the journal template example
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 
 % Cleveref with Oxford comma!
 \usepackage[capitalize,nameinlink,noabbrev,nosort]{cleveref}
@@ -73,17 +88,19 @@
     progress in the general case.
   \end{abstract}
 
-  \textbf{Keywords:}
-    symmetric cone,
-    Lyapunov rank,
-    Euclidean Jordan algebra,
+  \begin{keywords}
+    symmetric cone;
+    Lyapunov rank;
+    Euclidean Jordan algebra;
     isomorphism problem
+  \end{keywords}
 
-  \textbf{MSC2020:}
-    15B48, % Positive matrices and their generalizations; cones of matrices
-    17C20, % Jordan algebras -> Simple, semisimple
-    17B45, % Lie algebras of linear algebraic groups
+  \begin{amscode}
+    15B48; % Positive matrices and their generalizations; cones of matrices
+    17C20; % Jordan algebras -> Simple, semisimple
+    17B45; % Lie algebras of linear algebraic groups
     90C25  % convex programming
+  \end{amscode}
 
   \begin{section}{Introduction}
     The motivation for Lyapunov rank comes from linear programming.
