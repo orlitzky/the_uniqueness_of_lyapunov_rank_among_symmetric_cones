@@ -5,6 +5,9 @@
 \bibpunct[, ]{[}{]}{,}{n}{,}{,}
 \renewcommand\bibfont{\fontsize{10}{12}\selectfont}
 
+% Custom labels for the (enumerated) list of conditions
+\usepackage{enumerate}
+
 \usepackage{mathtools}
 
 % Force the tables to appear where they should
@@ -761,15 +764,15 @@
     the problem is to find simulacra of $\directsum{K}{\Lnplus}$, we
     will impose three conditions on $n$,
     %
-    \begin{enumerate}
+    \begin{enumerate}[\indent Cond{i}t{i}on (1):]
       \begin{item}\label[condition]{itm:condition1}
-        $n \ge 2 + \lyapunovrank{K} - \dim\of{K}$,
+        $n \ge 2 + \lyapunovrank{K} - \dim\of{K}$
       \end{item}
       \begin{item}\label[condition]{itm:condition2}
-        $n \ge 2 + \lyapunovrank{\Lnplus[\dim\of{K} + 1]} - \lyapunovrank{K}$,
+        $n \ge 2 + \lyapunovrank{\Lnplus[\dim\of{K} + 1]} - \lyapunovrank{K}$
       \end{item}
       \begin{item}\label[condition]{itm:condition3}
-        $n \ge 10$.
+        $n \ge 10$
       \end{item}
     \end{enumerate}
     %
