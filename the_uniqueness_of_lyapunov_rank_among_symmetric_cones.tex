@@ -58,6 +58,18 @@
 \crefname{condition}{Condition}{Conditions}
 \creflabelformat{condition}{#2\textup{(#1)}#3}
 
+% Hack to fix cleveref's labels for theorem environments that
+% share the theorem counter. Ref:
+%
+%   https://tex.stackexchange.com/questions/732050
+%
+\AddToHook{env/corollary/begin}{\crefalias{theorem}{corollary}}
+\AddToHook{env/definition/begin}{\crefalias{theorem}{definition}}
+\AddToHook{env/example/begin}{\crefalias{theorem}{example}}
+\AddToHook{env/lemma/begin}{\crefalias{theorem}{lemma}}
+\AddToHook{env/proposition/begin}{\crefalias{theorem}{proposition}}
+
+
 % \Rnplus[1], but with a visible "1"
 \newcommand*{\Roneplus}[0]{ \mathbb{R}^{1}_{+} }
 
