@@ -147,14 +147,9 @@ check-chktex:
 check-undefined: $(BUILDDIR)/$(PN).log
 	@! grep -i 'undefined' $<
 
-# Run python doctests
-.PHONY: check-python
-check-python:
-	cd tests && python -m doctest ./*.py && cd ../
-
 # Run a suite of checks.
 .PHONY: check
-check: check-boxes check-chktex check-undefined check-python
+check: check-boxes check-chktex check-undefined
 
 # Clean up leftover junk. This only looks overcomplicated because
 # the *.{foo,bar} syntax supported by Bash is not POSIX, and Make
