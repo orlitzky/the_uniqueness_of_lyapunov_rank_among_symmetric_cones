@@ -749,11 +749,23 @@
       form.
 
       \begin{proof}
-        \cref{thm:only irreducible factors} shows that the other
-        irreducible families have simulacra involving
-        $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus[n_{i}]$, and \cref{cor:no
-          multiple complex factors} shows that we need (or can have)
-        at most one $\Hnplus[3]\of{\Cn[1]}$ factor.
+        If $K$ is of the stated form, great. If not, decompose $K =
+        \directsummany{}{}{K_{i}}$ using \cref{thm:direct sum
+          decomposition}, and visit each irreducible $K_{i}$ in
+        succession. If $K_{i}$ is isomorphic to
+        $\Hnplus[3]\of{\Cn[1]}$ or $\Lnplus$ for some $n$, leave it
+        alone; otherwise, use the results of \cref{sec:irreducible
+          cones} to replace it by a simulacrum having only
+        $\Hnplus[3]\of{\Cn[1]}$ and Lorentz factors. At the end of
+        this process, use \cref{cor:no multiple complex factors} to
+        replace an even number of $\Hnplus[3]\of{\Cn[1]}$ with Lorentz
+        cones. The result is a cone with zero or one
+        $\Hnplus[3]\of{\Cn[1]}$ factors---the rest being
+        Lorentz---that shares a signature with $K$, but cannot be
+        isomorphic to $K$ since $K$ is not of the stated form (we have
+        replaced at least one $K_{i}$ by \cref{thm:only irreducible
+          factors}). In other words, we have a simulacrum of $K$ in
+        the stated form.
       \end{proof}
     \end{theorem}
 
