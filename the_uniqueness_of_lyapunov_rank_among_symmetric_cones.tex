@@ -583,7 +583,7 @@
     cone $\Lnplus[3]$ is however isomorphic to $\Hnplus[2]\of{\Rn[1]}$
     and therefore not a simulacrum.
 
-    \begin{proposition}
+    \begin{proposition}\label{prop:complex psd simulacra}
       $\Hnplus[n]\of{\Cn[1]}$ has symmetric simulacra for $n \ge 4$,
       but not for $n = 3$.
 
@@ -640,7 +640,7 @@
     \end{proposition}
 
 
-    \begin{proposition}
+    \begin{proposition}\label{prop:quaternion psd simulacra}
       $\Hnplus\of{\quaternions}$ has symmetric simulacra for all $n \ge 3$.
 
       \begin{proof}
@@ -754,18 +754,19 @@
           decomposition}, and visit each irreducible $K_{i}$ in
         succession. If $K_{i}$ is isomorphic to
         $\Hnplus[3]\of{\Cn[1]}$ or $\Lnplus$ for some $n$, leave it
-        alone; otherwise, use the results of \cref{sec:irreducible
-          cones} to replace it by a simulacrum having only
-        $\Hnplus[3]\of{\Cn[1]}$ and Lorentz factors. At the end of
-        this process, use \cref{cor:no multiple complex factors} to
-        replace an even number of $\Hnplus[3]\of{\Cn[1]}$ with Lorentz
-        cones. The result is a cone with zero or one
-        $\Hnplus[3]\of{\Cn[1]}$ factors---the rest being
-        Lorentz---that shares a signature with $K$, but cannot be
-        isomorphic to $K$ since $K$ is not of the stated form (we have
-        replaced at least one $K_{i}$ by \cref{thm:only irreducible
-          factors}). In other words, we have a simulacrum of $K$ in
-        the stated form.
+        alone; otherwise, use \cref{prop:real psd
+          simulacra,prop:complex psd simulacra,prop:quaternion psd
+          simulacra,prop:octonion psd simulacra} to replace it by a
+        simulacrum having only $\Hnplus[3]\of{\Cn[1]}$ and Lorentz
+        factors. At the end of this process, use \cref{cor:no multiple
+          complex factors} to replace an even number of
+        $\Hnplus[3]\of{\Cn[1]}$ with Lorentz cones. The result is a
+        cone with zero or one $\Hnplus[3]\of{\Cn[1]}$ factors---the
+        rest being Lorentz---that shares a signature with $K$, but
+        cannot be isomorphic to $K$ since $K$ is not of the stated
+        form (we have replaced at least one $K_{i}$ by \cref{thm:only
+          irreducible factors}). In other words, we have a simulacrum
+        of $K$ in the stated form.
       \end{proof}
     \end{theorem}
 
