@@ -1069,22 +1069,34 @@
         \Rnplus[\dim\of{K}]$ minimizes the Lyapunov rank. If $J$ has
         an $\Hnplus[3]\of{\Cn[1]}$ factor, then $\lyapunovrank{J} \le
         17 + \lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}$ by
-        \cref{prop:rank of lorentz is maximal}. Subtracting and
-        substituting the pairs of $n$ and $\dim\of{K}$ from the table
-        above, we find that
+        \cref{prop:rank of lorentz is maximal}, leading to the
+        inequality
         %
         \begin{equation*}
+          17 + \lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}
+          \ge
+          \lyapunovrank{J}
+          =
+          \lyapunovrank{\directsum{K}{\Lnplus}}
+          \ge
+          \lyapunovrank{\Lnplus} + \dim\of{K}.
+        \end{equation*}
+        %
+        But substituting the pairs of $n$ and $\dim\of{K}$ from the
+        table above, we find that
+        %
+        \begin{equation*}
+          17 + \lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}
+          <
           \lyapunovrank{\Lnplus} + \dim\of{K}
-          -17
-          -\lyapunovrank{\Lnplus[n + \dim\of{K} - 9]}
-          > 0,
         \end{equation*}
         %
         for all compatible $n$ and $\dim\of{K}$ such that $n +
-        \dim\of{K} \ge 9$; that is, all pairs that would make $J$
-        large enough to hold an $\Hnplus[3]\of{\Cn[1]}$ factor. The
-        same argument rules out $\Hnplus[3]\of{\Rn[1]}$ and
-        $\Hnplus[4]\of{\Rn[1]}$.
+        \dim\of{K} \ge 9$; that is, for all pairs that would make $J$
+        large enough to hold an $\Hnplus[3]\of{\Cn[1]}$ factor. This
+        disqualifies $\Hnplus[3]\of{\Cn[1]}$ as a factor of $J$ for
+        the $n$ and $\dim\of{K}$ in question. The same argument rules
+        out $\Hnplus[3]\of{\Rn[1]}$ and $\Hnplus[4]\of{\Rn[1]}$.
 
         Having ruled out all non-Lorentz factors in $K$ and $J$,
         \cref{lem:no bigger factors,lem:not all smaller factors} now
