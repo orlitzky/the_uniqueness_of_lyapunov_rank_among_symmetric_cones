@@ -679,15 +679,31 @@
   \end{section}
 
   \begin{section}{Reducible cones}\label{sec:reducible cones}
-    The problem becomes much more difficult when we venture beyond
-    irreducible cones. We have already met several reducible cones
-    whose Lyapunov ranks are not unique---every simulacrum we
-    constructed in the previous section has at least one symmetric
-    simulacrum, namely the irreducible cone we constructed it to be a
-    simulacrum of. So in the general case, the best we can hope for is
-    to narrow down the possibilities. In this section we will focus on
-    reducing the general problem to smaller subproblems. It is worth
-    investigating due to the following (rather obvious) result.
+    We now broaden the scope to symmetric cones that are not
+    necessarily irreducible. The goal remains the same---to identify
+    or disqualify a candidate using Lyapunov rank---but in the
+    reducible case, meaningful results are harder to come by. We have
+    already met several reducible cones whose signatures are not
+    unique. Every simulacrum constructed in the previous section has
+    at least one symmetric simulacrum, namely the irreducible cone we
+    constructed it to be a simulacrum of. In light of this, the best
+    we can hope for is to narrow down the possibilities.
+
+    In \cref{thm:only irreducible factors} we learned that
+    $\Hnplus[3]\of{\Cn[1]}$ and $\Lnplus$ are the only irreducible
+    symmetric cones without simulacra. In \cref{thm:two sufficient
+      families} we formalize the intuition that only these can appear
+    as factors in a reducible cone if that reducible cone is to have
+    no simulacra, and for the remainder of the section we investigate
+    cones of that special form. We show in \cref{thm:improved
+      subproblem reduction} that (under a few conditions) the problem
+    for $\directsum{K}{\Lnplus}$ can be reduced to that for $K$, and
+    we enumerate by brute force or clever argument many of the
+    possibilities in lower dimensions. When combined, these results
+    form guidelines for constructing reducible cones sans simulacra,
+    though unsurprisingly such cones are the exception.
+
+    We begin with a trivial lemma to justify this approach.
 
     \begin{lemma}\label{lem:subcone simulacra}
       If $K_{1},K_{2}$ are symmetric cones and if either has symmetric
